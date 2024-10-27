@@ -11,7 +11,7 @@ interface SiteConfig {
 }
 
 export const siteConfig: SiteConfig = {
-  name: "Edge Esmeralda",
+  name: "ForestBase",
   title: "Measuring impact through Edge Esmeralda",
   description:
     "A month-long gathering for people building the future",
