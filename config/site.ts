@@ -12,14 +12,14 @@ interface SiteConfig {
 
 export const siteConfig: SiteConfig = {
   name: "ForestBase",
-  title: "Measuring impact through Edge Esmeralda",
+  title: "By GainForest",
   description:
-    "A month-long gathering for people building the future",
+    "Fund impactful regenerative projects",
   localeDefault: "en",
   links: {
-    discord: "https://discord.gg/EUUupE3J", // TODO: Update to @EdgeEsmeralda
-    twitter: "https://twitter.com/VoiceDeckDAO", // TODO: Update to @EdgeEsmeralda
-    github: "https://github.com/hypercerts-org/voicedeck-fork",
+    discord: "https://discord.gg/reuvzTdVAU",
+    twitter: "https://twitter.com/GainForestNow",
+    github: "https://github.com/GainForest/hypercerts-platform.git",
   },
 };
 
