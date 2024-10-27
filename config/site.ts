@@ -8,6 +8,7 @@ interface SiteConfig {
     twitter: string;
     github: string;
   };
+  footerLinks: {title: string, url: string}[]
 }
 
 export const siteConfig: SiteConfig = {
@@ -21,13 +22,9 @@ export const siteConfig: SiteConfig = {
     twitter: "https://twitter.com/GainForestNow",
     github: "https://github.com/GainForest/hypercerts-platform.git",
   },
+  footerLinks: [
+    { title: "GitHub", url: "https://github.com/GainForest/hypercerts-platform.git" },
+    { title: "X (Twitter)", url: "https://twitter.com/GainForestNow" },
+    { title: "Impact Report", url: "https://www.canva.com/design/DAGNpwdK0jo/QkBOQ1gfl0gy8jDTBAo10g/view?utm_content=DAGNpwdK0jo&utm_campaign=designshare&utm_medium=link&utm_source=editor" },
+  ]
 };
-
-// TODO: Clean up, add icon, add to sight config?
-export const externalLinks = [
-  { title: "FAQs", url: "https://testnet.hypercerts.org/docs/intro" },
-  { title: "Terms of Use", url: "https://hypercerts.org/terms" },
-  { title: "Privacy Policy", url: "https://hypercerts.org/privacy" },
-  { title: "GitHub", url: "https://github.com/hypercerts-org" },
-  { title: "X (Twitter)", url: "https://twitter.com/hypercerts" },
-];

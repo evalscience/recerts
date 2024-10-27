@@ -12,7 +12,7 @@ import {
 	DrawerHeader,
 	DrawerTrigger,
 } from "@/components/ui/drawer";
-import { externalLinks } from "@/config/site";
+import { siteConfig } from "@/config/site";
 import { cn } from "@/lib/utils";
 import { WalletProfile } from "./wallet-profile";
 
@@ -68,7 +68,7 @@ const MobileFooter = () => {
 									/>
 								</div>
 							</DrawerHeader>
-							{externalLinks.map((link) => (
+							{siteConfig.footerLinks.map((link) => (
 								<a
 									href={link.url}
 									key={link.title}
@@ -117,10 +117,12 @@ const DesktopFooter = () => {
 						height={100}
 					/>
 				</Link>
-				<p className="pt-2 font-medium text-base">Fund and reward impact</p>
+				<p className="pt-2 font-medium text-base">
+					Fund and reward regenerative projects
+				</p>
 			</div>
 			<ul className="flex space-x-2">
-				{externalLinks.map(({ url, title }) => (
+				{siteConfig.footerLinks.map(({ url, title }) => (
 					<li key={title}>
 						<a
 							href={url}
