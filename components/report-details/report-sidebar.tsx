@@ -103,7 +103,7 @@ const ImpactDetails = ({
 					))}
 				</ul>
 				<a
-					href={`https://testnet.hypercerts.org/app/view#claimId=${hypercert_id}`}
+					href={`https://testnet.hypercerts.org/hypercerts/${hypercert_id}`}
 					target="_blank"
 					rel="noopener noreferrer"
 					className={cn(
