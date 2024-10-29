@@ -1,4 +1,5 @@
 "use client";
+import Logo from "@/assets/Hypercerts.svg";
 import { ArrowUpRight, Menu, Newspaper, X } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -59,12 +60,11 @@ const MobileFooter = () => {
 						<DrawerContent>
 							<DrawerHeader>
 								<div className="flex justify-center">
-									<Image
-										className="h-6 w-auto md:h-8 md:w-auto"
-										src="/Hypercerts-logo-horisontal.svg"
+									<Logo
+										className="h-8 w-auto"
 										alt="Hypercerts Logo"
-										width={250}
-										height={100}
+										width={500}
+										height={500}
 									/>
 								</div>
 							</DrawerHeader>
@@ -109,17 +109,14 @@ const DesktopFooter = () => {
 		<div className="hidden h-32 items-center justify-between md:container md:flex">
 			<div className="flex flex-col">
 				<Link href={"/reports"} passHref className="flex items-center gap-2">
-					<Image
-						className="h-6 w-auto md:h-8 md:w-auto"
-						src="/Hypercerts-logo-horisontal.svg"
+					<Logo
+						className="h-8 w-auto"
 						alt="Hypercerts Logo"
-						width={250}
-						height={100}
+						width={500}
+						height={500}
 					/>
 				</Link>
-				<p className="pt-2 font-medium text-base">
-					Fund and reward regenerative projects
-				</p>
+				<p className="pt-2 font-medium text-base">By GainForest.Earth</p>
 			</div>
 			<ul className="flex space-x-2">
 				{siteConfig.footerLinks.map(({ url, title }) => (

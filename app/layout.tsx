@@ -16,7 +16,7 @@ import Script from "next/script";
 
 export const metadata: Metadata = {
 	metadataBase: new URL("https://app.voicedeck.org/"),
-	title: { default: siteConfig.name, template: "%s | Edge Esmeralda" },
+	title: { default: siteConfig.name, template: "%s | GainForest.Earth" },
 	description: siteConfig.description,
 	icons: [
 		{
@@ -33,17 +33,17 @@ export const metadata: Metadata = {
 		},
 	],
 	openGraph: {
-		title: { default: "Edge Esmeralda", template: "%s | Edge Esmeralda" },
+		title: { default: "Nature Project", template: "%s | GainForest.Earth" },
 		description: siteConfig.description,
 		type: "website",
-		images: [{ url: "/opengraph-image.png", alt: "Edge Esmeralda" }],
+		images: [{ url: "/opengraph-image.png", alt: "GainForest.Earth" }],
 	},
 	twitter: {
 		card: "summary_large_image",
 		site: "@edge-esmeralda",
-		title: { default: "Edge Esmeralda", template: "%s | Edge Esmeralda" },
+		title: { default: "Nature Project", template: "%s | GainForest.Earth" },
 		description: siteConfig.description,
-		images: [{ url: "/opengraph-image.png", alt: "Edge Esmeralda" }],
+		images: [{ url: "/opengraph-image.png", alt: "GainForest.Earth" }],
 	},
 };
 

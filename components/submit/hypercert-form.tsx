@@ -111,7 +111,7 @@ type MintingFormValues = z.infer<typeof HypercertMintSchema>;
 
 const HypercertForm = () => {
 	const imageRef = useRef<HTMLDivElement | null>(null);
-	const [badges, setBadges] = useState(["Edge Esmeralda", "Edge City"]);
+	const [badges, setBadges] = useState(["GainForest.Earth", "Hyperforest"]);
 	const [openMintDialog, setOpenMintDialog] = useState(false);
 	const [geoJSONFile, setGeoJSONFile] = useState<File | null>(null);
 	const {
@@ -157,9 +157,9 @@ const HypercertForm = () => {
 				.split(",")
 				.map((tag) => tag.trim())
 				.filter((tag) => tag !== "");
-			setBadges(["Edge Esmeralda", "Edge City", ...tagArray]);
+			setBadges(["GainForest.Earth", "Hyperforest", ...tagArray]);
 		} else {
-			setBadges(["Edge Esmeralda", "Edge City"]);
+			setBadges(["GainForest.Earth", "Hyperforest"]);
 		}
 	}, [tags]);
 
@@ -262,7 +262,7 @@ const HypercertForm = () => {
 											<FormLabel>Hypercert Name</FormLabel>
 											<FormControl>
 												<Input
-													placeholder="Edge Esmeralda Hypercert"
+													placeholder="GainForest.Earth Hypercert"
 													{...field}
 												/>
 											</FormControl>

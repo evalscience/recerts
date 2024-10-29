@@ -12,8 +12,8 @@ interface SiteConfig {
 }
 
 export const siteConfig: SiteConfig = {
-  name: "ForestBase",
-  title: "By GainForest",
+  name: "Hyperforest",
+  title: "By GainForest.Earth",
   description:
     "Fund impactful regenerative projects",
   localeDefault: "en",
@@ -24,7 +24,7 @@ export const siteConfig: SiteConfig = {
   },
   footerLinks: [
     { title: "GitHub", url: "https://github.com/GainForest/hypercerts-platform.git" },
-    { title: "X (Twitter)", url: "https://twitter.com/GainForestNow" },
+    { title: "Twitter", url: "https://twitter.com/GainForestNow" },
     { title: "Impact Report", url: "https://www.canva.com/design/DAGNpwdK0jo/QkBOQ1gfl0gy8jDTBAo10g/view?utm_content=DAGNpwdK0jo&utm_campaign=designshare&utm_medium=link&utm_source=editor" },
   ]
 };

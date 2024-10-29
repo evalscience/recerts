@@ -120,19 +120,19 @@ const HypercertMintDialog = ({
 						{googleSheetsStatus === "idle" && (
 							<>
 								<Badge className="h-5 w-5" />
-								<p>Waiting to send to Edge Esmeralda for approval...</p>
+								<p>Waiting to send to GainForest.Earth for approval...</p>
 							</>
 						)}
 						{googleSheetsStatus === "pending" && (
 							<>
 								<Loader className="h-5 w-5 animate-spin" />
-								<p>Sending to Edge Esmeralda team...</p>
+								<p>Sending to GainForest.Earth team...</p>
 							</>
 						)}
 						{googleSheetsStatus === "success" && (
 							<>
 								<BadgeCheck className="h-5 w-5" />
-								<p className="">Sent to Edge Esmeralda team!</p>
+								<p className="">Sent to GainForest.Earth team!</p>
 							</>
 						)}
 						{googleSheetsStatus === "error" && googleSheetsError && (

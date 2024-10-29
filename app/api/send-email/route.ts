@@ -18,13 +18,13 @@ export async function POST(req: Request) {
 		from: process.env.EMAIL_USER,
 		to: "holke@hypercerts.org",
 		cc: "mark@r0wdy.dev",
-		subject: "New Hypercert created for Edge Esmeralda",
-		text: `A new hypercert has been created for Edge Esmeralda!
+		subject: "New Hypercert created for GainForest.Earth",
+		text: `A new hypercert has been created for GainForest.Earth!
 		Hypercert ID: ${hypercertId}
 		Contact Info: ${contactInfo}
 		 Please review the hypercert and move it to approved in the google sheet.`,
 		html: `<div>
-						<h1>A new hypercert has been created for Edge Esmeralda!</h1>
+						<h1>A new hypercert has been created for GainForest.Earth!</h1>
 						<p>Hypercert ID: ${hypercertId}</p>
 						<p>Contact Info: ${contactInfo}</p>
 		 				<p>Please review the hypercert and move it to approved in the google sheet.</p>
@@ -39,7 +39,7 @@ export async function POST(req: Request) {
       </head>
       <body>
         <h1>Hello!</h1>
-        <p>A new hypercert has been created for Edge Esmeralda!</p>
+        <p>A new hypercert has been created for GainForest.Earth!</p>
         <p>Here's the link to your hypercert: <a href="#">Link to hypercert here</a></p>
         <p>If you have any questions or concerns, please don't hesitate to reach out to us.</p>
         <p>Best regards,</p>

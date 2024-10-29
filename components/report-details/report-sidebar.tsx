@@ -143,7 +143,7 @@ const EvaluationDetails = () => {
 	const verifiedData = [
 		{
 			title: "Verified By",
-			value: "Edge City core team",
+			value: "GainForest.Earth",
 			// value: report.verifiedBy || "Not Verified",
 		},
 	];
