@@ -62,9 +62,7 @@ const HypercertCard = forwardRef<HTMLDivElement, HypercertCardProps>(
 				<header className="relative flex h-[135px] w-full items-center justify-center overflow-clip rounded-b-xl">
 					{banner ? (
 						<Image
-							src={
-								"https://gainforest-transparency-dashboard.s3.amazonaws.com/project-splash/oceanus-conservation.jpg"
-							}
+							src={`https://cors-proxy.hypercerts.workers.dev/?url=${banner}`}
 							alt={`${title} banner`}
 							className="object-cover object-center"
 							fill
