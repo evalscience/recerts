@@ -1,4 +1,4 @@
-# Kampung
+# Kampung: Fund regenerative impact work
 
 The goal of this hypercerts platform is to enable continuous funding for all of our project partners. Funders will be able to fund any of our partner projects' impact work, and receive a fraction of that hypercert (proportional to the amount that they have funded) in return.
 
@@ -51,7 +51,7 @@ Ethereum Sepolia: The Hypercert Marketplace is currently deployed on Sepolia Tes
 #### Clone the repository
 
 ```bash
-  git clone git@github.com:VoiceDeck/app.git
+  git clone git@github.com:GainForest/hypercerts-platform.git
 ```
 
 #### Install dependencies
