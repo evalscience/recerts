@@ -1,16 +1,17 @@
-# Edge Esmeralda
+# Kampung
 
-Edge Esmeralda is a platform that allows users to contribute retroactive funding for impactful of events at Edge Esmeralda. Donors receive fractional shares of a [HyperCert](https://hypercerts.org/) representing the impact of the reporting they've supported.
+The goal of this hypercerts platform is to enable continuous funding for all of our project partners. Funders will be able to fund any of our partner projects' impact work, and receive a fraction of that hypercert (proportional to the amount that they have funded) in return.
 
-## Features
+The (beta) app is accessible on hypercerts-platform.vercel.app.
 
-### Within the Edge Esmeralda app, users can
+Partner projects define their work scope, cost and timeline, and funders anywhere in the world can fund this project at any time.
 
-- Search reports by category, state, progress
-- Examine report details, impact assessment, funding status
-- Anonymously prove Indian citizenship
-- Contribute funds with embedded crypto wallet
-- Track personal contribution activity and metrics
+This platform will have impact metric integrations from various sources, including but not limited to:
+
+- The green globe to show geospatial and environmental metrics
+- Metrics garden for impact reviews.
+- Karma.gap for milestones
+- The projects themselves for any additional data that they want to add.
 
 ## Tech Stack
 
