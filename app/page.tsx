@@ -27,7 +27,7 @@ export default async function Home() {
             <section className="flex w-full flex-col items-center gap-4 pt-6 pb-24 md:pb-6">
               <Loader2 className="animate-spin text-primary" size={40} />
               <span className="text-muted-foreground">
-                Loading hypercerts...
+                Please wait while we load hypercerts...
               </span>
             </section>
           }
