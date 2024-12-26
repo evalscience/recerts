@@ -15,6 +15,6 @@ export const hypercert = `
             pricePerPercentInUSD
           }
         }
-        hypercertId
+        hypercert_id
     }
 `;

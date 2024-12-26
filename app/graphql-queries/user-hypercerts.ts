@@ -54,7 +54,7 @@ export const fetchHypercertsByUserId = async (
       : undefined;
 
     return {
-      hypercertId: hypercert.hypercertId as string,
+      hypercertId: hypercert.hypercert_id as string,
       chainId: (hypercert.contract?.chain_id as string) ?? undefined,
       name: hypercert.metadata?.name ?? undefined,
       description: hypercert.metadata?.description ?? undefined,

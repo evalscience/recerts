@@ -28,11 +28,11 @@ export default async function ProfilePage({
 }: {
   params: { address: Address };
 }) {
-  const DUMMY_ADDRESS = address;
+  // const DUMMY_ADDRESS = "0x223c656ed35bfb7a8e358140ca1e2077be090b2e";
   const [hypercertsError, userHypercerts] = await catchError<
     UserHypercerts,
     ApiError
-  >(fetchHypercertsByUserId(DUMMY_ADDRESS));
+  >(fetchHypercertsByUserId(address));
   if (hypercertsError) {
     return (
       <PageError
@@ -45,7 +45,7 @@ export default async function ProfilePage({
   const [fractionsError, ownedFractions] = await catchError<
     OwnedFractions,
     ApiError
-  >(fetchFractionsByOwnerId(DUMMY_ADDRESS));
+  >(fetchFractionsByOwnerId(address));
   if (fractionsError) {
     return (
       <PageError
