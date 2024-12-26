@@ -1,5 +1,4 @@
 import type { Config } from "tailwindcss";
-const { fontFamily } = require("tailwindcss/defaultTheme");
 
 const config = {
   darkMode: ["class"],
@@ -19,9 +18,6 @@ const config = {
       },
     },
     extend: {
-      fontFamily: {
-        sans: ["Plus Jakarta Sans Variable", ...fontFamily.sans],
-      },
       colors: {
         "vd-beige": {
           600: "rgb(var(--vd-beige-600) / <alpha-value>)",

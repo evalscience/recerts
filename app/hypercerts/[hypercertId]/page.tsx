@@ -1,112 +1,90 @@
-import Image from "next/image";
-import Link from "next/link";
-
-import MapRenderer from "@/components/map-renderer";
-import BuyFraction from "@/components/marketplace/buy-fraction";
-import ReportSidebar, {
-	type SidebarData,
-} from "@/components/report-details/report-sidebar";
-import { Separator } from "@/components/ui/separator";
-import { getHypercertByHypercertId } from "@/hypercerts/getHypercertByHypercertId";
+import PageError from "@/app/components/PageError";
+import Progress from "@/app/components/progress";
+import {
+  fetchFullHypercertById,
+  FullHypercert,
+} from "@/app/graphql-queries/hypercerts";
+import { catchError } from "@/app/utils";
+import { Button } from "@/components/ui/button";
+import { ApiError } from "@/types/api";
 import { ChevronLeft } from "lucide-react";
-import { Suspense } from "react";
+import Link from "next/link";
+import React from "react";
+import CreatorAddress from "./components/creator-address";
+import FundingProgressView from "./components/funding-progress-view";
+import { Separator } from "@/components/ui/separator";
+import LeftContent from "./components/left-content";
+import RightContent from "./components/right-content";
+import { bigintToFormattedDate } from "@/lib/utils";
+import { MotionWrapper } from "@/components/ui/motion-wrapper";
 
-interface ReportPageProps {
-	params: { hypercertId: string };
-}
+type PageProps = {
+  params: { hypercertId: string };
+};
 
-export default async function ReportPage({ params }: ReportPageProps) {
-	const { hypercertId } = params;
-	const hypercertData = await getHypercertByHypercertId(hypercertId);
+const Page = async ({ params }: PageProps) => {
+  const { hypercertId } = params;
+  const [error, hypercert] = await catchError<FullHypercert, ApiError>(
+    fetchFullHypercertById(hypercertId)
+  );
 
-	if (hypercertData instanceof Error) {
-		return <div>No hypercert found</div>;
-	}
+  if (error) {
+    return (
+      <PageError
+        title="We couldn't load the hypercert data."
+        body="Please try refreshing the page or check the URL."
+      />
+    );
+  }
 
-	if (!hypercertData || !hypercertData.metadata) {
-		return <div>No hypercert data found</div>;
-	}
+  return (
+    <MotionWrapper
+      type="main"
+      className="flex flex-col items-center justify-start w-full"
+      initial={{ opacity: 0, filter: "blur(10px)" }}
+      animate={{ opacity: 1, filter: "blur(0px)" }}
+      transition={{ duration: 0.5 }}
+    >
+      <div className="w-full max-w-6xl p-8 flex flex-col gap-2">
+        <Link href={"/"}>
+          <Button variant={"link"} className="gap-2 p-0">
+            <ChevronLeft size={20} /> View all hypercerts
+          </Button>
+        </Link>
+        <div className="flex flex-col md:flex-row justify-start md:justify-between gap-4">
+          <div className="flex flex-col gap-2">
+            <h1 className="font-bold text-4xl">
+              {hypercert.name ?? "Untitled"}
+            </h1>
+            <div className="text-muted-foreground text-sm inline-flex items-center flex-wrap">
+              <span className="mr-1">Created by</span>{" "}
+              <CreatorAddress address={hypercert.creatorAddress} />{" "}
+              <span className="mx-1">on</span>{" "}
+              {bigintToFormattedDate(hypercert.creationBlockTimestamp)}
+            </div>
+            <ul className="flex items-center gap-2 flex-wrap mt-2">
+              {hypercert.work.scope?.map((scope, i) => (
+                <li
+                  key={i}
+                  className="bg-muted text-foreground/80 py-1 px-3 rounded-full"
+                >
+                  {scope}
+                </li>
+              ))}
+            </ul>
+          </div>
+          <FundingProgressView hypercert={hypercert} />
+        </div>
+        <div className="w-full hidden md:block md:mt-4">
+          <Separator />
+        </div>
+        <section className="flex flex-col md:flex-row items-start mt-4 gap-4 md:gap-8">
+          <LeftContent hypercert={hypercert} />
+          <RightContent hypercert={hypercert} />
+        </section>
+      </div>
+    </MotionWrapper>
+  );
+};
 
-	console.log("report", hypercertData);
-
-	return (
-		<main className="flex h-svh flex-col justify-between pt-6 md:h-fit md:px-12">
-			{/* 192px is added to account for the funding progress on mobile */}
-			<div className="flex flex-col gap-3 space-y-2 p-4 pb-[256px] md:mx-auto md:max-w-[1200px] md:pb-8">
-				{!hypercertData.metadata ? (
-					<section className="flex flex-1 flex-col gap-4">
-						<Link href={"/"} className="group flex items-center space-x-1">
-							<ChevronLeft
-								size={24}
-								className="group-hover:-translate-x-2 text-vd-blue-400 transition-transform duration-300 ease-in-out"
-							/>
-							<p className="font-semibold text-sm text-vd-blue-500 uppercase tracking-wider">
-								All contributions
-							</p>
-						</Link>
-					</section>
-				) : (
-					<>
-						<section className="flex flex-1 flex-col gap-4">
-							<Link href={"/"} className="group flex items-center space-x-1">
-								<ChevronLeft
-									size={24}
-									className="group-hover:-translate-x-2 text-vd-blue-400 transition-transform duration-300 ease-in-out"
-								/>
-								<p className="font-semibold text-sm text-vd-blue-500 uppercase tracking-wider">
-									All contributions
-								</p>
-							</Link>
-
-							<h1 className="font-bold text-3xl tracking-tight md:text-4xl">
-								{hypercertData.metadata.name}
-							</h1>
-						</section>
-						<section className="flex flex-col gap-2 pt-2 md:flex-row md:gap-12">
-							<section className="flex flex-col gap-4">
-								{hypercertData.metadata.image && (
-									<div className="h-[300px] min-w-[300px] lg:h-[350px] lg:min-w-[500px]">
-										<div className="relative h-full w-full overflow-hidden rounded-lg border border-slate-800 bg-black">
-											<Image
-												src={hypercertData.metadata.image}
-												alt="Report illustration"
-												className="object-contain object-top p-2"
-												fill
-											/>
-										</div>
-									</div>
-								)}
-								<div>
-									<h3 className="pb-3 font-bold text-2xl">Description</h3>
-									<p className="text-wrap leading-relaxed">
-										{hypercertData.metadata.description}
-									</p>
-								</div>
-								<Suspense fallback={<div>Loading...</div>}>
-									<BuyFraction hypercertId={hypercertId} />
-								</Suspense>
-							</section>
-							{hypercertData.metadata && (
-								<div>
-									<Separator className="my-6 block bg-stone-300 md:my-0 md:hidden" />
-									<ReportSidebar
-										metadata={hypercertData.metadata as SidebarData}
-										hypercert_id={hypercertId}
-										uri={hypercertData.uri ?? undefined}
-									/>
-								</div>
-							)}
-						</section>
-					</>
-				)}
-				{/* {contributions && (
-					<div>
-						<Separator className="my-6 block bg-stone-300 md:hidden" />
-						<ReportSupportFeed contributions={contributions} />
-					</div>
-				)}
-					*/}
-			</div>
-		</main>
-	);
-}
+export default Page;
