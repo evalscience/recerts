@@ -1,8 +1,8 @@
-import type { Hypercert } from "@/app/profile/[address]/page";
 import EmptyHistory from "@/assets/history-bg.svg";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
 import { HistoryCard } from "./fraction-card";
 import { Fraction } from "@/app/graphql-queries/user-fractions";
+import { Hypercert } from "@/app/graphql-queries/hypercerts";
 
 // TODO: Replace mockData with actual data from the API,
 const History = ({
