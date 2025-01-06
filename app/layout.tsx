@@ -1,8 +1,8 @@
 import { cn } from "@/lib/utils";
+import { GeistSans } from "geist/font/sans";
 import type { Metadata } from "next";
 import "vaul/dist/index.css";
 import "./globals.css";
-import { GeistSans } from "geist/font/sans";
 
 import { cookieToInitialState } from "wagmi";
 
@@ -15,62 +15,62 @@ import { headers } from "next/headers";
 import Script from "next/script";
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://app.voicedeck.org/"),
-  title: { default: siteConfig.name, template: "%s | GainForest.Earth" },
-  description: siteConfig.description,
-  icons: [
-    {
-      rel: "icon",
-      type: "image/x-icon",
-      url: "/favicon.ico",
-      media: "(prefers-color-scheme: light)",
-    },
-    {
-      rel: "icon",
-      type: "image/png",
-      url: "/favicon-dark.ico",
-      media: "(prefers-color-scheme: dark)",
-    },
-  ],
-  openGraph: {
-    title: { default: "Nature Project", template: "%s | GainForest.Earth" },
-    description: siteConfig.description,
-    type: "website",
-    images: [{ url: "/opengraph-image.png", alt: "GainForest.Earth" }],
-  },
-  twitter: {
-    card: "summary_large_image",
-    site: "@edge-esmeralda",
-    title: { default: "Nature Project", template: "%s | GainForest.Earth" },
-    description: siteConfig.description,
-    images: [{ url: "/opengraph-image.png", alt: "GainForest.Earth" }],
-  },
+	metadataBase: new URL("https://app.voicedeck.org/"),
+	title: { default: siteConfig.name, template: "%s | GainForest.Earth" },
+	description: siteConfig.description,
+	icons: [
+		{
+			rel: "icon",
+			type: "image/x-icon",
+			url: "/favicon.ico",
+			media: "(prefers-color-scheme: light)",
+		},
+		{
+			rel: "icon",
+			type: "image/png",
+			url: "/favicon-dark.ico",
+			media: "(prefers-color-scheme: dark)",
+		},
+	],
+	openGraph: {
+		title: { default: "Nature Project", template: "%s | GainForest.Earth" },
+		description: siteConfig.description,
+		type: "website",
+		images: [{ url: "/opengraph-image.png", alt: "GainForest.Earth" }],
+	},
+	twitter: {
+		card: "summary_large_image",
+		site: "@edge-esmeralda",
+		title: { default: "Nature Project", template: "%s | GainForest.Earth" },
+		description: siteConfig.description,
+		images: [{ url: "/opengraph-image.png", alt: "GainForest.Earth" }],
+	},
 };
 
 export default function RootLayout({
-  children,
+	children,
 }: Readonly<{
-  children: React.ReactNode;
+	children: React.ReactNode;
 }>) {
-  const initialState = cookieToInitialState(config, headers().get("cookie"));
-  return (
-    <html lang="en">
-      <body
-        className={cn(
-          `flex min-h-screen flex-col bg-background font-sans ${GeistSans.className} antialiased`
-        )}
-      >
-        <WagmiContextProvider initialState={initialState}>
-          <NavMenu />
-          <div className="flex-1">{children}</div>
-          <Footer />
-        </WagmiContextProvider>
-        <Script
-          id="matomo-tracking"
-          strategy="afterInteractive"
-          // biome-ignore lint/security/noDangerouslySetInnerHtml: <explanation>
-          dangerouslySetInnerHTML={{
-            __html: `
+	const initialState = cookieToInitialState(config, headers().get("cookie"));
+	return (
+		<html lang="en">
+			<body
+				className={cn(
+					`flex min-h-screen flex-col bg-background font-sans${GeistSans.className}antialiased`,
+				)}
+			>
+				<WagmiContextProvider initialState={initialState}>
+					<NavMenu />
+					<div className="flex-1">{children}</div>
+					<Footer />
+				</WagmiContextProvider>
+				<Script
+					id="matomo-tracking"
+					strategy="afterInteractive"
+					// biome-ignore lint/security/noDangerouslySetInnerHtml: <explanation>
+					dangerouslySetInnerHTML={{
+						__html: `
 							var _paq = window._paq = window._paq || [];
 							_paq.push(['trackPageView']);
 							_paq.push(['enableLinkTracking']);
@@ -83,9 +83,9 @@ export default function RootLayout({
 								s.parentNode.insertBefore(g,s);
 							})();
 						`,
-          }}
-        />
-      </body>
-    </html>
-  );
+					}}
+				/>
+			</body>
+		</html>
+	);
 }
