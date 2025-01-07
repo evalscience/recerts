@@ -24,7 +24,7 @@ export const NavLink = ({
 			className={cn(
 				buttonVariants({ variant: "ghost" }),
 				"rounded-md font-semibold",
-				isActive ?? "bg-vd-beige-300 dark:bg-vd-beige-100",
+				isActive ? "bg-beige" : "",
 				className || "",
 			)}
 		>
@@ -40,15 +40,15 @@ const NavLinks = () => {
 	return (
 		<ul className="hidden gap-1 md:flex">
 			<li>
-				<NavLink href="/" isActive={isActive("/reports")}>
-					Browse
+				<NavLink href="/" isActive={pathname === "/"}>
+					Home
 				</NavLink>
 			</li>
-			<li>
+			{/* <li>
 				<NavLink href="/submit" isActive={isActive("/submit")}>
 					Submit
 				</NavLink>
-			</li>
+			</li> */}
 			<li>
 				<a
 					href="https://testnet.hypercerts.org/docs/intro"

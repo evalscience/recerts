@@ -1,6 +1,7 @@
 import { cn } from "@/lib/utils";
 import { GeistSans } from "geist/font/sans";
 import type { Metadata } from "next";
+import localFont from "next/font/local";
 import "vaul/dist/index.css";
 import "./globals.css";
 
@@ -13,6 +14,42 @@ import { config } from "@/config/wagmi";
 import { WagmiContextProvider } from "@/contexts/wagmi";
 import { headers } from "next/headers";
 import Script from "next/script";
+
+const baskerville = localFont({
+	src: [
+		{
+			path: "./fonts/BaskervilleDisplayPT/Regular.otf",
+			weight: "400",
+			style: "normal",
+		},
+		{
+			path: "./fonts/BaskervilleDisplayPT/Italic.otf",
+			weight: "400",
+			style: "italic",
+		},
+		{
+			path: "./fonts/BaskervilleDisplayPT/Medium.otf",
+			weight: "500",
+			style: "normal",
+		},
+		{
+			path: "./fonts/BaskervilleDisplayPT/MediumItalic.otf",
+			weight: "500",
+			style: "italic",
+		},
+		{
+			path: "./fonts/BaskervilleDisplayPT/Bold.otf",
+			weight: "700",
+			style: "normal",
+		},
+		{
+			path: "./fonts/BaskervilleDisplayPT/BoldItalic.otf",
+			weight: "700",
+			style: "italic",
+		},
+	],
+	variable: "--font-baskerville",
+});
 
 export const metadata: Metadata = {
 	metadataBase: new URL("https://app.voicedeck.org/"),
@@ -57,7 +94,9 @@ export default function RootLayout({
 		<html lang="en">
 			<body
 				className={cn(
-					`flex min-h-screen flex-col bg-background font-sans${GeistSans.className}antialiased`,
+					"flex min-h-screen flex-col font-sans antialiased",
+					baskerville.variable,
+					GeistSans.className,
 				)}
 			>
 				<WagmiContextProvider initialState={initialState}>

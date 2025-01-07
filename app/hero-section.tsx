@@ -12,7 +12,7 @@ const HeroSection = () => {
 	const [cardCount, setCardCount] = useState(6);
 	const cardWidth = totalWidth / cardCount;
 
-	const cardKeys = useMemo(() => new Array(cardCount).fill(0), [cardCount]);
+	const cardKeys = useMemo(() => [...Array(cardCount).keys()], [cardCount]);
 
 	const thisRef = useRef<HTMLElement>(null);
 	const [xPercentage, setXPercentage] = useState<number | undefined>(undefined);

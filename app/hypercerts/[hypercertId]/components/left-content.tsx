@@ -14,11 +14,15 @@ const LeftContent = ({ hypercert }: { hypercert: FullHypercert }) => {
 				</div>
 			)}
 			<section className="flex w-full flex-col">
-				<h2 className="font-bold text-muted-foreground text-xl">Description</h2>
+				<h2 className="font-baskerville font-bold text-muted-foreground text-xl">
+					Description
+				</h2>
 				<p>{hypercert.description}</p>
 			</section>
 			<section className="flex w-full flex-col gap-2">
-				<h2 className="font-bold text-muted-foreground text-xl">Support</h2>
+				<h2 className="font-baskerville font-bold text-muted-foreground text-xl">
+					Support
+				</h2>
 				<Support hypercert={hypercert} />
 			</section>
 		</div>

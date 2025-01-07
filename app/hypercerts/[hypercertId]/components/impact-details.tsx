@@ -14,7 +14,7 @@ import React from "react";
 
 const ImpactDetails = ({ hypercert }: { hypercert: FullHypercert }) => {
 	return (
-		<div className="rounded-xl border border-border p-4">
+		<div className="rounded-xl border border-border bg-background p-4">
 			{/* <span className="font-bold text-muted-foreground text-sm">Scope</span>
       <ul className="flex items-center gap-2 flex-wrap mb-6">
         {hypercert.work.scope?.map((scope, i) => (

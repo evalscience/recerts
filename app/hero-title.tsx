@@ -18,9 +18,9 @@ const HeroTitleVariants = {
 
 const HeroTitle = () => {
 	return (
-		<h2 className="relative flex flex-col items-center gap-2 px-4 py-6 text-center font-bold text-4xl text-foreground/50 leading-none">
+		<h2 className="relative flex flex-col items-center gap-2 px-4 py-6 text-center font-baskerville font-bold text-5xl text-foreground/80 leading-none">
 			<motion.div
-				className="absolute top-[50%] left-[50%] aspect-square h-20 translate-x-[-50%] translate-y-[-50%] rounded-full bg-green-500 opacity-80 blur-3xl"
+				className="absolute top-[50%] left-[50%] aspect-square h-20 translate-x-[-50%] translate-y-[-50%] rounded-full bg-green-500 blur-3xl"
 				initial={{ opacity: 0, scale: 0.6 }}
 				animate={{ opacity: 1, scale: 1.5 }}
 				transition={{ duration: 3 }}
@@ -43,7 +43,7 @@ const HeroTitle = () => {
 					duration: 0.5,
 					delay: 0.2,
 				}}
-				className="inline-block bg-gradient-to-b from-green-400 to-green-700 bg-clip-text font-black text-6xl text-transparent"
+				className="inline-block bg-gradient-to-b from-green-400 to-green-700 bg-clip-text px-4 py-1 font-black text-6xl text-transparent italic"
 			>
 				impactful
 			</motion.span>

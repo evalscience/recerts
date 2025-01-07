@@ -1,4 +1,5 @@
 import { Input } from "@/components/ui/input";
+import { cn } from "@/lib/utils";
 import { AnimatePresence, motion } from "framer-motion";
 import { Search as SearchIcon } from "lucide-react";
 import type React from "react";
@@ -36,9 +37,10 @@ const Search = ({
 				<Input
 					type="text"
 					placeholder="Search reports by title or summary"
-					className={`h-16 w-full bg-background/50 px-4 text-lg shadow-lg${
-						input === "" ? "pl-12" : ""
-					}`}
+					className={cn(
+						"h-16 w-full bg-background/50 px-4 text-lg shadow-lg",
+						input === "" ? "pl-12" : "",
+					)}
 					value={input}
 					onChange={(e) => setInput(e.target.value)}
 				/>

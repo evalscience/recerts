@@ -2,6 +2,7 @@ import type { Hypercert } from "@/app/graphql-queries/hypercerts";
 import { Button } from "@/components/ui/button";
 import { calculateBigIntPercentage } from "@/lib/calculateBigIntPercentage";
 import { type SupportedChainIdType, supportedChains } from "@/lib/constants";
+import { cn } from "@/lib/utils";
 import { ArrowRight } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -52,9 +53,12 @@ const Card = ({ hypercert }: { hypercert: Hypercert }) => {
 					}}
 				>
 					<p
-						className={`line-clamp-2 h-12 flex-1 text-ellipsis font-semibold${
-							name ? "text-foreground" : "text-muted-foreground"
-						}`}
+						className={cn(
+							"line-clamp-2 h-12 flex-1 text-ellipsis font-semibold",
+							name
+								? "font-baskerville text-foreground"
+								: "text-muted-foreground",
+						)}
 					>
 						{name ?? "[Untitled]"}
 					</p>

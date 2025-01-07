@@ -41,9 +41,10 @@ function HypercertCard({ hypercert }: { hypercert: Hypercert }) {
 				}}
 			>
 				<p
-					className={`line-clamp-2 max-h-12 flex-1 text-ellipsis font-semibold${
-						name ? "text-foreground" : "text-muted-foreground"
-					}`}
+					className={cn(
+						"line-clamp-2 max-h-12 flex-1 text-ellipsis font-semibold",
+						name ? "font-baskerville text-foreground" : "text-muted-foreground",
+					)}
 				>
 					{name ?? "[Untitled]"}
 				</p>

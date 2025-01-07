@@ -53,7 +53,7 @@ const Page = async ({ params }: PageProps) => {
 				</Link>
 				<div className="flex flex-col justify-start gap-4 md:flex-row md:justify-between">
 					<div className="flex flex-col gap-2">
-						<h1 className="font-bold text-4xl">
+						<h1 className="font-baskerville font-bold text-4xl">
 							{hypercert.name ?? "Untitled"}
 						</h1>
 						<div className="inline-flex flex-wrap items-center text-muted-foreground text-sm">
