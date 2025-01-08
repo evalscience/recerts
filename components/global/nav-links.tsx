@@ -44,11 +44,6 @@ const NavLinks = () => {
 					Home
 				</NavLink>
 			</li>
-			{/* <li>
-				<NavLink href="/submit" isActive={isActive("/submit")}>
-					Submit
-				</NavLink>
-			</li> */}
 			<li>
 				<a
 					href="https://testnet.hypercerts.org/docs/intro"
