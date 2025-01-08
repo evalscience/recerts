@@ -3,9 +3,9 @@ import "server-only";
 import { HypercertExchangeClient } from "@hypercerts-org/marketplace-sdk";
 import { sepolia } from "viem/chains";
 
-import type { Order, Report } from "@/types";
 import { useEthersProvider } from "@/hooks/use-ethers-provider";
 import { useEthersSigner } from "@/hooks/use-ethers-signer";
+import type { Order, Report } from "@/types";
 
 let orders: (Order | null)[] | null = null;
 

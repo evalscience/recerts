@@ -21,10 +21,10 @@ const Slider = React.forwardRef<
 			<SliderPrimitive.Track className="relative h-2 w-full grow overflow-hidden rounded-full bg-vd-blue-200 dark:bg-stone-800">
 				<SliderPrimitive.Range className="absolute h-full bg-vd-blue-900 dark:bg-stone-50" />
 			</SliderPrimitive.Track>
-			<SliderPrimitive.Thumb className="relative block h-5 w-5 rounded-full border-2 border-vd-blue-900 bg-white ring-offset-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-stone-950 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 dark:border-stone-50 dark:bg-stone-950 dark:ring-offset-stone-950 dark:focus-visible:ring-stone-300">
-				<p className="absolute -left-3 pt-6 text-[10px]">${values[0]}</p>
+			<SliderPrimitive.Thumb className="relative block h-5 w-5 rounded-full border-2 border-vd-blue-900 bg-white ring-offset-white transition-colors disabled:pointer-events-none dark:border-stone-50 dark:bg-stone-950 disabled:opacity-50 focus-visible:outline-none dark:focus-visible:ring-stone-300 focus-visible:ring-2 focus-visible:ring-stone-950 dark:ring-offset-stone-950 focus-visible:ring-offset-2">
+				<p className="-left-3 absolute pt-6 text-[10px]">${values[0]}</p>
 			</SliderPrimitive.Thumb>
-			<SliderPrimitive.Thumb className="block h-5 w-5 rounded-full border-2 border-vd-blue-900 bg-white ring-offset-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-stone-950 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 dark:border-stone-50 dark:bg-stone-950 dark:ring-offset-stone-950 dark:focus-visible:ring-stone-300">
+			<SliderPrimitive.Thumb className="block h-5 w-5 rounded-full border-2 border-vd-blue-900 bg-white ring-offset-white transition-colors disabled:pointer-events-none dark:border-stone-50 dark:bg-stone-950 disabled:opacity-50 focus-visible:outline-none dark:focus-visible:ring-stone-300 focus-visible:ring-2 focus-visible:ring-stone-950 dark:ring-offset-stone-950 focus-visible:ring-offset-2">
 				<p className="absolute left-2 pt-6 text-[10px]">${values[1]}</p>
 			</SliderPrimitive.Thumb>
 		</SliderPrimitive.Root>

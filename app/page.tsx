@@ -1,9 +1,9 @@
 import { MotionWrapper } from "@/components/ui/motion-wrapper";
 import { Loader2 } from "lucide-react";
 import { Suspense } from "react";
+import HeroSection from "./components/hero-section";
+import HeroTitle from "./components/hero-title";
 import { HypercertsGridWrapper } from "./components/hypercerts-grid-view";
-import HeroSection from "./hero-section";
-import HeroTitle from "./hero-title";
 
 export default async function Home() {
 	return (

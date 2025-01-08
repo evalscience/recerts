@@ -7,13 +7,13 @@ import { cn } from "@/lib/utils";
 
 const VerifiedCitizen = () => {
 	return (
-		<section className="flex flex-col gap-4 max-w-lg">
-			<h2 className="text-xl md:text-2xl font-semibold md:py-2">
+		<section className="flex max-w-lg flex-col gap-4">
+			<h2 className="font-semibold text-xl md:py-2 md:text-2xl">
 				Citizen Verification
 			</h2>
-			<Card className="bg-vd-blue-200 rounded-md flex-1 shadow-none border-none">
+			<Card className="flex-1 rounded-md border-none bg-vd-blue-200 shadow-none">
 				<CardHeader>
-					<CardTitle className={cn("flex gap-1 items-center pb-0")}>
+					<CardTitle className={cn("flex items-center gap-1 pb-0")}>
 						<HelpCircleIcon size={16} strokeWidth={2} />
 						Why does this matter?
 					</CardTitle>

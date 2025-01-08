@@ -17,7 +17,7 @@ function HypercertCard({ hypercert }: { hypercert: Hypercert }) {
 		<article className="group relative flex flex-col overflow-hidden rounded-2xl border border-border">
 			<div className="relative flex h-[200px] w-full items-start justify-center overflow-hidden rounded-t-2xl bg-muted p-4">
 				<Image
-					// src={`/api/hypercerts/${hypercert_id}/image`}
+					// src={`/api/hypercert/${hypercert_id}/image`}
 					src={image ?? ""}
 					alt={name ?? "Untitled"}
 					height={200}
@@ -26,7 +26,7 @@ function HypercertCard({ hypercert }: { hypercert: Hypercert }) {
 				/>
 				{hypercertId !== undefined && (
 					<div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100">
-						<Link href={`/hypercerts/${hypercertId}`} target="_blank" passHref>
+						<Link href={`/hypercert/${hypercertId}`} target="_blank" passHref>
 							<Button variant={"secondary"} className="gap-2">
 								View Hypercert <ArrowUpRight size={20} />
 							</Button>

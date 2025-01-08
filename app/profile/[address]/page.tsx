@@ -5,7 +5,7 @@ import type { Address } from "viem";
 
 import { cn, isNotNull } from "@/lib/utils";
 
-import PageError from "@/app/components/PageError";
+import PageError from "@/app/components/shared/PageError";
 import {
 	type Fraction,
 	type OwnedFractions,
@@ -15,8 +15,8 @@ import {
 	type UserHypercerts,
 	fetchHypercertsByUserId,
 } from "@/app/graphql-queries/user-hypercerts";
+import { SideBar } from "@/app/profile/[address]/components/sidebar";
 import { catchError } from "@/app/utils";
-import { SideBar } from "@/components/profile/sidebar";
 import { buttonVariants } from "@/components/ui/button";
 import { MotionWrapper } from "@/components/ui/motion-wrapper";
 import type { ApiError } from "@/types/api";

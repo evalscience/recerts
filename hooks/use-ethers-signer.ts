@@ -1,7 +1,7 @@
-import { useWalletClient } from "wagmi";
 import { BrowserProvider, JsonRpcSigner } from "ethers";
 import React from "react";
 import type { WalletClient } from "viem";
+import { useWalletClient } from "wagmi";
 
 export function walletClientToSigner(walletClient: WalletClient) {
 	const { account, chain, transport } = walletClient;
