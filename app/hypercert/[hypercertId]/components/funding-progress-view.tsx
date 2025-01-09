@@ -13,8 +13,7 @@ const FundingProgressView = ({ hypercert }: { hypercert: FullHypercert }) => {
 	if (percentCompleted === undefined) return null;
 	if (pricePerPercentInUSD === undefined) return null;
 	return (
-		<div className="relative w-full max-w-full overflow-hidden rounded-xl border border-border bg-accent/20 p-4 md:w-auto md:max-w-md md:flex-1">
-			<div className="-top-16 -left-16 absolute z-0 h-32 w-32 rounded-full bg-primary/50 blur-xl" />
+		<div className="relative w-full max-w-full overflow-hidden rounded-xl border border-border bg-background/50 p-4 md:w-auto md:max-w-md md:flex-1">
 			<div className="relative z-[5] flex items-center justify-between">
 				<div className="flex flex-col items-start">
 					<span className="text-muted-foreground">Reached</span>

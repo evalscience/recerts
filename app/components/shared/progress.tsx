@@ -1,4 +1,5 @@
 "use client";
+import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
 import type React from "react";
 
@@ -9,9 +10,10 @@ const Progress = ({
 	return (
 		<div
 			{...props}
-			className={`h-2 w-full overflow-hidden rounded-full bg-accent${
-				props.className ?? ""
-			}`}
+			className={cn(
+				"h-2 w-full overflow-hidden rounded-full bg-accent",
+				props.className,
+			)}
 		>
 			<motion.div
 				className="h-full bg-primary"

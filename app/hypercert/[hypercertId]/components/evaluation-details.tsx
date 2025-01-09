@@ -3,7 +3,7 @@ import React from "react";
 
 const EvaluationDetails = () => {
 	return (
-		<div className="group overflow-hidden rounded-xl border border-border bg-background p-4">
+		<div className="group overflow-hidden">
 			<div className="relative flex h-28 w-full items-center justify-center">
 				<div className="absolute inset-0 flex items-center justify-center">
 					<div className="h-20 w-20 rounded-full bg-primary/30 blur-lg group-hover:animate-ping" />

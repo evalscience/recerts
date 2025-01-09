@@ -2,13 +2,19 @@
 import EthAddress from "@/components/eth-address";
 import React, { useEffect } from "react";
 
-const CreatorAddress = ({ address }: { address: string }) => {
+const CreatorAddress = ({
+	address,
+	className,
+}: {
+	address: string;
+	className?: string;
+}) => {
 	const [mounted, setMounted] = React.useState(false);
 	useEffect(() => {
 		setMounted(true);
 	}, []);
 	if (!mounted) return address;
-	return <EthAddress address={address} />;
+	return <EthAddress className={className} address={address} />;
 };
 
 export default CreatorAddress;

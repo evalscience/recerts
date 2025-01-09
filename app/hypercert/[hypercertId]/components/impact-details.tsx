@@ -1,20 +1,23 @@
 import type { FullHypercert } from "@/app/graphql-queries/hypercerts";
 import EthAddress from "@/components/eth-address";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { bigintToFormattedDate } from "@/lib/utils";
+import { bigintToFormattedDate, cn } from "@/lib/utils";
+import { blo } from "blo";
 import {
 	ArrowUpRight,
 	Calendar,
 	Clock,
 	HandHeart,
 	UserCircle2,
+	Users2,
 } from "lucide-react";
 import Link from "next/link";
 import React from "react";
 
 const ImpactDetails = ({ hypercert }: { hypercert: FullHypercert }) => {
 	return (
-		<div className="rounded-xl border border-border bg-background p-4">
+		<div className="mt-2 flex flex-col gap-3">
 			{/* <span className="font-bold text-muted-foreground text-sm">Scope</span>
       <ul className="flex items-center gap-2 flex-wrap mb-6">
         {hypercert.work.scope?.map((scope, i) => (
@@ -26,46 +29,63 @@ const ImpactDetails = ({ hypercert }: { hypercert: FullHypercert }) => {
           </li>
         ))}
       </ul> */}
-			<div className="flex items-center gap-2">
-				{hypercert.work.from !== undefined && (
-					<div className="flex flex-1 flex-col items-start gap-2 rounded-lg bg-muted p-4">
-						<div className="flex w-full items-center justify-end gap-2 text-muted-foreground">
-							<span className="text-sm">From</span>
-							<Calendar size={16} />
-						</div>
-						<span className="font-bold text-foreground text-lg">
-							{bigintToFormattedDate(hypercert.work.from)}
-						</span>
-					</div>
-				)}
-				{hypercert.work.to !== undefined && (
-					<div className="flex flex-1 flex-col items-start gap-2 rounded-lg bg-muted p-4">
-						<div className="flex w-full items-center justify-end gap-2 text-muted-foreground">
-							<span className="text-sm">To</span>
-							<Calendar size={16} />
-						</div>
-						<span className="font-bold text-foreground text-lg">
-							{bigintToFormattedDate(hypercert.work.to)}
-						</span>
-					</div>
-				)}
-			</div>
-			<div className="mt-2 flex items-center rounded-lg bg-muted p-2">
-				<div className="flex h-20 w-20 items-center justify-center">
-					<HandHeart size={40} className="text-muted-foreground" />
-				</div>
-				<div className="flex flex-col items-start">
-					<span className="text-muted-foreground text-sm">Contributors</span>
-					<span className="text-foreground">
-						{hypercert.contributors?.map((contributor, i) => (
-							<EthAddress
-								key={contributor.toLowerCase()}
-								address={contributor}
-							/>
-						))}
+			{hypercert.work.from !== undefined && (
+				<div className="flex w-full items-center justify-between rounded-2xl bg-accent p-4 hover:bg-accent/50">
+					<span className="flex items-center justify-center gap-2 text-muted-foreground">
+						<Calendar size={16} /> <span>From</span>
+					</span>
+					<span className="font-bold text-foreground text-lg">
+						{bigintToFormattedDate(hypercert.work.from)}
 					</span>
 				</div>
-			</div>
+			)}
+			{hypercert.work.to !== undefined && (
+				<div className="flex w-full items-center justify-between rounded-2xl bg-accent p-4 hover:bg-accent/50">
+					<span className="flex items-center justify-center gap-2 text-muted-foreground">
+						<Calendar size={16} /> <span>To</span>
+					</span>{" "}
+					<span className="font-bold text-foreground text-lg">
+						{bigintToFormattedDate(hypercert.work.to)}
+					</span>
+				</div>
+			)}
+			{hypercert.work.to !== undefined && (
+				<div className="flex w-full items-center justify-between rounded-2xl bg-accent p-4 hover:bg-accent/50">
+					<span className="flex items-center justify-center gap-2 text-muted-foreground">
+						<Users2 size={16} /> <span>Contributors</span>
+					</span>{" "}
+					<span className="flex items-center justify-center gap-3 font-bold text-foreground">
+						<span className="flex items-center justify-center">
+							{hypercert.contributors?.map((contributor, i) => (
+								<div
+									className={cn(
+										"h-[32px] w-[16px]",
+										i === (hypercert.contributors?.length ?? i) - 1
+											? "w-[32px]"
+											: "",
+									)}
+								>
+									<Avatar
+										key={contributor.toLowerCase()}
+										className="h-[32px] w-[32px] border-border shadow-md"
+									>
+										<AvatarImage
+											src={blo(contributor as `0x${string}`)}
+											height={32}
+											width={32}
+										/>
+										<AvatarFallback>
+											<UserCircle2 size={32} className="text-primary" />
+										</AvatarFallback>
+									</Avatar>
+								</div>
+							))}
+						</span>
+						<span>{hypercert.contributors?.length}</span>
+					</span>
+				</div>
+			)}
+
 			<div className="mt-4 flex flex-wrap items-center gap-4">
 				<Link
 					href={`https://testnet.hypercerts.org/hypercert/${hypercert.hypercertId}`}

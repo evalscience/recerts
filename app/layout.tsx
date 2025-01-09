@@ -1,5 +1,4 @@
 import { cn } from "@/lib/utils";
-import { GeistSans } from "geist/font/sans";
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "vaul/dist/index.css";
@@ -51,6 +50,17 @@ const baskerville = localFont({
 	variable: "--font-baskerville",
 });
 
+const archia = localFont({
+	src: [
+		{
+			path: "./fonts/Archia/Regular.otf",
+			weight: "400",
+			style: "regular",
+		},
+	],
+	variable: "--font-archia",
+});
+
 export const metadata: Metadata = {
 	metadataBase: new URL("https://app.voicedeck.org/"),
 	title: { default: siteConfig.name, template: "%s | GainForest.Earth" },
@@ -94,9 +104,9 @@ export default function RootLayout({
 		<html lang="en">
 			<body
 				className={cn(
-					"flex min-h-screen flex-col font-sans antialiased",
+					"flex min-h-screen flex-col antialiased",
 					baskerville.variable,
-					GeistSans.className,
+					archia.variable,
 				)}
 			>
 				<WagmiContextProvider initialState={initialState}>

@@ -55,7 +55,7 @@ export default function MapRenderer({ uri }: MapRendererProps) {
 	}, [uri]);
 
 	return (
-		<div className="flex aspect-square h-auto min-h-[300px] w-full max-w-[400px] flex-col items-center justify-center gap-2 overflow-hidden rounded-xl border border-border bg-background md:max-w-full">
+		<div className="flex aspect-square h-auto min-h-[300px] w-full max-w-[400px] flex-col items-center justify-center gap-2 overflow-hidden md:max-w-full">
 			{error ? (
 				<>
 					<CircleAlert className="mb-4 text-muted-foreground/75" size={50} />

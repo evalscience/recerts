@@ -15,7 +15,7 @@ const Skeleton = ({
 	return (
 		<div
 			className={cn(
-				"max-w-full animate-pulse rounded-xl bg-muted",
+				"max-w-full animate-pulse rounded-xl bg-beige-muted",
 				className ?? "",
 			)}
 			style={{

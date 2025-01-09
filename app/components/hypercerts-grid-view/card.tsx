@@ -54,7 +54,7 @@ const Card = ({ hypercert }: { hypercert: Hypercert }) => {
 				>
 					<p
 						className={cn(
-							"line-clamp-2 h-12 flex-1 text-ellipsis font-semibold",
+							"line-clamp-2 h-14 flex-1 text-ellipsis font-semibold text-lg leading-3",
 							name
 								? "font-baskerville text-foreground"
 								: "text-muted-foreground",

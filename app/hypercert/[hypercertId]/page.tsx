@@ -53,12 +53,15 @@ const Page = async ({ params }: PageProps) => {
 				</Link>
 				<div className="flex flex-col justify-start gap-4 md:flex-row md:justify-between">
 					<div className="flex flex-col gap-2">
-						<h1 className="font-baskerville font-bold text-4xl">
+						<h1 className="font-baskerville font-bold text-5xl">
 							{hypercert.name ?? "Untitled"}
 						</h1>
 						<div className="inline-flex flex-wrap items-center text-muted-foreground text-sm">
 							<span className="mr-1">Created by</span>{" "}
-							<CreatorAddress address={hypercert.creatorAddress} />{" "}
+							<CreatorAddress
+								className="bg-beige-muted text-beige-muted-foreground"
+								address={hypercert.creatorAddress}
+							/>{" "}
 							<span className="mx-1">on</span>{" "}
 							{bigintToFormattedDate(hypercert.creationBlockTimestamp)}
 						</div>
@@ -66,7 +69,7 @@ const Page = async ({ params }: PageProps) => {
 							{hypercert.work.scope?.map((scope, i) => (
 								<li
 									key={scope.toLowerCase()}
-									className="rounded-full bg-muted px-3 py-1 text-foreground/80"
+									className="rounded-full bg-beige-muted px-3 py-1 text-beige-muted-foreground"
 								>
 									{scope}
 								</li>
@@ -76,7 +79,7 @@ const Page = async ({ params }: PageProps) => {
 					<FundingProgressView hypercert={hypercert} />
 				</div>
 				<div className="hidden w-full md:mt-4 md:block">
-					<Separator />
+					<Separator className="bg-beige-muted-foreground/20" />
 				</div>
 				<section className="mt-4 flex flex-col items-start gap-4 md:flex-row md:gap-8">
 					<LeftContent hypercert={hypercert} />
