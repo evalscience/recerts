@@ -3,61 +3,61 @@ import { twMerge } from "tailwind-merge";
 import type { Address } from "viem";
 
 export function cn(...inputs: ClassValue[]) {
-	return twMerge(clsx(inputs));
+  return twMerge(clsx(inputs));
 }
 
 export function formatDate(d: Date) {
-	const date = new Date(Number(d) * 1000);
-	return date
-		.toLocaleDateString("en-US", {
-			year: "numeric",
-			month: "short", // "Oct"
-			day: "numeric",
-		})
-		.toUpperCase();
+  const date = new Date(Number(d) * 1000);
+  return date
+    .toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "short", // "Oct"
+      day: "numeric",
+    })
+    .toUpperCase();
 }
 
 export const formatCurrency = (value: number, currencyCode = "USD") => {
-	return new Intl.NumberFormat("en-US", {
-		style: "currency",
-		currency: currencyCode,
-		minimumFractionDigits: 2,
-	}).format(value);
+  return new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: currencyCode,
+    minimumFractionDigits: 2,
+  }).format(value);
 };
 
 export const truncateEthereumAddress = (
-	address: `0x${string}`,
-	length = 4,
+  address: `0x${string}`,
+  length = 4
 ): string => {
-	if (!address) {
-		return "";
-	}
-	if (address.length <= 2 + length * 2) {
-		return address;
-	}
-	return `${address.substring(0, length + 2)}...${address.substring(
-		address.length - length,
-	)}`;
+  if (!address) {
+    return "";
+  }
+  if (address.length <= 2 + length * 2) {
+    return address;
+  }
+  return `${address.substring(0, length + 2)}...${address.substring(
+    address.length - length
+  )}`;
 };
 
 export const isNotNull = <T>(value: T | null): value is T => {
-	return value !== null;
+  return value !== null;
 };
 
 export const delay = (ms: number) =>
-	new Promise((resolve) => setTimeout(resolve, ms));
+  new Promise((resolve) => setTimeout(resolve, ms));
 
 export const isValidEthereumAddress = (address: string) =>
-	/^0x[a-fA-F0-9]{40}$/.test(address);
+  /^0x[a-fA-F0-9]{40}$/.test(address);
 
 export const calculateBigIntPercentage = (
-	numerator: bigint | string | null | undefined,
-	denominator: bigint | string | null | undefined,
+  numerator: bigint | string | null | undefined,
+  denominator: bigint | string | null | undefined
 ) => {
-	if (!numerator || !denominator) {
-		return undefined;
-	}
-	return Number((BigInt(numerator) * BigInt(100)) / BigInt(denominator));
+  if (!numerator || !denominator) {
+    return undefined;
+  }
+  return Number((BigInt(numerator) * BigInt(100)) / BigInt(denominator));
 };
 
 export function typeCastApiResponseToBigInt(value: string): bigint;
@@ -65,27 +65,26 @@ export function typeCastApiResponseToBigInt(value: number): bigint;
 export function typeCastApiResponseToBigInt(value: undefined): undefined;
 export function typeCastApiResponseToBigInt(value: null): undefined;
 export function typeCastApiResponseToBigInt(
-	value: string | number | undefined | null,
+  value: string | number | undefined | null
 ): bigint | undefined {
-	if (value === undefined || value === null) {
-		return undefined;
-	}
-	return BigInt(value);
+  if (value === undefined || value === null) {
+    return undefined;
+  }
+  return BigInt(value);
 }
 
 export function bigintToFormattedDate(timestamp: bigint): string {
-	// Convert bigint to number
-	console.log(timestamp, 1000n);
-	const milliseconds = timestamp * 1000n;
-	const date = new Date(Number(milliseconds));
+  // Convert bigint to number
+  const milliseconds = Number(timestamp) * 1000;
+  const date = new Date(milliseconds);
 
-	// Define options for formatting
-	const options: Intl.DateTimeFormatOptions = {
-		day: "2-digit",
-		month: "short",
-		year: "numeric",
-	};
+  // Define options for formatting
+  const options: Intl.DateTimeFormatOptions = {
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+  };
 
-	// Format the date using toLocaleDateString
-	return date.toLocaleDateString("en-GB", options);
+  // Format the date using toLocaleDateString
+  return date.toLocaleDateString("en-GB", options);
 }

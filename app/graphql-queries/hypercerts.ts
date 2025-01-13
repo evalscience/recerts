@@ -3,7 +3,7 @@ import { typeCastApiResponseToBigInt } from "@/lib/utils";
 import type { ApiError } from "@/types/api";
 import { type ResultOf, graphql } from "gql.tada";
 import { catchError } from "../utils";
-import { fetchGraphQL } from "../utils/graphql";
+import { fetchHypercertsGraphQL as fetchGraphQL } from "../utils/graphql";
 import { hypercert } from "./templates";
 
 const hypercertIdsByHyperboardIdQuery = graphql(`
@@ -171,6 +171,15 @@ const fullHypercertByHypercertIdQuery = graphql(`
             pricePerPercentInUSD
             currency
           }
+          data {
+            id
+            price
+            chainId
+            amounts
+            pricePerPercentInToken
+            pricePerPercentInUSD
+            currency
+          }
         }
         uri
         creation_block_timestamp
@@ -207,6 +216,15 @@ export type FullHypercert = {
 	}[];
 	unitsForSale?: bigint;
 	pricePerPercentInUSD?: number;
+	orders?: {
+		id: string;
+		price: number;
+		chainId: string;
+		// amounts: string[];
+		pricePerPercentInToken: number;
+		pricePerPercentInUSD: number;
+		currency: string;
+	}[];
 };
 
 export const fetchFullHypercertById = async (
@@ -248,6 +266,18 @@ export const fetchFullHypercertById = async (
 		? Number(pricePerPercentInUSD)
 		: undefined;
 
+	const orders = hypercert.orders?.data?.map((order) => {
+		return {
+			id: order.id as string,
+			price: Number(order.price),
+			chainId: order.chainId as string,
+			// amounts: order.amounts as string[],
+			pricePerPercentInToken: Number(order.pricePerPercentInToken),
+			pricePerPercentInUSD: Number(order.pricePerPercentInUSD),
+			currency: order.currency as string,
+		};
+	});
+
 	return {
 		hypercertId,
 		creationBlockTimestamp: typeCastApiResponseToBigInt(
@@ -275,5 +305,11 @@ export const fetchFullHypercertById = async (
 			hypercert.orders?.totalUnitsForSale as string,
 		),
 		pricePerPercentInUSD: pricePerPercentInUSDNumber,
+		orders: orders,
 	};
+};
+
+export type FullHypercertOrders = Exclude<FullHypercert["orders"], undefined>;
+export type FullHypercertWithOrder = Omit<FullHypercert, "orders"> & {
+	orders: FullHypercertOrders;
 };

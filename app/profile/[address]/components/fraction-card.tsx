@@ -21,44 +21,51 @@ import {
 	formatCurrency,
 	formatDate,
 } from "@/lib/utils";
-import { ArrowUpRight, CalendarRange, Loader2, RotateCw } from "lucide-react";
+import {
+	ArrowUpRight,
+	CalendarRange,
+	CircleAlert,
+	CircleSlash2,
+	Loader2,
+	RotateCw,
+} from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
-function FractionCard({ fraction }: { fraction: Fraction }) {
-	const { hypercertId, name, description, image, work, units } = fraction;
+export type FractionWithCountAndWorth = Fraction & {
+	worthInUSD?: number | null;
+	count: number;
+};
 
-	const [hypercert, setHypercert] = useState<Hypercert | undefined>();
-	useEffect(() => {
-		if (hypercertId === undefined) return;
-		fetchFullHypercertById(hypercertId).then((hypercert) => {
-			setHypercert(hypercert);
-		});
-	}, [hypercertId]);
-
-	const percentageFractionBought = calculateBigIntPercentage(
-		units,
-		hypercert?.totalUnits,
+export const NoFractions = () => {
+	return (
+		<div className="flex flex-col items-center gap-4 pt-6 text-center md:px-20">
+			<CircleAlert className="text-beige-muted-foreground/50" size={40} />
+			<p className="px-8 text-beige-muted-foreground">
+				No recent support activity
+			</p>
+		</div>
 	);
+};
+
+function FractionCard({ fraction }: { fraction: FractionWithCountAndWorth }) {
+	const { hypercertId, name, description, image, work, worthInUSD } = fraction;
+
 	return (
 		<article className="group relative flex flex-col overflow-hidden rounded-2xl border border-border">
-			{units !== undefined &&
-				(hypercert ? (
-					percentageFractionBought === undefined ||
-					hypercert.pricePerPercentInUSD === undefined ? null : (
-						<div className="flex items-center justify-center bg-background px-4 py-2 text-center">
-							<span className="mx-6 font-bold text-primary">
-								${percentageFractionBought * hypercert.pricePerPercentInUSD}
-							</span>
-						</div>
-					)
-				) : (
-					<div className="flex items-center justify-center gap-2 bg-background px-4 py-2 text-center">
-						<Loader2 size={18} className="animate-spin text-primary" />
-						<span className="text-muted-foreground">Loading...</span>
-					</div>
-				))}
+			{worthInUSD === undefined ? (
+				<div className="flex items-center justify-center gap-2 bg-background px-4 py-2 text-center">
+					<Loader2 size={18} className="animate-spin text-primary" />
+					<span className="text-muted-foreground">Loading...</span>
+				</div>
+			) : worthInUSD === null ? null : (
+				<div className="flex items-center justify-center bg-background px-4 py-2 text-center">
+					<span className="mx-6 font-bold text-primary">
+						${Math.floor(worthInUSD * 100) / 100}
+					</span>
+				</div>
+			)}
 
 			<div className="relative flex h-[200px] w-full items-start justify-center overflow-hidden rounded-t-2xl bg-muted p-4">
 				<Image
@@ -97,7 +104,7 @@ function FractionCard({ fraction }: { fraction: Fraction }) {
 					))}
 				</div>
 				<p
-					className={`line-clamp-2 max-h-12 flex-1 text-ellipsis font-semibold${
+					className={`line-clamp-2 max-h-12 flex-1 text-ellipsis font-baskerville font-semibold text-lg leading-5${
 						name ? "text-foreground" : "text-muted-foreground"
 					}`}
 				>

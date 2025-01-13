@@ -2,25 +2,23 @@ import type React from "react";
 
 const StatCard = ({
 	title,
-	count,
-	icon,
+	display,
 }: {
 	title: React.ReactNode;
-	count: number;
-	icon?: React.ReactNode;
+	display: React.ReactNode;
 }) => {
 	return (
 		<div
 			className={
-				"relative flex flex-1 flex-col gap-4 overflow-hidden rounded-3xl bg-accent p-6"
+				"relative flex flex-1 flex-col gap-4 overflow-hidden rounded-3xl bg-beige-muted p-6"
 			}
 		>
-			<div className="-bottom-4 -right-4 -rotate-45 absolute text-primary/50">
-				{icon}
-			</div>
-			<div className={"font-bold text-muted-foreground text-sm"}>{title}</div>
+			<div className="-right-4 -bottom-4 absolute h-20 w-20 rounded-full bg-beige-muted-foreground/50 blur-xl" />
+			<div className={"font-bold text-primary text-sm"}>{title}</div>
 			<div>
-				<data className="font-bold text-4xl">{count}</data>
+				<data className="font-bold text-4xl text-beige-muted-foreground">
+					{display}
+				</data>
 			</div>
 		</div>
 	);

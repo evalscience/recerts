@@ -8,15 +8,22 @@ import { blo } from "blo";
 import { Calendar, HandHeart, UserCircle2 } from "lucide-react";
 import React from "react";
 import BuyButton from "./BuyButtonWrapper";
+import PaymentFlow from "./PaymentFlow";
 
-const BuyFraction = ({ text }: { text: string }) => {
+const BuyFraction = ({
+	text,
+	hypercert,
+}: {
+	text: string;
+	hypercert: FullHypercert;
+}) => {
 	return (
 		<div className="flex w-full flex-col items-center rounded-xl border border-border bg-background px-8 py-4">
 			<HandHeart size={50} className="text-gray-400 dark:text-gray-700" />
 			<p className="mt-2">{text}</p>
-			<BuyButton className="mt-4" size={"sm"}>
-				Buy
-			</BuyButton>
+			<PaymentFlow hypercert={hypercert}>
+				<Button>Support</Button>
+			</PaymentFlow>
 		</div>
 	);
 };
@@ -25,7 +32,12 @@ const Support = ({ hypercert }: { hypercert: FullHypercert }) => {
 	const { totalUnits, pricePerPercentInUSD } = hypercert;
 	const salesCount = hypercert.sales?.length ?? 0;
 	if (salesCount === 0) {
-		return <BuyFraction text="Be the first to support this contribution." />;
+		return (
+			<BuyFraction
+				text="Be the first to support this contribution."
+				hypercert={hypercert}
+			/>
+		);
 	}
 	//   const DUMMY = [
 	//     {
@@ -100,7 +112,10 @@ const Support = ({ hypercert }: { hypercert: FullHypercert }) => {
 					);
 				})}
 			</ul>
-			<BuyFraction text="To support this contribution, buy a fraction of the hypercert." />
+			<BuyFraction
+				text="To support this contribution, buy a fraction of the hypercert."
+				hypercert={hypercert}
+			/>
 		</div>
 	);
 };

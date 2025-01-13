@@ -2,6 +2,7 @@ import type { FullHypercert } from "@/app/graphql-queries/hypercerts";
 import { Button } from "@/components/ui/button";
 import { Heart } from "lucide-react";
 import React from "react";
+import PaymentFlow from "./PaymentFlow";
 import NFT3D from "./nft-3d";
 import Support from "./support";
 

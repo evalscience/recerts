@@ -1,5 +1,10 @@
-import request from "graphql-request";
-import { HeartHandshakeIcon, Settings2, Star } from "lucide-react";
+import {
+	ArrowUpRight,
+	ArrowUpRightFromSquare,
+	HeartHandshakeIcon,
+	Settings2,
+	Star,
+} from "lucide-react";
 import Link from "next/link";
 import type { Address } from "viem";
 
@@ -19,8 +24,11 @@ import { SideBar } from "@/app/profile/[address]/components/sidebar";
 import { catchError } from "@/app/utils";
 import { buttonVariants } from "@/components/ui/button";
 import { MotionWrapper } from "@/components/ui/motion-wrapper";
+import { Separator } from "@/components/ui/separator";
 import type { ApiError } from "@/types/api";
-import History from "./components/history";
+import Content from "./components/content";
+import FractionsGrid from "./components/fractions-grd";
+import ProfileCard from "./components/profile-card";
 import StatCard from "./components/stat-card";
 
 export default async function ProfilePage({
@@ -36,7 +44,7 @@ export default async function ProfilePage({
 	if (hypercertsError) {
 		return (
 			<PageError
-				title="We couldn't load your data."
+				title="We couldn't load the user data."
 				body="Please try refreshing the page or check the URL."
 			/>
 		);
@@ -49,13 +57,23 @@ export default async function ProfilePage({
 	if (fractionsError) {
 		return (
 			<PageError
-				title="We couldn't load your data."
+				title="We couldn't load the user data."
 				body="Please try refreshing the page or check the URL."
 			/>
 		);
 	}
 
 	const { hypercerts } = userHypercerts;
+	const hypercertIdSet = new Set<string>();
+	const validHypercerts = hypercerts.filter((hypercert) => {
+		if (hypercert.hypercertId === undefined) return false;
+		if (hypercertIdSet.has(hypercert.hypercertId)) return false;
+		if (hypercert.name === undefined) return false;
+		hypercertIdSet.add(hypercert.hypercertId);
+		return true;
+	});
+	const validHypercertsCount = validHypercerts.length;
+
 	const { fractions } = ownedFractions;
 	const validFractions = fractions.filter((fraction) => {
 		if (fraction.fractionId === undefined) return false;
@@ -70,49 +88,51 @@ export default async function ProfilePage({
 	return (
 		<MotionWrapper
 			type="main"
-			className="mx-auto mb-6 grid max-w-6xl auto-rows-auto grid-cols-1 gap-4 p-4 pb-16 text-vd-blue-900 md:max-w-[1200px] md:grid-cols-3 md:px-6 xl:px-0 md:py-8 md:pb-0"
+			className="mx-auto flex max-w-6xl items-start gap-8 p-10"
 			initial={{ opacity: 0, filter: "blur(10px)" }}
 			animate={{ opacity: 1, filter: "blur(0px)" }}
 			transition={{ duration: 0.5 }}
 		>
-			<header className="my-4 flex justify-between md:col-span-3">
-				<h1 className="font-semibold text-xl md:text-3xl">My Hypercerts</h1>
-				<Link
-					href={`/profile/${address}/settings`}
-					className={cn(buttonVariants({ variant: "link" }))}
-				>
-					Settings
-					<Settings2 className="mt-1 ml-2 h-4 w-4" />
-				</Link>
-			</header>
-
-			{/* // TODO: Move to separate component */}
-			<section className="flex flex-col gap-4 md:col-span-2">
-				<div className="flex flex-col gap-4 md:flex-row">
-					<StatCard
-						title={"Hypercerts created"}
-						count={hypercerts.length}
-						icon={<Star size={80} />}
-					/>
-					<StatCard
-						title={"Contributions"}
-						count={validFractionsCount}
-						icon={<HeartHandshakeIcon size={80} />}
-					/>
-				</div>
-			</section>
-			{/* <Summary
-				totalAmount={totalAmount}
-				reportCount={reportCount}
-				categoryCounts={categoryCounts}
-			/> */}
-			<SideBar />
-			{/* <History history={history} /> */}
-			{/* // TODO: Fix type error */}
-			<History
-				hypercerts={hypercerts}
-				fractions={validFractions as Fraction[]}
-			/>
+			<div className="flex w-full max-w-sm flex-col gap-4">
+				<ProfileCard
+					address={address}
+					stats={{
+						hypercertsCreated: validHypercertsCount,
+						fractionsCreated: validFractionsCount,
+					}}
+				/>
+				{validHypercertsCount > 0 && (
+					<div className="relative w-full rounded-2xl bg-beige-muted p-4">
+						<span className="flex items-center gap-2 font-baskerville text-xl">
+							<Star size={20} className="text-beige-muted-foreground" />
+							Creator
+						</span>
+						<Separator className="my-2 bg-beige-muted-foreground/40" />
+						<span className="text-beige-muted-foreground text-sm">
+							Created {validHypercertsCount} hypercerts so far...
+						</span>
+						<ul className="mt-2 flex w-full flex-col gap-1">
+							{validHypercerts.map((hypercert) => {
+								return (
+									<Link
+										href={`/hypercert/${hypercert.hypercertId}`}
+										key={hypercert.hypercertId}
+										target="_blank"
+									>
+										<li className="flex items-center justify-between gap-2 rounded-xl bg-black/10 p-2 px-4 hover:bg-black/15">
+											<span className="max-w-[75%] truncate">
+												{hypercert.name}
+											</span>
+											<ArrowUpRightFromSquare size={16} />
+										</li>
+									</Link>
+								);
+							})}
+						</ul>
+					</div>
+				)}
+			</div>
+			<Content fractions={validFractions} />
 		</MotionWrapper>
 	);
 }

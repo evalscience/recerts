@@ -1,7 +1,10 @@
 import { typeCastApiResponseToBigInt } from "@/lib/utils";
 import { type ResultOf, graphql } from "gql.tada";
 import { catchError } from "../utils";
-import { type ApiError, fetchGraphQL } from "../utils/graphql";
+import {
+	type ApiError,
+	fetchHypercertsGraphQL as fetchGraphQL,
+} from "../utils/graphql";
 
 const fractionsByOwnerIdQuery = graphql(`
   query GetFractionsByOwner($address: String!) {
