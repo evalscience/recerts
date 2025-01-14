@@ -1,11 +1,11 @@
-import React from "react";
+import type React from "react";
 
 const CardGridWrapper = ({ children }: { children: React.ReactNode }) => {
-  return (
-    <div className="w-full grid grid-cols-1 lg:grid-cols-2 gap-4 p-4">
-      {children}
-    </div>
-  );
+	return (
+		<div className="grid w-full grid-cols-1 gap-4 p-4 lg:grid-cols-2">
+			{children}
+		</div>
+	);
 };
 
 export default CardGridWrapper;

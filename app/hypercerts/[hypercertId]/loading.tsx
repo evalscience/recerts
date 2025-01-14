@@ -1,117 +1,119 @@
 import { Button } from "@/components/ui/button";
 import { MotionWrapper } from "@/components/ui/motion-wrapper";
+import { cn } from "@/lib/utils";
 import { ChevronLeft } from "lucide-react";
 import Link from "next/link";
 import React from "react";
 
 const Skeleton = ({
-  className,
-  delayInMs = 0,
+	className,
+	delayInMs = 0,
 }: {
-  className?: string;
-  delayInMs?: number;
+	className?: string;
+	delayInMs?: number;
 }) => {
-  return (
-    <div
-      className={`bg-muted max-w-full animate-pulse rounded-xl ${
-        className ?? ""
-      }`}
-      style={{
-        animationDelay: `${delayInMs}ms`,
-      }}
-    ></div>
-  );
+	return (
+		<div
+			className={cn(
+				"max-w-full animate-pulse rounded-xl bg-muted",
+				className ?? "",
+			)}
+			style={{
+				animationDelay: `${delayInMs}ms`,
+			}}
+		/>
+	);
 };
 
 const Loading = () => {
-  return (
-    <MotionWrapper
-      type="div"
-      className="w-full flex flex-col items-center"
-      initial={{
-        opacity: 0,
-        y: 100,
-        filter: "blur(10px)",
-      }}
-      animate={{
-        opacity: 1,
-        y: 0,
-        filter: "blur(0px)",
-      }}
-    >
-      <div className="w-full max-w-6xl p-8 flex flex-col gap-2">
-        <Link href={"/"}>
-          <Button variant={"link"} className="gap-2 p-0">
-            <ChevronLeft size={20} /> View all hypercerts
-          </Button>
-        </Link>
-        <div className="w-full flex flex-col md:flex-row items-start md:items-center gap-12">
-          <div className="flex flex-col flex-1 gap-2">
-            {/* title */}
-            <Skeleton className="h-12 w-1/2" />
-            {/* metadata */}
-            <Skeleton className="h-8 w-[80%]" />
+	return (
+		<MotionWrapper
+			type="div"
+			className="flex w-full flex-col items-center"
+			initial={{
+				opacity: 0,
+				y: 100,
+				filter: "blur(10px)",
+			}}
+			animate={{
+				opacity: 1,
+				y: 0,
+				filter: "blur(0px)",
+			}}
+		>
+			<div className="flex w-full max-w-6xl flex-col gap-2 p-8">
+				<Link href={"/"}>
+					<Button variant={"link"} className="gap-2 p-0">
+						<ChevronLeft size={20} /> View all hypercerts
+					</Button>
+				</Link>
+				<div className="flex w-full flex-col items-start gap-12 md:flex-row md:items-center">
+					<div className="flex flex-1 flex-col gap-2">
+						{/* title */}
+						<Skeleton className="h-12 w-1/2" />
+						{/* metadata */}
+						<Skeleton className="h-8 w-[80%]" />
 
-            <div className="flex items-center flex-wrap gap-2">
-              {/* tags */}
-              <Skeleton className="h-8 w-20" />
-              <Skeleton className="h-8 w-20" />
-              <Skeleton className="h-8 w-20" />
-            </div>
-          </div>
-          {/* progress */}
-          <Skeleton className="h-40 w-full md:w-auto flex-initial md:flex-1" />
-        </div>
-        <div className="flex flex-col md:flex-row items-start w-full gap-8 mt-12">
-          <div className="flex-initial w-full md:w-auto md:flex-[3] flex flex-col gap-4">
-            <div className="flex items-center justify-center w-full">
-              {/* nft */}
-              <Skeleton className="w-[80%] aspect-square" />
-            </div>
+						<div className="flex flex-wrap items-center gap-2">
+							{/* tags */}
+							<Skeleton className="h-8 w-20" />
+							<Skeleton className="h-8 w-20" />
+							<Skeleton className="h-8 w-20" />
+						</div>
+					</div>
+					{/* progress */}
+					<Skeleton className="h-40 w-full flex-initial md:w-auto md:flex-1" />
+				</div>
+				<div className="mt-12 flex w-full flex-col items-start gap-8 md:flex-row">
+					<div className="flex w-full flex-initial flex-col gap-4 md:w-auto md:flex-[3]">
+						<div className="flex w-full items-center justify-center">
+							{/* nft */}
+							<Skeleton className="aspect-square w-[80%]" />
+						</div>
 
-            {/* description */}
-            <Skeleton className="h-8 w-32 mt-6" />
-            <div className="flex flex-col gap-2">
-              <Skeleton className="h-8 w-full" />
-              <Skeleton className="h-8 w-full" />
-              <Skeleton className="h-8 w-full" />
-              <Skeleton className="h-8 w-full" />
-              <Skeleton className="h-8 w-full" />
-              <Skeleton className="h-8 w-1/2" />
-            </div>
+						{/* description */}
+						<Skeleton className="mt-6 h-8 w-32" />
+						<div className="flex flex-col gap-2">
+							<Skeleton className="h-8 w-full" />
+							<Skeleton className="h-8 w-full" />
+							<Skeleton className="h-8 w-full" />
+							<Skeleton className="h-8 w-full" />
+							<Skeleton className="h-8 w-full" />
+							<Skeleton className="h-8 w-1/2" />
+						</div>
 
-            {/* sales */}
-            <Skeleton className="h-8 w-32 mt-6" />
-            <div className="flex flex-col gap-2">
-              <Skeleton className="h-12 w-full" />
-              <Skeleton className="h-12 w-full" />
-              <Skeleton className="h-12 w-full" />
-              <Skeleton className="h-24 w-full" />
-            </div>
-          </div>
-          <div className="flex-initial md:flex-[2] flex flex-col w-full md:w-auto gap-4">
-            {/* Impact Details */}
-            <section className="w-full flex flex-col gap-2">
-              <Skeleton className="h-8 w-32 mt-4" />
-              <Skeleton className="h-60 w-full mt-4" />
-            </section>
+						{/* sales */}
+						<Skeleton className="mt-6 h-8 w-32" />
+						<div className="flex flex-col gap-2">
+							<Skeleton className="h-12 w-full" />
+							<Skeleton className="h-12 w-full" />
+							<Skeleton className="h-12 w-full" />
+							<Skeleton className="h-24 w-full" />
+						</div>
+					</div>
+					<div className="flex w-full flex-initial flex-col gap-4 md:w-auto md:flex-[2]">
+						{/* Impact Details */}
+						<section className="flex w-full flex-col gap-2">
+							<Skeleton className="mt-4 h-8 w-32" />
+							<Skeleton className="mt-4 h-60 w-full" />
+						</section>
 
-            {/* Verification */}
-            <section className="w-full flex flex-col gap-2">
-              <Skeleton className="h-8 w-32 mt-4" />
-              <Skeleton className="h-60 w-full mt-4" />
-            </section>
+						{/* Verification */}
+						<section className="flex w-full flex-col gap-2">
+							<Skeleton className="mt-4 h-8 w-32" />
+							<Skeleton className="mt-4 h-60 w-full" />
+						</section>
 
-            {/* Geolocation */}
-            <section className="w-full flex flex-col gap-2">
-              <Skeleton className="h-8 w-32 mt-4" />
-              <Skeleton className="h-60 w-full mt-4" />
-            </section>
-          </div>
-        </div>
-      </div>
-    </MotionWrapper>
-  );
+						{/* Geolocation */}
+						<section className="flex w-full flex-col gap-2">
+							<Skeleton className="mt-4 h-8 w-32" />
+							<Skeleton className="mt-4 h-60 w-full" />
+						</section>
+					</div>
+				</div>
+			</div>
+		</MotionWrapper>
+	);
 };
 
 export default Loading;
