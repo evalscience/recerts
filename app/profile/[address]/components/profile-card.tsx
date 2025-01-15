@@ -1,9 +1,12 @@
 "use client";
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
+import EthAvatar from "@/components/ui/eth-avatar";
+import useCopy from "@/hooks/use-copy";
+import { cn, getUrl } from "@/lib/utils";
 import { blo } from "blo";
-import { Copy, Pencil, Share2 } from "lucide-react";
+import { Check, Copy, Pencil, Settings2, Share2 } from "lucide-react";
+import Link from "next/link";
 import React from "react";
 import { useAccount, useEnsName } from "wagmi";
 
@@ -23,22 +26,15 @@ const ProfileCard = ({
 	});
 	const { address: currentAddress } = useAccount();
 
+	const { copy: copyAddress, isCopied: isAddressCopied } = useCopy();
+	const { copy: copyProfileLink, isCopied: isProfileLinkCopied } = useCopy();
+	const profileLink = getUrl(`/profile/${address}`);
 	const shortAddress = `${address.slice(0, 6)}...${address.slice(-4)}`;
 
 	return (
 		<div className="relative flex w-full flex-col items-center gap-4 rounded-2xl border border-border bg-background p-4">
-			{currentAddress === address && (
-				<Button
-					className="absolute top-4 right-4 h-8 w-8 p-0"
-					variant={"outline"}
-				>
-					<Pencil size={16} />
-				</Button>
-			)}
 			<div className="flex h-24 w-24 items-center justify-center rounded-full border-4 border-primary/50">
-				<Avatar className="h-20 w-20">
-					<AvatarImage src={blo(address)} alt={address} />
-				</Avatar>
+				<EthAvatar address={address as `0x${string}`} />
 			</div>
 			<div className="flex w-full flex-col items-center gap-2">
 				{isEnsNameLoading ? (
@@ -61,13 +57,23 @@ const ProfileCard = ({
 			</div>
 
 			<div className="mt-2 flex w-full items-center gap-2">
-				<Button className="flex-1 gap-2" variant={"secondary"}>
-					<Copy size={16} />
-					Copy Address
+				<Button
+					size={"sm"}
+					className="flex-1 gap-2"
+					variant={"secondary"}
+					onClick={() => copyAddress(address)}
+				>
+					{isAddressCopied ? <Check size={16} /> : <Copy size={16} />}
+					{isAddressCopied ? "Copied" : "Copy Address"}
 				</Button>
-				<Button className="flex-1 gap-2" variant={"secondary"}>
-					<Share2 size={16} />
-					Share
+				<Button
+					size={"sm"}
+					className="flex-1 gap-2"
+					variant={"secondary"}
+					onClick={() => copyProfileLink(profileLink)}
+				>
+					{isProfileLinkCopied ? <Check size={16} /> : <Share2 size={16} />}
+					{isProfileLinkCopied ? "Copied URL" : "Share"}
 				</Button>
 			</div>
 		</div>
