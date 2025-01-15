@@ -1,4 +1,4 @@
-import { HYPERCERTS_API_URL } from "@/config/graphql";
+import { HYPERCERTS_API_URL, UNISWAP_API_URL } from "@/config/graphql";
 import type { TadaDocumentNode } from "gql.tada";
 import { request } from "graphql-request";
 import { isObject } from ".";
@@ -16,11 +16,12 @@ export type ApiError = {
 };
 
 export async function fetchGraphQL<ResponseType, VariablesType>(
+	apiUrl: string,
 	query: TadaDocumentNode<ResponseType, VariablesType, unknown>,
 	variables?: VariablesType,
 ): Promise<ResponseType> {
 	try {
-		const response = await request(HYPERCERTS_API_URL, query, variables ?? {});
+		const response = await request(apiUrl, query, variables ?? {});
 		return response;
 	} catch (error) {
 		console.log(error);
@@ -95,4 +96,18 @@ export async function fetchGraphQL<ResponseType, VariablesType>(
 		// If the error is not an instance of Error, return a generic message
 		throw { message: "An unknown error occurred.", type: "UNKNOWN" };
 	}
+}
+
+export async function fetchHypercertsGraphQL<ResponseType, VariablesType>(
+	query: TadaDocumentNode<ResponseType, VariablesType, unknown>,
+	variables?: VariablesType,
+): Promise<ResponseType> {
+	return fetchGraphQL(HYPERCERTS_API_URL, query, variables);
+}
+
+export async function fetchUniswapGraphQL<ResponseType, VariablesType>(
+	query: TadaDocumentNode<ResponseType, VariablesType, unknown>,
+	variables?: VariablesType,
+): Promise<ResponseType> {
+	return fetchGraphQL(UNISWAP_API_URL, query, variables);
 }

@@ -75,9 +75,8 @@ export function typeCastApiResponseToBigInt(
 
 export function bigintToFormattedDate(timestamp: bigint): string {
   // Convert bigint to number
-  console.log(timestamp, 1000n);
-  const milliseconds = timestamp * 1000n;
-  const date = new Date(Number(milliseconds));
+  const milliseconds = Number(timestamp) * 1000;
+  const date = new Date(milliseconds);
 
   // Define options for formatting
   const options: Intl.DateTimeFormatOptions = {

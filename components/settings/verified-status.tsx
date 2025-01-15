@@ -5,7 +5,7 @@ import React from "react";
 const VerifiedStatus = () => {
 	return (
 		<>
-			<div className="flex flex-col md:flex-row justify-between md:items-center">
+			<div className="flex flex-col justify-between md:flex-row md:items-center">
 				<Button className="md:min-w-48" disabled>
 					Verification coming soon...
 				</Button>

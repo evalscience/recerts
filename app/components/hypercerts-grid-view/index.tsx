@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import type { ApiError } from "@/types/api";
 import { CircleAlert, RotateCw } from "lucide-react";
 import Link from "next/link";
-import PageError from "../PageError";
+import PageError from "../shared/PageError";
 import { GridView } from "./grid-view";
 
 export async function HypercertsGridWrapper() {

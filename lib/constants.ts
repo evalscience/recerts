@@ -1,9 +1,8 @@
-import { base, baseSepolia, celo, optimism, sepolia } from "viem/chains";
 import type { Chain } from "viem";
+import { base, baseSepolia, celo, optimism, sepolia } from "viem/chains";
 
-export const apiEnvironment: "test" | "production" = (process.env[
-	"NEXT_PUBLIC_API_ENVIRONMENT"
-] || "test") as "test" | "production";
+export const apiEnvironment: "test" | "production" = (process.env
+	.NEXT_PUBLIC_API_ENVIRONMENT || "test") as "test" | "production";
 
 export const testNetChains = [sepolia, baseSepolia] as const;
 export const prodNetChains = [optimism, celo, base] as const;

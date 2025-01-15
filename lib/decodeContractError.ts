@@ -1,9 +1,9 @@
-import { decodeErrorResult } from "viem";
 import {
 	HypercertExchangeAbi,
-	TransferManagerAbi,
 	OrderValidatorV2AAbi,
+	TransferManagerAbi,
 } from "@hypercerts-org/contracts";
+import { decodeErrorResult } from "viem";
 
 // biome-ignore lint/suspicious/noExplicitAny: <explanation>
 export function decodeContractError(error: any, defaultMessage: string) {
@@ -29,9 +29,7 @@ export function decodeContractError(error: any, defaultMessage: string) {
 				parsedError = decodedError.errorName;
 				break;
 			}
-		} catch {
-			continue;
-		}
+		} catch {}
 	}
 
 	return parsedError || defaultMessage;

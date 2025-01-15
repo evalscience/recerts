@@ -1,21 +1,25 @@
 "use client";
 
-import { motion, DOMMotionComponents, MotionProps } from "framer-motion";
-import React from "react";
+import {
+	type DOMMotionComponents,
+	type MotionProps,
+	motion,
+} from "framer-motion";
+import type React from "react";
 
 type MotionElements = keyof DOMMotionComponents;
 
 type MotionWrapperProps<T extends MotionElements> = {
-  type: T;
-  children?: React.ReactNode;
+	type: T;
+	children?: React.ReactNode;
 } & React.ComponentProps<T> &
-  MotionProps;
+	MotionProps;
 
 export function MotionWrapper<T extends MotionElements>({
-  type,
-  children,
-  ...props
+	type,
+	children,
+	...props
 }: MotionWrapperProps<T>) {
-  const Component = motion[type] as React.ComponentType<any>;
-  return <Component {...props}>{children}</Component>;
+	const Component = motion[type] as React.ComponentType<unknown>;
+	return <Component {...props}>{children}</Component>;
 }

@@ -13,7 +13,7 @@
 		"rules": {
 			"recommended": true,
 			"nursery": {
-				"useSortedClasses":"error"
+				"useSortedClasses": "error"
 			}
 		},
 		"ignore": ["node_modules", ".next", ".vercel"]

@@ -1,8 +1,8 @@
+import { FallbackProvider, JsonRpcProvider } from "ethers";
 import type { HttpTransport, PublicClient } from "viem";
-import { JsonRpcProvider, FallbackProvider } from "ethers";
 
-import { usePublicClient } from "wagmi";
 import React from "react";
+import { usePublicClient } from "wagmi";
 
 export function publicClientToProvider(publicClient: PublicClient) {
 	const { chain, transport } = publicClient;

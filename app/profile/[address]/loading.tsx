@@ -13,7 +13,7 @@ const Skeleton = ({
 }) => {
 	return (
 		<div
-			className={`max-w-full animate-pulse rounded-xl bg-muted${
+			className={`max-w-full animate-pulse rounded-xl bg-beige-muted${
 				className ?? ""
 			}`}
 			style={{
@@ -68,7 +68,6 @@ const Loading = () => {
 							{/* nft */}
 							<Skeleton className="aspect-square w-[80%]" />
 						</div>
-
 						{/* description */}
 						<Skeleton className="mt-6 h-8 w-32" />
 						<div className="flex flex-col gap-2">
@@ -79,7 +78,6 @@ const Loading = () => {
 							<Skeleton className="h-8 w-full" />
 							<Skeleton className="h-8 w-1/2" />
 						</div>
-
 						{/* sales */}
 						<Skeleton className="mt-6 h-8 w-32" />
 						<div className="flex flex-col gap-2">

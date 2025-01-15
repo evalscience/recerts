@@ -1,15 +1,17 @@
 "use client";
 
 import { CopyButton } from "@/components/copy-button";
-import { truncateEthereumAddress } from "@/lib/utils";
+import { cn, truncateEthereumAddress } from "@/lib/utils";
 import { useEnsName } from "wagmi";
 
 export default function EthAddress({
 	address,
 	showEnsName = false,
+	className,
 }: {
 	address?: string | undefined | null;
 	showEnsName?: boolean;
+	className?: string;
 }) {
 	const { data: ensName } = useEnsName({
 		address: address as `0x${string}` | undefined,
@@ -26,7 +28,12 @@ export default function EthAddress({
 	};
 
 	return (
-		<div className="flex w-max cursor-pointer content-center items-center gap-2 rounded-md bg-slate-100 px-1 py-0.5 text-sm">
+		<div
+			className={cn(
+				"flex w-max cursor-pointer content-center items-center gap-2 rounded-md bg-slate-100 px-2 py-0.5 text-sm",
+				className,
+			)}
+		>
 			{/* biome-ignore lint/a11y/useKeyWithClickEvents: <explanation> */}
 			<div onClick={copyAddress}>
 				{showEnsName && ensName

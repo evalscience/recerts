@@ -19,7 +19,13 @@ const config = {
     },
     extend: {
       colors: {
-        beige: "hsl(var(--beige))",
+        beige: {
+          DEFAULT: "hsl(var(--beige))",
+          muted: {
+            DEFAULT: "hsl(var(--beige-muted))",
+            foreground: "hsl(var(--beige-muted-foreground))",
+          },
+        },
 
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",

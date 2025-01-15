@@ -4,7 +4,9 @@
 
 @layer base {
   :root {
-    --beige: 40 36.59% 91.96%;
+    --beige: 40 36.6% 92%;
+    --beige-muted: 40 22% 86%;
+    --beige-muted-foreground: 41 37% 28%;
 
     --background: 0 0% 100%;
     --foreground: 240 10% 3.9%;
@@ -65,6 +67,10 @@
   font-family: var(--font-baskerville);
 }
 
+.font-archia {
+  font-family: var(--font-archia);
+}
+
 @layer base {
   * {
     @apply border-border;
@@ -72,4 +78,8 @@
   body {
     @apply bg-beige text-foreground;
   }
+}
+
+body {
+  @apply font-archia;
 }

@@ -6,7 +6,7 @@ import { cn } from "@/lib/utils";
 import { ArrowRight } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import Progress from "../progress";
+import Progress from "../shared/progress";
 
 // * REFACTORED from hypercerts-app hypercert-window
 const Card = ({ hypercert }: { hypercert: Hypercert }) => {
@@ -24,12 +24,12 @@ const Card = ({ hypercert }: { hypercert: Hypercert }) => {
 	const cardChain = supportedChains.find((x) => x.id === Number(chainId))?.name;
 	const percentAvailable = calculateBigIntPercentage(unitsForSale, totalUnits);
 	return (
-		<Link href={`/hypercerts/${hypercertId}`} passHref>
+		<Link href={`/hypercert/${hypercertId}`} passHref>
 			<article className="group relative overflow-hidden rounded-2xl border border-border bg-muted">
 				<div className="h-[320px] w-full">
 					<div className="relative h-full w-full overflow-hidden">
 						<Image
-							// src={`/api/hypercerts/${hypercert_id}/image`}
+							// src={`/api/hypercert/${hypercert_id}/image`}
 							src={image ?? ""}
 							alt={name ?? "Untitled"}
 							fill
@@ -54,7 +54,7 @@ const Card = ({ hypercert }: { hypercert: Hypercert }) => {
 				>
 					<p
 						className={cn(
-							"line-clamp-2 h-12 flex-1 text-ellipsis font-semibold",
+							"line-clamp-2 h-10 flex-1 text-ellipsis font-semibold text-lg leading-none",
 							name
 								? "font-baskerville text-foreground"
 								: "text-muted-foreground",
