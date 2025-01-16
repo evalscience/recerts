@@ -75,7 +75,7 @@ const Card = ({ hypercert }: { hypercert: Hypercert }) => {
 								Coming Soon...
 							</span>
 						</div>
-					) : unitsForSale === undefined ? (
+					) : unitsForSale === undefined || unitsForSale === 0n ? (
 						<div className="flex w-full items-center justify-start text-muted-foreground text-sm">
 							<span className="inline-block rounded-full bg-destructive/20 px-2 text-destructive">
 								Sold
