@@ -60,17 +60,20 @@ export const calculateBigIntPercentage = (
   return Number((BigInt(numerator) * BigInt(100)) / BigInt(denominator));
 };
 
-export function typeCastApiResponseToBigInt(value: string): bigint;
-export function typeCastApiResponseToBigInt(value: number): bigint;
-export function typeCastApiResponseToBigInt(value: undefined): undefined;
-export function typeCastApiResponseToBigInt(value: null): undefined;
 export function typeCastApiResponseToBigInt(
-  value: string | number | undefined | null
+  value: unknown
 ): bigint | undefined {
   if (value === undefined || value === null) {
     return undefined;
   }
-  return BigInt(value);
+  if (
+    typeof value === "string" ||
+    typeof value === "number" ||
+    typeof value === "bigint"
+  ) {
+    return BigInt(value);
+  }
+  return undefined;
 }
 
 export function bigintToFormattedDate(timestamp: bigint): string {
