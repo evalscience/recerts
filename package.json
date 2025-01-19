@@ -9,7 +9,8 @@
     "lint": "biome check --apply ./app",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "lint:ci": "biome ci ./app",
-    "prepare": "node .husky/install.mjs"
+    "prepare": "node .husky/install.mjs",
+    "test": "bun jest"
   },
   "dependencies": {
     "@fontsource-variable/plus-jakarta-sans": "^5.0.20",
@@ -86,15 +87,18 @@
     "@0no-co/graphqlsp": "^1.12.8",
     "@biomejs/biome": "1.6.0",
     "@tailwindcss/typography": "^0.5.10",
+    "@types/jest": "^29.5.14",
     "@types/node": "^20",
     "@types/nodemailer": "^6.4.15",
     "@types/react": "^18",
     "@types/react-dom": "^18",
     "autoprefixer": "^10.0.1",
     "husky": "^9.0.11",
+    "jest": "^29.7.0",
     "lint-staged": "^15.2.2",
     "postcss": "^8",
     "tailwindcss": "^3.3.0",
+    "ts-jest": "^29.2.5",
     "typescript": "^5"
   }
 }
