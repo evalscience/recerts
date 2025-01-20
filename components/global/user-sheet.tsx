@@ -111,17 +111,21 @@ const UserSheet = ({ children }: { children: React.ReactNode }) => {
 								className="border-4 border-foreground shadow-xl"
 							/>
 							<span className="flex w-[80%] items-center justify-center break-all text-center font-bold text-lg text-muted-foreground leading-none">
-								<ENSName address={address} />
+								<span>
+									<ENSName address={address} />
+								</span>
+								<Button
+									variant={"ghost"}
+									onClick={copyAddress}
+									disabled={!address}
+								>
+									{isAddressCopied ? (
+										<CopyCheck size={16} />
+									) : (
+										<Copy size={16} />
+									)}
+								</Button>
 							</span>
-							<Button
-								variant={"ghost"}
-								className="-mt-2 mb-2 gap-2"
-								onClick={copyAddress}
-								disabled={!address}
-							>
-								{isAddressCopied ? <CopyCheck size={16} /> : <Copy size={16} />}
-								{isAddressCopied ? "Copied" : "Copy Address"}
-							</Button>
 						</div>
 						<div className="flex w-full flex-1 flex-col items-center p-4">
 							<ul className="flex w-full flex-1 flex-col gap-1">

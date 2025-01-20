@@ -22,7 +22,6 @@ export async function fetchGraphQL<ResponseType, VariablesType>(
 ): Promise<ResponseType> {
 	try {
 		const response = await request(apiUrl, query, variables ?? {});
-		console.log(response);
 		return response;
 	} catch (error) {
 		console.log(error);

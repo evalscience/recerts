@@ -20,7 +20,7 @@ const ProfileCard = ({
 		fractionsCreated: number;
 	};
 }) => {
-	const { data: ensName, isLoading: isEnsNameLoading } = useEnsName({
+	const { data: ensName, isFetching: isEnsNameLoading } = useEnsName({
 		address,
 		chainId: 1,
 	});
@@ -32,23 +32,37 @@ const ProfileCard = ({
 	const shortAddress = `${address.slice(0, 6)}...${address.slice(-4)}`;
 
 	return (
-		<div className="relative flex w-full flex-col items-center gap-4 rounded-2xl border border-border bg-background p-4">
+		<div className="group relative flex w-full flex-col items-center gap-4 rounded-2xl border border-border bg-background p-4">
+			<Button
+				className="absolute top-2 right-2 hidden text-muted-foreground group-hover:inline-flex"
+				variant={"ghost"}
+				size={"sm"}
+				onClick={() => copyAddress(address)}
+			>
+				{isAddressCopied ? <Check size={16} /> : <Copy size={16} />}
+			</Button>
 			<div className="flex h-24 w-24 items-center justify-center rounded-full border-4 border-primary/50">
 				<EthAvatar address={address as `0x${string}`} />
 			</div>
 			<div className="flex w-full flex-col items-center gap-2">
-				{isEnsNameLoading ? (
+				{!ensName && isEnsNameLoading ? (
 					<span
 						className={
-							"h-8 w-[75%] animate-pulse rounded-lg bg-muted text-muted"
+							"w-[80%] animate-pulse truncate text-center font-bold text-2xl text-muted-foregr"
 						}
-					/>
-				) : (
-					<span className={"w-[80%] truncate text-center font-bold text-2xl"}>
-						{ensName ?? shortAddress}
+					>
+						{shortAddress}
 					</span>
+				) : (
+					<div className="flex w-full items-center justify-center">
+						<span
+							className={"max-w-[80%] truncate text-center font-bold text-2xl"}
+						>
+							{ensName ?? shortAddress}
+						</span>
+						{}
+					</div>
 				)}
-
 				{stats.hypercertsCreated + stats.fractionsCreated >= 0 && (
 					<span className="flex h-6 items-center justify-center rounded-full bg-beige-muted px-2 text-center text-beige-muted-foreground text-sm">
 						{stats.hypercertsCreated > 0 ? "Community Member" : "Contributor"}
@@ -61,19 +75,10 @@ const ProfileCard = ({
 					size={"sm"}
 					className="flex-1 gap-2"
 					variant={"secondary"}
-					onClick={() => copyAddress(address)}
-				>
-					{isAddressCopied ? <Check size={16} /> : <Copy size={16} />}
-					{isAddressCopied ? "Copied" : "Copy Address"}
-				</Button>
-				<Button
-					size={"sm"}
-					className="flex-1 gap-2"
-					variant={"secondary"}
 					onClick={() => copyProfileLink(profileLink)}
 				>
 					{isProfileLinkCopied ? <Check size={16} /> : <Share2 size={16} />}
-					{isProfileLinkCopied ? "Copied URL" : "Share"}
+					{isProfileLinkCopied ? "Copied Profile URL" : "Share Profile URL"}
 				</Button>
 			</div>
 		</div>
