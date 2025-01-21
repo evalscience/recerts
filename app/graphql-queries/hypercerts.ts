@@ -25,7 +25,7 @@ type HypercertIdsByHyperboardIdResponse = ResultOf<
 	typeof hypercertIdsByHyperboardIdQuery
 >;
 
-const fetchHypercertIDs = async () => {
+export const fetchHypercertIDs = async () => {
 	const [error, response] = await catchError<
 		HypercertIdsByHyperboardIdResponse,
 		ApiError
@@ -111,9 +111,9 @@ const fetchHypercertById = async (hypercertId: string): Promise<Hypercert> => {
 		name: hypercert.metadata?.name ?? undefined,
 		description: hypercert.metadata?.description ?? undefined,
 		image: hypercert.metadata?.image ?? undefined,
-		totalUnits: typeCastApiResponseToBigInt(hypercert.units as string),
+		totalUnits: typeCastApiResponseToBigInt(hypercert.units) ?? 0n,
 		unitsForSale: typeCastApiResponseToBigInt(
-			hypercert.orders?.totalUnitsForSale as string,
+			hypercert.orders?.totalUnitsForSale,
 		),
 		pricePerPercentInUSD: pricePerPercentInUSDNumber,
 	};
@@ -280,9 +280,8 @@ export const fetchFullHypercertById = async (
 
 	return {
 		hypercertId,
-		creationBlockTimestamp: typeCastApiResponseToBigInt(
-			hypercert.creation_block_timestamp as string,
-		),
+		creationBlockTimestamp:
+			typeCastApiResponseToBigInt(hypercert.creation_block_timestamp) ?? 0n,
 		creatorAddress: hypercert.creator_address as string,
 		chainId: (hypercert.contract?.chain_id as string) ?? undefined,
 		name: hypercert.metadata?.name ?? undefined,
@@ -290,19 +289,17 @@ export const fetchFullHypercertById = async (
 		work: {
 			scope: hypercert.metadata?.work_scope ?? undefined,
 			from: typeCastApiResponseToBigInt(
-				hypercert.metadata?.work_timeframe_from as string,
+				hypercert.metadata?.work_timeframe_from,
 			),
-			to: typeCastApiResponseToBigInt(
-				hypercert.metadata?.work_timeframe_to as string,
-			),
+			to: typeCastApiResponseToBigInt(hypercert.metadata?.work_timeframe_to),
 		},
 		contributors: hypercert.metadata?.contributors ?? undefined,
 		image: hypercert.metadata?.image ?? undefined,
 		uri: hypercert.uri ?? undefined,
-		totalUnits: typeCastApiResponseToBigInt(hypercert.units as string),
+		totalUnits: typeCastApiResponseToBigInt(hypercert.units) ?? 0n,
 		sales,
 		unitsForSale: typeCastApiResponseToBigInt(
-			hypercert.orders?.totalUnitsForSale as string,
+			hypercert.orders?.totalUnitsForSale,
 		),
 		pricePerPercentInUSD: pricePerPercentInUSDNumber,
 		orders: orders,
