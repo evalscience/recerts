@@ -62,17 +62,30 @@ export const delay = (ms: number) =>
 export const isValidEthereumAddress = (address: string) =>
   /^0x[a-fA-F0-9]{40}$/.test(address);
 
-export function typeCastApiResponseToBigInt(value: string): bigint;
-export function typeCastApiResponseToBigInt(value: number): bigint;
-export function typeCastApiResponseToBigInt(value: undefined): undefined;
-export function typeCastApiResponseToBigInt(value: null): undefined;
+export const calculateBigIntPercentage = (
+  numerator: bigint | string | null | undefined,
+  denominator: bigint | string | null | undefined
+) => {
+  if (!numerator || !denominator) {
+    return undefined;
+  }
+  return Number((BigInt(numerator) * BigInt(100)) / BigInt(denominator));
+};
+
 export function typeCastApiResponseToBigInt(
-  value: string | number | undefined | null
+  value: unknown
 ): bigint | undefined {
   if (value === undefined || value === null) {
     return undefined;
   }
-  return BigInt(value);
+  if (
+    typeof value === "string" ||
+    typeof value === "number" ||
+    typeof value === "bigint"
+  ) {
+    return BigInt(value);
+  }
+  return undefined;
 }
 
 export function bigintToFormattedDate(timestamp: bigint): string {
