@@ -279,7 +279,6 @@ const HypercertForm = () => {
 											<FormLabel>Logo Image</FormLabel>
 											<FormControl>
 												<Input
-													disabled
 													placeholder="https://i.imgur.com/hypercert-logo.png"
 													{...field}
 												/>
@@ -296,7 +295,6 @@ const HypercertForm = () => {
 											<FormLabel>Background Banner Image</FormLabel>
 											<FormControl>
 												<Input
-													disabled
 													placeholder="https://i.imgur.com/hypercert-banner.png"
 													{...field}
 												/>
