@@ -2,10 +2,23 @@
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import EthAvatar from "@/components/ui/eth-avatar";
+import {
+	Tooltip,
+	TooltipContent,
+	TooltipProvider,
+	TooltipTrigger,
+} from "@/components/ui/tooltip";
 import useCopy from "@/hooks/use-copy";
 import { cn, getUrl } from "@/lib/utils";
 import { blo } from "blo";
-import { Check, Copy, Pencil, Settings2, Share2 } from "lucide-react";
+import {
+	Check,
+	Copy,
+	CopyCheck,
+	Pencil,
+	Settings2,
+	Share2,
+} from "lucide-react";
 import Link from "next/link";
 import React from "react";
 import { useAccount, useEnsName } from "wagmi";
@@ -32,15 +45,7 @@ const ProfileCard = ({
 	const shortAddress = `${address.slice(0, 6)}...${address.slice(-4)}`;
 
 	return (
-		<div className="group relative flex w-full flex-col items-center gap-4 rounded-2xl border border-border bg-background p-4">
-			<Button
-				className="absolute top-2 right-2 hidden text-muted-foreground group-hover:inline-flex"
-				variant={"ghost"}
-				size={"sm"}
-				onClick={() => copyAddress(address)}
-			>
-				{isAddressCopied ? <Check size={16} /> : <Copy size={16} />}
-			</Button>
+		<div className="relative flex w-full flex-col items-center gap-4 rounded-2xl border border-border bg-background p-4">
 			<div className="flex h-24 w-24 items-center justify-center rounded-full border-4 border-primary/50">
 				<EthAvatar address={address as `0x${string}`} />
 			</div>
@@ -59,8 +64,28 @@ const ProfileCard = ({
 							className={"max-w-[80%] truncate text-center font-bold text-2xl"}
 						>
 							{ensName ?? shortAddress}
+							<TooltipProvider>
+								<Tooltip>
+									<TooltipTrigger asChild>
+										<Button
+											className="text-muted-foreground"
+											variant={"ghost"}
+											size={"sm"}
+											onClick={() => copyAddress(address)}
+										>
+											{isAddressCopied ? (
+												<CopyCheck size={16} />
+											) : (
+												<Copy size={16} />
+											)}
+										</Button>
+									</TooltipTrigger>
+									<TooltipContent>
+										{isAddressCopied ? "Copied" : "Copy Address"}
+									</TooltipContent>
+								</Tooltip>
+							</TooltipProvider>
 						</span>
-						{}
 					</div>
 				)}
 				{stats.hypercertsCreated + stats.fractionsCreated >= 0 && (

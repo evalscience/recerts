@@ -23,6 +23,12 @@ import { Button } from "../ui/button";
 import ENSName from "../ui/ens-name";
 import EthAvatar from "../ui/eth-avatar";
 import { Sheet, SheetContent, SheetTrigger } from "../ui/sheet";
+import {
+	Tooltip,
+	TooltipContent,
+	TooltipProvider,
+	TooltipTrigger,
+} from "../ui/tooltip";
 
 const UserSheet = ({ children }: { children: React.ReactNode }) => {
 	const [open, setOpen] = useState(false);
@@ -114,17 +120,26 @@ const UserSheet = ({ children }: { children: React.ReactNode }) => {
 								<span>
 									<ENSName address={address} />
 								</span>
-								<Button
-									variant={"ghost"}
-									onClick={copyAddress}
-									disabled={!address}
-								>
-									{isAddressCopied ? (
-										<CopyCheck size={16} />
-									) : (
-										<Copy size={16} />
-									)}
-								</Button>
+								<TooltipProvider>
+									<Tooltip>
+										<TooltipTrigger asChild>
+											<Button
+												variant={"ghost"}
+												onClick={copyAddress}
+												disabled={!address}
+											>
+												{isAddressCopied ? (
+													<CopyCheck size={16} />
+												) : (
+													<Copy size={16} />
+												)}
+											</Button>
+										</TooltipTrigger>
+										<TooltipContent>
+											{isAddressCopied ? "Copied" : "Copy Address"}
+										</TooltipContent>
+									</Tooltip>
+								</TooltipProvider>
 							</span>
 						</div>
 						<div className="flex w-full flex-1 flex-col items-center p-4">
