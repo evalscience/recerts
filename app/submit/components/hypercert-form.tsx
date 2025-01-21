@@ -50,13 +50,13 @@ const HypercertMintSchema = z.object({
 	title: z
 		.string()
 		.min(1, { message: "Hypercert Name is required" })
-		.max(100, { message: "Hypercert Name must be less than 50 characters" }),
+		.max(100, { message: "Hypercert Name must be less than 100 characters" }),
 	description: z
 		.string()
 		.min(10, {
 			message: "Description is required and must be at least 10 characters",
 		})
-		.max(500, { message: "Description must be less than 500 characters" }),
+		.max(500, { message: "Description must be less than 1000 characters" }),
 	link: z.preprocess(
 		(value) => (value === "" ? undefined : value),
 		z.string().url().optional(),
