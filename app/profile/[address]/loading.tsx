@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { MotionWrapper } from "@/components/ui/motion-wrapper";
+import { cn } from "@/lib/utils";
 import { Home } from "lucide-react";
 import Link from "next/link";
 import React from "react";
@@ -13,9 +14,10 @@ const Skeleton = ({
 }) => {
 	return (
 		<div
-			className={`max-w-full animate-pulse rounded-xl bg-beige-muted${
-				className ?? ""
-			}`}
+			className={cn(
+				"max-w-full animate-pulse rounded-xl bg-beige-muted",
+				className,
+			)}
 			style={{
 				animationDelay: `${delayInMs}ms`,
 			}}
