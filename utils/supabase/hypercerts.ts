@@ -1,5 +1,4 @@
 import { HYPERCERTS_API_URL } from "@/config/graphql";
-import { hyperboardId } from "@/config/hypercert";
 import {
 	getHyperboardsByIdQuery,
 	getHypercertsByHypercertIdQuery,
@@ -9,7 +8,7 @@ import request from "graphql-request";
 export const fetchHypercerts = async () => {
 	try {
 		const res = await request(HYPERCERTS_API_URL, getHyperboardsByIdQuery, {
-			id: hyperboardId,
+			id: process.env.HYPERBOARD_ID,
 		});
 		// const hypercertIds = await getHypercertIds();
 		const hypercertIds =
