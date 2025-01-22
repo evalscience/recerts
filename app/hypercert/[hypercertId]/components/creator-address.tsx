@@ -1,6 +1,7 @@
 "use client";
 import EthAddress from "@/components/eth-address";
 import React, { useEffect } from "react";
+import { useEnsName } from "wagmi";
 
 const CreatorAddress = ({
 	address,

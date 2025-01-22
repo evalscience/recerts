@@ -15,10 +15,12 @@ const LeftContent = ({ hypercert }: { hypercert: FullHypercert }) => {
 						<NFT3D src={hypercert.image} />
 					</div>
 					<div className="flex w-full scale-100 items-center justify-center border-t border-t-border bg-background p-4 shadow-[0px_-10px_20px_rgba(0,0,0,0.1)]">
-						<Button className="gap-2">
-							<Heart size={20} />
-							Buy a fraction
-						</Button>
+						<PaymentFlow hypercert={hypercert}>
+							<Button className="gap-2">
+								<Heart size={20} />
+								Buy a fraction
+							</Button>
+						</PaymentFlow>
 					</div>
 				</div>
 			)}

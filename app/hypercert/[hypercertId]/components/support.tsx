@@ -2,6 +2,7 @@ import type { FullHypercert } from "@/app/graphql-queries/hypercerts";
 import EthAddress from "@/components/eth-address";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
+import EthAvatar from "@/components/ui/eth-avatar";
 import { calculateBigIntPercentage } from "@/lib/calculateBigIntPercentage";
 import { bigintToFormattedDate } from "@/lib/utils";
 import { blo } from "blo";
@@ -80,19 +81,10 @@ const Support = ({ hypercert }: { hypercert: FullHypercert }) => {
 					return (
 						<li
 							key={sale.transactionHash}
-							className="flex items-center justify-between rounded-2xl border border-border px-4 py-2"
+							className="flex items-center justify-between rounded-2xl border border-border bg-background px-4 py-2"
 						>
 							<div className="flex items-center gap-4">
-								<Avatar className="h-[40px] w-[40px]">
-									<AvatarImage
-										src={blo(sale.buyer as `0x${string}`)}
-										height={40}
-										width={40}
-									/>
-									<AvatarFallback>
-										<UserCircle2 size={40} className="text-primary" />
-									</AvatarFallback>
-								</Avatar>
+								<EthAvatar address={sale.buyer as `0x${string}`} size={40} />
 								<div className="flex h-full flex-col items-start gap-1">
 									<EthAddress address={sale.buyer} />
 									<span className="flex items-center text-muted-foreground text-sm">

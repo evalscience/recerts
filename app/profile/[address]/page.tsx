@@ -27,7 +27,7 @@ import { MotionWrapper } from "@/components/ui/motion-wrapper";
 import { Separator } from "@/components/ui/separator";
 import type { ApiError } from "@/types/api";
 import Content from "./components/content";
-import FractionsGrid from "./components/fractions-grd";
+import FractionsGrid from "./components/fractions-grid";
 import ProfileCard from "./components/profile-card";
 import StatCard from "./components/stat-card";
 
@@ -88,12 +88,12 @@ export default async function ProfilePage({
 	return (
 		<MotionWrapper
 			type="main"
-			className="mx-auto flex max-w-6xl items-start gap-8 p-10"
+			className="mx-auto flex max-w-6xl flex-col items-start gap-8 p-10 md:flex-row"
 			initial={{ opacity: 0, filter: "blur(10px)" }}
 			animate={{ opacity: 1, filter: "blur(0px)" }}
 			transition={{ duration: 0.5 }}
 		>
-			<div className="flex w-full max-w-sm flex-col gap-4">
+			<div className="flex w-full max-w-full flex-col gap-4 md:max-w-[300px]">
 				<ProfileCard
 					address={address}
 					stats={{
