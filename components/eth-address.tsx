@@ -6,7 +6,7 @@ import { useEnsName } from "wagmi";
 
 export default function EthAddress({
 	address,
-	showEnsName = false,
+	showEnsName = true,
 	className,
 }: {
 	address?: string | undefined | null;

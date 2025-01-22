@@ -2,6 +2,18 @@ import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
 import type { Address } from "viem";
 
+const BASE_URL =
+  process.env.NODE_ENV === "production"
+    ? `https://${process.env.NEXT_PUBLIC_VERCEL_URL}`
+    : "http://localhost:3000";
+
+const INCLUDES_FORWARD_SLASH_AT_START_REGEX = /^\/(.|\n)*$/;
+const INCLUDES_FORWARD_SLASH_AT_START = (string: string) =>
+  INCLUDES_FORWARD_SLASH_AT_START_REGEX.test(string);
+
+export const getUrl = (path: string) =>
+  `${BASE_URL}${!INCLUDES_FORWARD_SLASH_AT_START(path) ? "/" : ""}${path}`;
+
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
@@ -60,17 +72,20 @@ export const calculateBigIntPercentage = (
   return Number((BigInt(numerator) * BigInt(100)) / BigInt(denominator));
 };
 
-export function typeCastApiResponseToBigInt(value: string): bigint;
-export function typeCastApiResponseToBigInt(value: number): bigint;
-export function typeCastApiResponseToBigInt(value: undefined): undefined;
-export function typeCastApiResponseToBigInt(value: null): undefined;
 export function typeCastApiResponseToBigInt(
-  value: string | number | undefined | null
+  value: unknown
 ): bigint | undefined {
   if (value === undefined || value === null) {
     return undefined;
   }
-  return BigInt(value);
+  if (
+    typeof value === "string" ||
+    typeof value === "number" ||
+    typeof value === "bigint"
+  ) {
+    return BigInt(value);
+  }
+  return undefined;
 }
 
 export function bigintToFormattedDate(timestamp: bigint): string {

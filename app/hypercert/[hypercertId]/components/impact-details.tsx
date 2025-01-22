@@ -2,6 +2,7 @@ import type { FullHypercert } from "@/app/graphql-queries/hypercerts";
 import EthAddress from "@/components/eth-address";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
+import EthAvatar from "@/components/ui/eth-avatar";
 import { bigintToFormattedDate, cn } from "@/lib/utils";
 import { blo } from "blo";
 import {
@@ -65,19 +66,11 @@ const ImpactDetails = ({ hypercert }: { hypercert: FullHypercert }) => {
 											: "",
 									)}
 								>
-									<Avatar
-										key={contributor.toLowerCase()}
-										className="h-[32px] w-[32px] border-border shadow-md"
-									>
-										<AvatarImage
-											src={blo(contributor as `0x${string}`)}
-											height={32}
-											width={32}
-										/>
-										<AvatarFallback>
-											<UserCircle2 size={32} className="text-primary" />
-										</AvatarFallback>
-									</Avatar>
+									<EthAvatar
+										address={contributor as `0x${string}`}
+										size={32}
+										className="border-border shadow-md"
+									/>
 								</div>
 							))}
 						</span>
