@@ -23,18 +23,18 @@ type PageProps = {
 	params: { hypercertId: string };
 };
 
-const getCachedHypercert = unstable_cache(
-	async (hypercertId: string) => fetchFullHypercertById(hypercertId),
-	["full-hypercert"],
-	{
-		revalidate: 10,
-	},
-);
+// const getCachedHypercert = unstable_cache(
+// 	async (hypercertId: string) => fetchFullHypercertById(hypercertId),
+// 	["full-hypercert"],
+// 	{
+// 		revalidate: 10,
+// 	},
+// );
 
 const Page = async ({ params }: PageProps) => {
 	const { hypercertId } = params;
 	const [error, hypercert] = await catchError<FullHypercert, ApiError>(
-		getCachedHypercert(hypercertId),
+		fetchFullHypercertById(hypercertId),
 	);
 
 	if (error) {

@@ -1,16 +1,10 @@
+import { Button } from "@/components/ui/button";
 import EthAvatar from "@/components/ui/eth-avatar";
 import { EvervaultCard } from "@/components/ui/evervault-card";
-import { ShieldCheck } from "lucide-react";
+import { Separator } from "@/components/ui/separator";
+import UserChip from "@/components/user-chip";
+import { Info, ShieldCheck } from "lucide-react";
 import React from "react";
-
-const EvaluatorChip = ({ address }: { address: `0x${string}` }) => {
-	return (
-		<li className="flex items-center gap-1.5 rounded-full border border-transparent bg-muted/80 p-2 pr-3 hover:border-border hover:bg-muted">
-			<EthAvatar address={address} size={22} />
-			<span className="text-sm">{address}</span>
-		</li>
-	);
-};
 
 const EvaluationDetails = () => {
 	return (
@@ -34,12 +28,17 @@ const EvaluationDetails = () => {
 					Other Evaluators:
 				</span>
 				<ul className="flex flex-wrap items-center gap-1">
-					<EvaluatorChip address="0x012345678910" />
-					<EvaluatorChip address="0x012345678910" />
-					<EvaluatorChip address="0x012345678910" />
-					<EvaluatorChip address="0x012345678910" />
-					<EvaluatorChip address="0x012345678910" />
-					<EvaluatorChip address="0x012345678910" />
+					<UserChip address="0x012345678910" />
+					<UserChip address="0x012345678910" />
+					<UserChip address="0x012345678910" />
+					<UserChip address="0x012345678910" />
+					<UserChip address="0x012345678910" />
+					<li className="flex h-8 items-center justify-center rounded-full border border-border bg-muted px-2 text-sm">
+						+2
+					</li>
+					<Button variant={"ghost"} size={"sm"}>
+						View all
+					</Button>
 				</ul>
 			</div>
 		</div>
