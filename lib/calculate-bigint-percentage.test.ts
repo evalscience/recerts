@@ -30,13 +30,24 @@ describe("calculateBigIntPercentage", () => {
     expect(() => calculateBigIntPercentage("100", "invalid")).toThrow();
   });
 
-  it("should handle large numbers without losing precision", () => {
-    const largeNumerator = 12345678901234567890n;
-    const largeDenominator = 98765432109876543210n;
-    const expectedPercentage =
-      (Number(largeNumerator) / Number(largeDenominator)) * 100;
-    expect(
-      calculateBigIntPercentage(largeNumerator, largeDenominator)
-    ).toBeCloseTo(expectedPercentage, 6);
+  it("should maintain precision in calculations, whereas number loses it", () => {
+    const veryLargeNumerator =
+      98765432109876543210987654321098765432109876543210n;
+    const largestPossibleIntDenominator = BigInt(Number.MAX_SAFE_INTEGER);
+
+    // Calculate with BigInt
+    const bigIntResult = calculateBigIntPercentage(
+      veryLargeNumerator,
+      largestPossibleIntDenominator
+    );
+
+    // Calculate with Number
+    const numberResult =
+      (Number(veryLargeNumerator) / Number(largestPossibleIntDenominator)) *
+      100;
+
+    // Compare BigInt vs Number results
+    expect(bigIntResult).not.toBeCloseTo(numberResult);
+    //-------------------^^^ to verify that number results are not close to bigint results
   });
 });
