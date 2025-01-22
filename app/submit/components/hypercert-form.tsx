@@ -2,7 +2,7 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { format } from "date-fns";
-import { CalendarIcon } from "lucide-react";
+import { ArrowRight, CalendarIcon, TriangleAlert } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -72,14 +72,10 @@ const HypercertMintSchema = z.object({
 				"Tags must must not be empty, Multiple tags must be separated by commas",
 		}),
 	projectDates: z
-		.object({
-			workStartDate: z.date(),
-			workEndDate: z.date(),
-		})
-		.refine((data) => data.workStartDate <= data.workEndDate, {
-			message: "workStartDate should not be later than workEndDate",
-			path: ["workStartDate"],
-		}),
+		.tuple([z.date().optional(), z.date().optional()])
+		.refine((data) => {
+			return Boolean(data[0] || data[1]);
+		}, "Work date range is required"),
 	contributors: z
 		.string()
 		.refine(
@@ -139,10 +135,7 @@ const HypercertForm = () => {
 			logo: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSk8OYV3qda3Xf6p_wHHCh4uEDiKOLiB0652A&s",
 			link: "",
 			tags: "",
-			projectDates: {
-				workStartDate: new Date(2024, 5, 2),
-				workEndDate: new Date(2024, 5, 30),
-			},
+			projectDates: [undefined, undefined],
 			contact: "",
 			acceptTerms: false,
 			confirmContributorsPermission: false,
@@ -222,11 +215,14 @@ const HypercertForm = () => {
 				excludedWorkScope: [],
 				rights: ["Public Display"],
 				excludedRights: [],
-				workTimeframeStart: values.projectDates.workStartDate.getTime() / 1000,
-				workTimeframeEnd: values.projectDates.workEndDate.getTime() / 1000,
+				workTimeframeStart:
+					(values.projectDates[0] ?? new Date()).getTime() / 1000,
+				workTimeframeEnd:
+					(values.projectDates[1] ?? new Date()).getTime() / 1000,
 				impactTimeframeStart:
-					values.projectDates.workStartDate.getTime() / 1000,
-				impactTimeframeEnd: values.projectDates.workEndDate.getTime() / 1000,
+					(values.projectDates[0] ?? new Date()).getTime() / 1000,
+				impactTimeframeEnd:
+					(values.projectDates[1] ?? new Date()).getTime() / 1000,
 				contributors: values.contributors,
 			});
 
@@ -252,338 +248,447 @@ const HypercertForm = () => {
 			<Form {...form}>
 				<form onSubmit={form.handleSubmit(onSubmit)}>
 					<div className="mb-10 flex flex-col-reverse gap-6 md:mb-0 md:flex-row md:gap-4">
-						<Card className="rounded-3xl py-4 shadow-none">
-							<CardContent className="flex flex-col gap-4">
-								<h2 className="text-2xl">General Fields</h2>
-								<FormField
-									control={form.control}
-									name="title"
-									render={({ field }) => (
-										<FormItem>
-											<FormLabel>Hypercert Name</FormLabel>
-											<FormControl>
-												<Input
-													placeholder="GainForest.Earth Hypercert"
-													{...field}
-												/>
-											</FormControl>
-											<FormMessage />
-										</FormItem>
-									)}
-								/>
-								<FormField
-									control={form.control}
-									name="logo"
-									render={({ field }) => (
-										<FormItem>
-											<FormLabel>Logo Image</FormLabel>
-											<FormControl>
-												<Input
-													disabled
-													placeholder="https://i.imgur.com/hypercert-logo.png"
-													{...field}
-												/>
-											</FormControl>
-											<FormMessage />
-										</FormItem>
-									)}
-								/>
-								<FormField
-									control={form.control}
-									name="banner"
-									render={({ field }) => (
-										<FormItem>
-											<FormLabel>Background Banner Image</FormLabel>
-											<FormControl>
-												<Input
-													disabled
-													placeholder="https://i.imgur.com/hypercert-banner.png"
-													{...field}
-												/>
-											</FormControl>
-											<FormMessage />
-										</FormItem>
-									)}
-								/>
-								<FormField
-									control={form.control}
-									name="description"
-									render={({ field }) => (
-										<FormItem>
-											<FormLabel>Description</FormLabel>
-											<FormControl>
-												<Textarea
-													className="bg-inherit"
-													placeholder="Hypercert description"
-													{...field}
-												/>
-											</FormControl>
-											<FormMessage />
-										</FormItem>
-									)}
-								/>
-								<FormField
-									control={form.control}
-									name="link"
-									render={({ field }) => (
-										<FormItem>
-											<FormLabel>Link</FormLabel>
-											<FormControl>
-												<Input
-													placeholder="https://hypercerts.org"
-													{...field}
-												/>
-											</FormControl>
-											<FormMessage />
-										</FormItem>
-									)}
-								/>
-								<Separator />
-								<h2 className="text-2xl">Hypercert Fields</h2>
-								<FormField
-									control={form.control}
-									name="tags"
-									render={({ field }) => (
-										<FormItem>
-											<FormLabel>Work Scope</FormLabel>
-											<FormControl>
-												<Textarea
-													className="bg-inherit"
-													placeholder="Hypercerts, Impact, ..."
-													{...field}
-												/>
-											</FormControl>
-											<FormMessage />
-											<div className="flex flex-wrap gap-0.5">
-												{badges.map((tag, index) => (
-													<Badge
-														key={`${tag}-${
-															// biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
-															index
-														}`}
-														variant="secondary"
-													>
-														{tag}
-													</Badge>
-												))}
-											</div>
-										</FormItem>
-									)}
-								/>
-								<div className="flex flex-col gap-2 md:flex-row">
-									<FormField
-										control={form.control}
-										name="projectDates.workStartDate"
-										render={({ field }) => (
-											<FormItem className="flex w-full flex-col">
-												<FormLabel>Work Start Date</FormLabel>
-												<Popover>
-													<PopoverTrigger asChild>
-														<FormControl>
-															<Button
-																variant={"outline"}
-																className={cn(
-																	"w-full rounded-sm border-input pl-3 text-left font-normal",
-																	!field.value && "text-muted-foreground",
-																)}
-															>
-																{field.value ? (
-																	format(field.value, "PPP")
-																) : (
-																	<span>Pick a date</span>
-																)}
-																<CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-															</Button>
-														</FormControl>
-													</PopoverTrigger>
+						<Card className="relative overflow-hidden rounded-3xl bg-white/50 py-4 shadow-none">
+							<div className="-top-10 -right-10 absolute h-40 w-40 rounded-full bg-primary/30 blur-2xl" />
+							<div className="-bottom-10 -left-10 absolute h-40 w-40 rounded-full bg-beige-muted-foreground/30 blur-2xl" />
+							<CardContent className="flex scale-100 flex-col gap-6 p-0 px-4">
+								<section className="flex flex-col gap-2">
+									<h2 className="font-baskerville font-bold text-2xl">
+										General Fields
+									</h2>
+									<div className="flex flex-col gap-4 rounded-2xl bg-background p-4">
+										<FormField
+											control={form.control}
+											name="title"
+											render={({ field }) => (
+												<FormItem>
+													<FormLabel>Hypercert Name</FormLabel>
+													<FormControl>
+														<Input
+															placeholder="GainForest.Earth Hypercert"
+															{...field}
+														/>
+													</FormControl>
+													<FormMessage />
+												</FormItem>
+											)}
+										/>
+										<FormField
+											control={form.control}
+											name="logo"
+											render={({ field }) => (
+												<FormItem>
+													<FormLabel>Logo Image</FormLabel>
+													<FormControl>
+														<Input
+															disabled
+															placeholder="https://i.imgur.com/hypercert-logo.png"
+															{...field}
+														/>
+													</FormControl>
+													<FormMessage />
+												</FormItem>
+											)}
+										/>
+										<FormField
+											control={form.control}
+											name="banner"
+											render={({ field }) => (
+												<FormItem>
+													<FormLabel>Background Banner Image</FormLabel>
+													<FormControl>
+														<Input
+															disabled
+															placeholder="https://i.imgur.com/hypercert-banner.png"
+															{...field}
+														/>
+													</FormControl>
+													<FormMessage />
+												</FormItem>
+											)}
+										/>
+										<FormField
+											control={form.control}
+											name="description"
+											render={({ field }) => (
+												<FormItem>
+													<FormLabel>Description</FormLabel>
+													<FormControl>
+														<Textarea
+															className="bg-inherit"
+															placeholder="Hypercert description"
+															{...field}
+														/>
+													</FormControl>
+													<FormMessage />
+												</FormItem>
+											)}
+										/>
+										<FormField
+											control={form.control}
+											name="link"
+											render={({ field }) => (
+												<FormItem>
+													<FormLabel>Link</FormLabel>
+													<FormControl>
+														<Input
+															placeholder="https://hypercerts.org"
+															{...field}
+														/>
+													</FormControl>
+													<FormMessage />
+												</FormItem>
+											)}
+										/>
+									</div>
+								</section>
+								<section className="flex flex-col gap-2">
+									<h2 className="font-baskerville font-bold text-2xl">
+										Hypercert Fields
+									</h2>
 
-													<PopoverContent className="w-auto p-0" align="start">
-														<Calendar
-															mode="single"
-															selected={field.value}
-															onSelect={field.onChange}
-															disabled={(date) =>
-																date > form.watch("projectDates.workEndDate")
-															}
-															initialFocus
+									<div className="flex flex-col gap-4 rounded-2xl bg-background p-4">
+										<FormField
+											control={form.control}
+											name="tags"
+											render={({ field }) => (
+												<FormItem>
+													<FormLabel>Work Scope</FormLabel>
+													<FormControl>
+														<Textarea
+															className="bg-inherit"
+															placeholder="Hypercerts, Impact, ..."
+															{...field}
 														/>
-													</PopoverContent>
-												</Popover>
-												<FormMessage />
-											</FormItem>
-										)}
-									/>
-									<FormField
-										control={form.control}
-										name="projectDates.workEndDate"
-										render={({ field }) => (
-											<FormItem className="flex w-full flex-col">
-												<FormLabel>Work End Date</FormLabel>
-												<Popover>
-													<PopoverTrigger asChild>
-														<FormControl>
-															<Button
-																variant={"outline"}
-																className={cn(
-																	"w-full rounded-sm border-input pl-3 text-left font-normal",
-																	!field.value && "text-muted-foreground",
-																)}
+													</FormControl>
+													<FormMessage />
+													<div className="flex flex-wrap gap-0.5">
+														{badges.map((tag, index) => (
+															<Badge
+																key={`${tag}-${
+																	// biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
+																	index
+																}`}
+																variant="secondary"
 															>
-																{field.value ? (
-																	format(field.value, "PPP")
-																) : (
-																	<span>Pick a date</span>
-																)}
-																<CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-															</Button>
-														</FormControl>
-													</PopoverTrigger>
-													<PopoverContent className="w-auto p-0" align="start">
-														<Calendar
-															mode="single"
-															selected={field.value}
-															onSelect={field.onChange}
-															disabled={(date) =>
-																date < form.watch("projectDates.workStartDate")
-															}
-															initialFocus
+																{tag}
+															</Badge>
+														))}
+													</div>
+												</FormItem>
+											)}
+										/>
+
+										<div className="flex flex-col gap-2 md:flex-row">
+											<FormField
+												control={form.control}
+												name="projectDates"
+												render={({ field }) => (
+													<FormItem className="flex w-full flex-col">
+														<FormLabel>Project Dates</FormLabel>
+														<Popover>
+															<PopoverTrigger asChild>
+																<FormControl>
+																	<Button
+																		id="date"
+																		variant={"outline"}
+																		className={cn(
+																			"w-full justify-start text-left font-normal",
+																			!field.value && "text-muted-foreground",
+																		)}
+																	>
+																		<CalendarIcon className="mr-2 h-4 w-4" />
+																		{field.value[0] && field.value[1] ? (
+																			<>
+																				{format(field.value[0], "LLL dd, y")} -{" "}
+																				{format(field.value[1], "LLL dd, y")}
+																			</>
+																		) : (
+																			<span>Pick a date range</span>
+																		)}
+																	</Button>
+																</FormControl>
+															</PopoverTrigger>
+															<PopoverContent
+																className="w-auto p-0"
+																align="start"
+															>
+																<Calendar
+																	initialFocus
+																	mode="range"
+																	defaultMonth={field.value?.[0]}
+																	selected={{
+																		from: field.value?.[0],
+																		to: field.value?.[1],
+																	}}
+																	onSelect={(range) => {
+																		console.log(range, field);
+																		field.onChange([range?.from, range?.to]);
+																		// field.onChange({
+																		//   workStartDate: range?.from,
+																		//   workEndDate: range?.to,
+																		// });
+																		console.log(field.value);
+																	}}
+																	numberOfMonths={2}
+																/>
+															</PopoverContent>
+														</Popover>
+														<FormMessage />
+													</FormItem>
+												)}
+											/>
+										</div>
+
+										{/* <div className="flex flex-col gap-2 md:flex-row">
+                      <FormField
+                        control={form.control}
+                        name="projectDates.workStartDate"
+                        render={({ field }) => (
+                          <FormItem className="flex w-full flex-col">
+                            <FormLabel>Work Start Date</FormLabel>
+                            <Popover>
+                              <PopoverTrigger asChild>
+                                <FormControl>
+                                  <Button
+                                    variant={"outline"}
+                                    className={cn(
+                                      "w-full rounded-sm border-input pl-3 text-left font-normal",
+                                      !field.value && "text-muted-foreground"
+                                    )}
+                                  >
+                                    {field.value ? (
+                                      format(field.value, "PPP")
+                                    ) : (
+                                      <span>Pick a date</span>
+                                    )}
+                                    <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                                  </Button>
+                                </FormControl>
+                              </PopoverTrigger>
+
+                              <PopoverContent
+                                className="w-auto p-0"
+                                align="start"
+                              >
+                                <Calendar
+                                  mode="single"
+                                  selected={field.value}
+                                  onSelect={field.onChange}
+                                  disabled={(date) =>
+                                    date >
+                                    form.watch("projectDates.workEndDate")
+                                  }
+                                  initialFocus
+                                />
+                              </PopoverContent>
+                            </Popover>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name="projectDates.workEndDate"
+                        render={({ field }) => (
+                          <FormItem className="flex w-full flex-col">
+                            <FormLabel>Work End Date</FormLabel>
+                            <Popover>
+                              <PopoverTrigger asChild>
+                                <FormControl>
+                                  <Button
+                                    variant={"outline"}
+                                    className={cn(
+                                      "w-full rounded-sm border-input pl-3 text-left font-normal",
+                                      !field.value && "text-muted-foreground"
+                                    )}
+                                  >
+                                    {field.value ? (
+                                      format(field.value, "PPP")
+                                    ) : (
+                                      <span>Pick a date</span>
+                                    )}
+                                    <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                                  </Button>
+                                </FormControl>
+                              </PopoverTrigger>
+                              <PopoverContent
+                                className="w-auto p-0"
+                                align="start"
+                              >
+                                <Calendar
+                                  mode="single"
+                                  selected={field.value}
+                                  onSelect={field.onChange}
+                                  disabled={(date) =>
+                                    date <
+                                    form.watch("projectDates.workStartDate")
+                                  }
+                                  initialFocus
+                                />
+                              </PopoverContent>
+                            </Popover>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div> */}
+										<FormField
+											control={form.control}
+											name="contributors"
+											render={({ field }) => (
+												<FormItem>
+													<FormLabel>
+														List of Contributors to the Work
+													</FormLabel>
+													<FormControl>
+														<Textarea
+															className="bg-inherit"
+															placeholder="0xWalletAddress1, 0xWalletAddress2, ..."
+															{...field}
 														/>
-													</PopoverContent>
-												</Popover>
-												<FormMessage />
-											</FormItem>
-										)}
-									/>
+													</FormControl>
+													<FormMessage />
+												</FormItem>
+											)}
+										/>
+										<FormField
+											control={form.control}
+											name="geojson"
+											render={({ field }) => (
+												<FormItem>
+													<FormLabel>GeoJSON (URL or File)</FormLabel>
+													<FormControl>
+														<div className="flex gap-2">
+															<Input
+																type="text"
+																placeholder="https://example.com/data.geojson"
+																{...field}
+																onChange={(e) => {
+																	field.onChange(e.target.value);
+																	setGeoJSONFile(null);
+																}}
+															/>
+															<Input
+																type="file"
+																accept=".geojson,application/geo+json"
+																onChange={(e) => {
+																	const file = e.target.files?.[0];
+																	if (file) {
+																		setGeoJSONFile(file);
+																		field.onChange("");
+																	}
+																}}
+															/>
+														</div>
+													</FormControl>
+													<FormMessage />
+												</FormItem>
+											)}
+										/>
+									</div>
+								</section>
+								<section className="flex flex-col gap-2">
+									<h2 className="font-baskerville font-bold text-2xl">
+										Contact Information
+									</h2>
+									<div className="flex flex-col gap-4 rounded-2xl bg-background p-4">
+										<FormField
+											control={form.control}
+											name="contact"
+											render={({ field }) => (
+												<FormItem>
+													<FormLabel>Telegram / Email</FormLabel>
+													<FormControl>
+														<Input placeholder="@Hypercerts" {...field} />
+													</FormControl>
+													<FormMessage />
+												</FormItem>
+											)}
+										/>
+										<FormField
+											control={form.control}
+											name="confirmContributorsPermission"
+											render={({ field }) => (
+												<FormItem className="flex flex-row items-center space-x-3 space-y-0 p-2">
+													<FormControl>
+														<Checkbox
+															checked={field.value}
+															onCheckedChange={field.onChange}
+														/>
+													</FormControl>
+													<div className="space-y-1 leading-none">
+														<FormLabel>
+															I confirm that all listed contributors gave their
+															permission to include their work in this
+															hypercert.
+														</FormLabel>
+													</div>
+												</FormItem>
+											)}
+										/>
+										<FormField
+											control={form.control}
+											name="acceptTerms"
+											render={({ field }) => (
+												<FormItem className="flex flex-row items-center space-x-3 space-y-0 p-2">
+													<FormControl>
+														<Checkbox
+															checked={field.value}
+															onCheckedChange={field.onChange}
+														/>
+													</FormControl>
+													<div className="space-y-1 leading-none">
+														<FormLabel>
+															I agree to the{" "}
+															<a
+																href="https://hypercerts.org/terms/"
+																target="_blank"
+																rel="noopener noreferrer"
+																className="text-blue-600"
+															>
+																Terms & Conditions
+															</a>
+														</FormLabel>
+													</div>
+												</FormItem>
+											)}
+										/>
+									</div>
+								</section>
+								<div className="flex items-center justify-center">
+									<div className="relative mt-2 inline-flex flex-col items-center gap-2 self-start rounded-lg border border-orange-500/50 bg-orange-100/50 px-4 py-2 md:flex-row dark:bg-orange-950/50">
+										<TriangleAlert
+											className="mr-2 hidden text-orange-600 md:block dark:text-orange-300"
+											size={16}
+										/>
+										<div className="-top-2 -right-2 absolute flex h-8 w-8 items-center justify-center rounded-full border border-border bg-background md:hidden">
+											<TriangleAlert
+												className="text-orange-600 dark:text-orange-300"
+												size={18}
+											/>
+										</div>
+										<span className="text-balance text-center text-orange-800 text-sm dark:text-orange-200">
+											All information will be publicly available and can not be
+											changed afterwards.
+										</span>
+									</div>
 								</div>
-								<FormField
-									control={form.control}
-									name="contributors"
-									render={({ field }) => (
-										<FormItem>
-											<FormLabel>List of Contributors to the Work</FormLabel>
-											<FormControl>
-												<Textarea
-													className="bg-inherit"
-													placeholder="0xWalletAddress1, 0xWalletAddress2, ..."
-													{...field}
-												/>
-											</FormControl>
-											<FormMessage />
-										</FormItem>
-									)}
-								/>
-								<FormField
-									control={form.control}
-									name="geojson"
-									render={({ field }) => (
-										<FormItem>
-											<FormLabel>GeoJSON (URL or File)</FormLabel>
-											<FormControl>
-												<div className="flex gap-2">
-													<Input
-														type="text"
-														placeholder="https://example.com/data.geojson"
-														{...field}
-														onChange={(e) => {
-															field.onChange(e.target.value);
-															setGeoJSONFile(null);
-														}}
-													/>
-													<Input
-														type="file"
-														accept=".geojson,application/geo+json"
-														onChange={(e) => {
-															const file = e.target.files?.[0];
-															if (file) {
-																setGeoJSONFile(file);
-																field.onChange("");
-															}
-														}}
-													/>
-												</div>
-											</FormControl>
-											<FormMessage />
-										</FormItem>
-									)}
-								/>
-								<Separator />
-								<h2 className="text-2xl">Contact Information</h2>
-								<FormField
-									control={form.control}
-									name="contact"
-									render={({ field }) => (
-										<FormItem>
-											<FormLabel>Telegram / Email</FormLabel>
-											<FormControl>
-												<Input placeholder="@Hypercerts" {...field} />
-											</FormControl>
-											<FormMessage />
-										</FormItem>
-									)}
-								/>
-								<FormField
-									control={form.control}
-									name="confirmContributorsPermission"
-									render={({ field }) => (
-										<FormItem className="flex flex-row items-center space-x-3 space-y-0 p-2">
-											<FormControl>
-												<Checkbox
-													checked={field.value}
-													onCheckedChange={field.onChange}
-												/>
-											</FormControl>
-											<div className="space-y-1 leading-none">
-												<FormLabel>
-													I confirm that all listed contributors gave their
-													permission to include their work in this hypercert.
-												</FormLabel>
-											</div>
-										</FormItem>
-									)}
-								/>
-								<FormField
-									control={form.control}
-									name="acceptTerms"
-									render={({ field }) => (
-										<FormItem className="flex flex-row items-center space-x-3 space-y-0 p-2">
-											<FormControl>
-												<Checkbox
-													checked={field.value}
-													onCheckedChange={field.onChange}
-												/>
-											</FormControl>
-											<div className="space-y-1 leading-none">
-												<FormLabel>
-													I agree to the{" "}
-													<a
-														href="https://hypercerts.org/terms/"
-														target="_blank"
-														rel="noopener noreferrer"
-														className="text-blue-600"
-													>
-														Terms & Conditions
-													</a>
-												</FormLabel>
-											</div>
-										</FormItem>
-									)}
-								/>
-								<Button
-									type="submit"
-									className="flex w-full gap-2 rounded-md py-6"
-								>
-									Submit
-								</Button>
+								<div className="flex w-full items-center justify-end gap-2">
+									<Button type="submit" className="gap-2">
+										Submit <ArrowRight size={16} />
+									</Button>
+								</div>
 							</CardContent>
 						</Card>
-						<div className="flex justify-center md:block md:justify-start">
+						<div className="flex w-full justify-center rounded-3xl bg-beige-muted p-8 md:block md:w-auto md:justify-start md:bg-transparent md:p-0">
 							<HypercertCard
 								title={form.watch("title") || undefined}
 								description={form.watch("description") || undefined}
 								banner={form.watch("banner") || undefined}
 								logo={form.watch("logo") || undefined}
-								workStartDate={form.watch("projectDates.workStartDate")}
-								workEndDate={form.watch("projectDates.workEndDate")}
+								workStartDate={form.watch("projectDates.0")}
+								workEndDate={form.watch("projectDates.1")}
 								badges={badges}
 								displayOnly={true}
 								ref={imageRef}
