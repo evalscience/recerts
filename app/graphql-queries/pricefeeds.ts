@@ -1,4 +1,3 @@
-import { hyperboardId } from "@/config/hypercert";
 import { typeCastApiResponseToBigInt } from "@/lib/utils";
 import type { ApiError } from "@/types/api";
 import { type ResultOf, graphql } from "gql.tada";
