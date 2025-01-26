@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { calculateBigIntPercentage } from "@/lib/calculateBigIntPercentage";
 import { ArrowRight, ChevronRight } from "lucide-react";
 import React from "react";
+import PaymentFlow from "./PaymentFlow";
 
 const FundingProgressView = ({ hypercert }: { hypercert: FullHypercert }) => {
 	const { totalUnits, unitsForSale, pricePerPercentInUSD } = hypercert;
@@ -28,11 +29,13 @@ const FundingProgressView = ({ hypercert }: { hypercert: FullHypercert }) => {
 					</span>
 				</div>
 			</div>
-			<Progress percentage={percentCompleted} className="mt-2" />
+			<Progress percentage={percentCompleted} className="mt-2 bg-beige-muted" />
 			<div className="mt-4 flex items-center justify-end">
-				<Button className="gap-2" size={"sm"}>
-					Buy <ArrowRight size={16} />
-				</Button>
+				<PaymentFlow hypercert={hypercert}>
+					<Button className="gap-2" size={"sm"}>
+						Buy <ArrowRight size={16} />
+					</Button>
+				</PaymentFlow>
 			</div>
 		</div>
 	);

@@ -9,6 +9,7 @@ import { blo } from "blo";
 import { Loader2, UserRound } from "lucide-react";
 import { useEffect, useState } from "react";
 import { mainnet } from "viem/chains";
+import EthAvatar from "../ui/eth-avatar";
 import { ConnectButton } from "./connect-button";
 import UserSheet from "./user-sheet";
 
@@ -21,12 +22,7 @@ const WalletProfile = () => {
 
 	return (
 		<UserSheet>
-			<Avatar className="h-10 w-10">
-				<AvatarImage src={address ? blo(address) : ""} alt="ENS Avatar" />
-				<AvatarFallback>
-					<UserRound />
-				</AvatarFallback>
-			</Avatar>
+			<EthAvatar address={address ? address : "0x0"} size={40} />
 		</UserSheet>
 	);
 };

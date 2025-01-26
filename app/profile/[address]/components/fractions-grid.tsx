@@ -14,20 +14,20 @@ const FractionsGrid = ({
 
 	const filteredUniqueHypercertFractions: FractionWithCountAndWorth[] = [];
 
-	const addWorths = <T extends number | undefined | null>(
-		worth1: T,
-		worth2: T,
-	): number | T => {
-		const type1 = typeof worth1;
-		const type2 = typeof worth2;
-		if (type1 === type2 && type1 !== "number") {
-			return worth1;
-		}
-		if (type1 !== "number" || type2 !== "number") {
-			return (worth1 ?? 0) + (worth2 ?? 0);
-		}
-		return Number(worth1) + Number(worth2);
-	};
+	const addWorths = useCallback(
+		<T extends number | undefined | null>(worth1: T, worth2: T): number | T => {
+			const type1 = typeof worth1;
+			const type2 = typeof worth2;
+			if (type1 === type2 && type1 !== "number") {
+				return worth1;
+			}
+			if (type1 !== "number" || type2 !== "number") {
+				return (worth1 ?? 0) + (worth2 ?? 0);
+			}
+			return Number(worth1) + Number(worth2);
+		},
+		[],
+	);
 
 	const filterFractionsWithSameHypercertId = () => {
 		for (const fraction of fractions) {
@@ -51,7 +51,7 @@ const FractionsGrid = ({
 				};
 				filteredUniqueHypercertFractions[existingHypercertFractionIndex] =
 					newHypercertFraction;
-				return;
+				continue;
 			}
 
 			const newFraction: FractionWithCountAndWorth = {
