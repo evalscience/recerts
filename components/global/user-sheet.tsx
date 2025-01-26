@@ -20,7 +20,15 @@ import { useState } from "react";
 import { useAccount } from "wagmi";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { Button } from "../ui/button";
+import ENSName from "../ui/ens-name";
+import EthAvatar from "../ui/eth-avatar";
 import { Sheet, SheetContent, SheetTrigger } from "../ui/sheet";
+import {
+	Tooltip,
+	TooltipContent,
+	TooltipProvider,
+	TooltipTrigger,
+} from "../ui/tooltip";
 
 const UserSheet = ({ children }: { children: React.ReactNode }) => {
 	const [open, setOpen] = useState(false);
@@ -45,9 +53,7 @@ const UserSheet = ({ children }: { children: React.ReactNode }) => {
 
 	return (
 		<Sheet open={open} onOpenChange={setOpen}>
-			<SheetTrigger className="cursor-pointer" asChild>
-				{children}
-			</SheetTrigger>
+			<SheetTrigger className="cursor-pointer">{children}</SheetTrigger>
 			<SheetContent className="group flex flex-col items-center justify-start">
 				<div className="relative w-full">
 					<Image
@@ -105,27 +111,36 @@ const UserSheet = ({ children }: { children: React.ReactNode }) => {
 				) : (
 					<div className="-mt-12 flex w-full flex-1 flex-col">
 						<div className="flex w-full flex-col items-center gap-4 px-4">
-							<Avatar className="h-24 w-24 border-4 border-foreground shadow-xl">
-								<AvatarImage
-									src={address ? blo(address) : ""}
-									alt="ENS Avatar"
-								/>
-								<AvatarFallback>
-									<UserRound />
-								</AvatarFallback>
-							</Avatar>
+							<EthAvatar
+								address={address as `0x${string}`}
+								size={96}
+								className="border-4 border-foreground shadow-xl"
+							/>
 							<span className="flex w-[80%] items-center justify-center break-all text-center font-bold text-lg text-muted-foreground leading-none">
-								{address}
+								<span>
+									<ENSName address={address} />
+								</span>
+								<TooltipProvider>
+									<Tooltip>
+										<TooltipTrigger asChild>
+											<Button
+												variant={"ghost"}
+												onClick={copyAddress}
+												disabled={!address}
+											>
+												{isAddressCopied ? (
+													<CopyCheck size={16} />
+												) : (
+													<Copy size={16} />
+												)}
+											</Button>
+										</TooltipTrigger>
+										<TooltipContent>
+											{isAddressCopied ? "Copied" : "Copy Address"}
+										</TooltipContent>
+									</Tooltip>
+								</TooltipProvider>
 							</span>
-							<Button
-								variant={"ghost"}
-								className="-mt-2 mb-2 gap-2"
-								onClick={copyAddress}
-								disabled={!address}
-							>
-								{isAddressCopied ? <CopyCheck size={16} /> : <Copy size={16} />}
-								{isAddressCopied ? "Copied" : "Copy Address"}
-							</Button>
 						</div>
 						<div className="flex w-full flex-1 flex-col items-center p-4">
 							<ul className="flex w-full flex-1 flex-col gap-1">
@@ -140,17 +155,17 @@ const UserSheet = ({ children }: { children: React.ReactNode }) => {
 										</Button>
 									</Link>
 								</li>
-								<li className="w-full">
-									<Link href={`/profile/${address}/settings`}>
-										<Button
-											className="w-full justify-start gap-2 text-left"
-											variant={"secondary"}
-										>
-											<Settings size={16} />
-											Settings
-										</Button>
-									</Link>
-								</li>
+								{/* <li className="w-full">
+                  <Link href={`/profile/${address}/settings`}>
+                    <Button
+                      className="w-full justify-start gap-2 text-left"
+                      variant={"secondary"}
+                    >
+                      <Settings size={16} />
+                      Settings
+                    </Button>
+                  </Link>
+                </li> */}
 							</ul>
 							<Button
 								variant={"destructive"}

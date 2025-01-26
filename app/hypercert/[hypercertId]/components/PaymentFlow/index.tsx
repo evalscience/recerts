@@ -3,14 +3,14 @@ import type { FullHypercert } from "@/app/graphql-queries/hypercerts";
 import { Button } from "@/components/ui/button";
 import {
 	Dialog,
-	DialogClose,
+	DialogCancel,
 	DialogContent,
 	DialogDescription,
 	DialogFooter,
 	DialogHeader,
 	DialogTitle,
 	DialogTrigger,
-} from "@/components/ui/modern-dialog";
+} from "@/components/ui/modern-dialog-extended";
 import Image from "next/image";
 import type React from "react";
 import usePaymentFlowDialog from "./hooks/usePaymentFlowDialog";
@@ -66,7 +66,7 @@ const PaymentFlowDialog = ({
 				</DialogHeader>
 				<div className="flex-1">{content}</div>
 				<DialogFooter>
-					<DialogClose asChild>
+					<DialogCancel asChild>
 						{transactionReceipt ? (
 							<Button
 								onClick={() => {
@@ -85,7 +85,7 @@ const PaymentFlowDialog = ({
 								Cancel
 							</Button>
 						)}
-					</DialogClose>
+					</DialogCancel>
 					{nextButton}
 				</DialogFooter>
 			</DialogContent>

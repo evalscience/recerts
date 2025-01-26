@@ -1,7 +1,7 @@
 "use client";
 import type { Fraction } from "@/app/graphql-queries/user-fractions";
 import React, { useEffect, useMemo } from "react";
-import FractionsGrid from "./fractions-grd";
+import FractionsGrid from "./fractions-grid";
 import useFractionsWorthInUSD from "./hooks/useGetFractionsWorth";
 import StatCard from "./stat-card";
 
@@ -25,7 +25,7 @@ const Content = ({ fractions }: { fractions: Fraction[] }) => {
 
 	return (
 		<section className="flex flex-1 flex-col gap-8">
-			<section className="flex items-center gap-4">
+			<section className="flex items-stretch gap-4">
 				<StatCard title={"Hypercerts supported"} display={fractions.length} />
 				<StatCard
 					title={"Total contributions"}
@@ -33,7 +33,10 @@ const Content = ({ fractions }: { fractions: Fraction[] }) => {
 						totalContributionsWorthInUSD === undefined ? (
 							<div className="h-10 w-40 animate-pulse rounded-lg bg-beige-muted-foreground/20" />
 						) : (
-							`USD ${Math.floor(totalContributionsWorthInUSD * 100) / 100}`
+							<>
+								<span className="text-base">USD</span>{" "}
+								{Math.floor(totalContributionsWorthInUSD * 100) / 100}
+							</>
 						)
 					}
 				/>

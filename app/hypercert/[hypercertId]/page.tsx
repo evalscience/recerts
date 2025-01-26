@@ -11,6 +11,7 @@ import { Separator } from "@/components/ui/separator";
 import { bigintToFormattedDate } from "@/lib/utils";
 import type { ApiError } from "@/types/api";
 import { ChevronLeft } from "lucide-react";
+import { unstable_cache } from "next/cache";
 import Link from "next/link";
 import React from "react";
 import CreatorAddress from "./components/creator-address";
@@ -22,10 +23,18 @@ type PageProps = {
 	params: { hypercertId: string };
 };
 
+const getCachedHypercert = unstable_cache(
+	async (hypercertId: string) => fetchFullHypercertById(hypercertId),
+	["full-hypercert"],
+	{
+		revalidate: 10,
+	},
+);
+
 const Page = async ({ params }: PageProps) => {
 	const { hypercertId } = params;
 	const [error, hypercert] = await catchError<FullHypercert, ApiError>(
-		fetchFullHypercertById(hypercertId),
+		getCachedHypercert(hypercertId),
 	);
 
 	if (error) {
