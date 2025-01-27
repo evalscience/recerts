@@ -23,24 +23,26 @@ const EvaluationDetails = () => {
           GainForest.Earth
         </span>
       </div> */}
-			<div className="mt-4 flex w-full flex-col gap-2">
-				<span className="font-bold text-muted-foreground text-sm">
-					Other Evaluators:
-				</span>
-				<ul className="flex flex-wrap items-center gap-1">
-					<UserChip address="0x012345678910" />
-					<UserChip address="0x012345678910" />
-					<UserChip address="0x012345678910" />
-					<UserChip address="0x012345678910" />
-					<UserChip address="0x012345678910" />
-					<li className="flex h-8 items-center justify-center rounded-full border border-border bg-muted px-2 text-sm">
-						+2
-					</li>
-					<Button variant={"ghost"} size={"sm"}>
-						View all
-					</Button>
-				</ul>
-			</div>
+			{false && (
+				<div className="mt-4 flex w-full flex-col gap-2">
+					<span className="font-bold text-muted-foreground text-sm">
+						Other Evaluators:
+					</span>
+					<ul className="flex flex-wrap items-center gap-1">
+						<UserChip address="0x012345678910" />
+						<UserChip address="0x012345678910" />
+						<UserChip address="0x012345678910" />
+						<UserChip address="0x012345678910" />
+						<UserChip address="0x012345678910" />
+						<li className="flex h-8 items-center justify-center rounded-full border border-border bg-muted px-2 text-sm">
+							+2
+						</li>
+						<Button variant={"ghost"} size={"sm"}>
+							View all
+						</Button>
+					</ul>
+				</div>
+			)}
 		</div>
 	);
 };
