@@ -15,6 +15,16 @@ export type MapData = {
 	baseUrl: string;
 	metadata: HypercertMetadata;
 };
+
+type ValidatedProperties = {
+	properties: Array<{
+		trait_type: string;
+		type: string;
+		src: string;
+		name: string;
+	}>;
+};
+
 export default function MapRenderer({ uri }: MapRendererProps) {
 	const [mapData, setMapData] = useState<MapData | null>(null);
 	const [error, setError] = useState<string | null>(null);
@@ -31,12 +41,18 @@ export default function MapRenderer({ uri }: MapRendererProps) {
 					throw new Error("Invalid metadata");
 				}
 				// Type assertion since we've validated the data
-				const validatedData = validationResult.data as {
-					properties: Array<{ src: string }>;
-				};
+				const validatedData = validationResult.data as ValidatedProperties;
 
-				// Now TypeScript knows the structure
-				const geoJSONUri = validatedData.properties[0].src;
+				// Find the property with trait_type "geoJSON"
+				const geoJSONProperty = validatedData.properties.find(
+					(prop) => prop.trait_type === "geoJSON",
+				);
+
+				if (!geoJSONProperty) {
+					throw new Error("No site boundary found");
+				}
+
+				const geoJSONUri = geoJSONProperty.src;
 
 				const cidRegex = /^ipfs:\/\/(.+)$/;
 				const match = geoJSONUri.match(cidRegex);
@@ -46,7 +62,7 @@ export default function MapRenderer({ uri }: MapRendererProps) {
 				}
 
 				const cid = match[1];
-				const _baseUrl = `https://impact-evaluator-demo.vercel.app/?geojsonUrl=https://gateway.pinata.cloud/ipfs/${cid}`;
+				const _baseUrl = `https://www.trace.gainforest.app/?geojsonUrl=https://gateway.pinata.cloud/ipfs/${cid}`;
 
 				setMapData({
 					baseUrl: _baseUrl,
