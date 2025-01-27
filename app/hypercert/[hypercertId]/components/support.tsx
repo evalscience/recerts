@@ -7,7 +7,7 @@ import { calculateBigIntPercentage } from "@/lib/calculateBigIntPercentage";
 import { bigintToFormattedDate } from "@/lib/utils";
 import { blo } from "blo";
 import { Calendar, HandHeart, UserCircle2 } from "lucide-react";
-import React from "react";
+import type React from "react";
 import BuyButton from "./BuyButtonWrapper";
 import PaymentFlow from "./PaymentFlow";
 
@@ -15,16 +15,40 @@ const BuyFraction = ({
 	text,
 	hypercert,
 }: {
-	text: string;
+	text: React.ReactNode;
 	hypercert: FullHypercert;
 }) => {
 	return (
-		<div className="flex w-full flex-col items-center rounded-xl border border-border bg-background px-8 py-4">
-			<HandHeart size={50} className="text-gray-400 dark:text-gray-700" />
-			<p className="mt-2">{text}</p>
-			<PaymentFlow hypercert={hypercert}>
-				<Button>Support</Button>
-			</PaymentFlow>
+		<div className="d relative flex w-full flex-col items-center overflow-hidden px-8 py-4 pt-8">
+			<div className="-bottom-20 absolute h-32 w-full rounded-full bg-gradient-to-r from-primary/20 to-primary/40 blur-xl" />
+			<div className="relative flex items-center justify-center">
+				<div className="absolute h-12 w-12 rounded-full bg-beige-muted-foreground/40 blur-lg" />
+				<HandHeart
+					size={50}
+					className="scale-100 text-beige-muted-foreground"
+				/>
+			</div>
+			<div className="mt-2 scale-100">{text}</div>
+		</div>
+	);
+};
+
+const Wrapper = ({
+	children,
+	buyFraction,
+}: {
+	children: React.ReactNode;
+	buyFraction: React.ReactNode;
+}) => {
+	return (
+		<div className="w-full overflow-hidden rounded-2xl border border-border bg-background">
+			<section className="flex w-full flex-col gap-4 p-4">
+				<h2 className="font-baskerville font-bold text-muted-foreground text-xl">
+					Support
+				</h2>
+				{children}
+			</section>
+			{buyFraction}
 		</div>
 	);
 };
@@ -34,81 +58,80 @@ const Support = ({ hypercert }: { hypercert: FullHypercert }) => {
 	const salesCount = hypercert.sales?.length ?? 0;
 	if (salesCount === 0) {
 		return (
-			<BuyFraction
-				text="Be the first to support this contribution."
-				hypercert={hypercert}
+			<Wrapper
+				buyFraction={
+					<BuyFraction
+						text={
+							<p className="flex flex-col items-center justify-center text-center">
+								<span className="font-bold text-lg">
+									Be the pioneer, lead the way.
+								</span>
+								<span>
+									Be the very first to support this hypercert by owning a piece.
+								</span>
+							</p>
+						}
+						hypercert={hypercert}
+					/>
+				}
+				children={null}
 			/>
 		);
 	}
-	//   const DUMMY = [
-	//     {
-	//       creation_block_timestamp: 1729230541n,
-	//       amounts: [1000000n],
-	//       buyer: "0x1C9F765C579F94f6502aCd9fc356171d85a1F8D0",
-	//       transaction_hash:
-	//         "0xbc36ab98575c0e197834d3ce238cd03df695728d7855795701ee2d966d7d9b1e",
-	//     },
-	//     {
-	//       creation_block_timestamp: 1729233725n,
-	//       amounts: [1000000n],
-	//       buyer: "0x2f5416f811E73111269BF4bA3c1Cf1DE0AeEFeD1",
-	//       transaction_hash:
-	//         "0x23a668c471eaff0ed6cbed9be504a122c4ab4ce6d00f9d89c4b5c0d7d3227973",
-	//     },
-	//     {
-	//       creation_block_timestamp: 1729236921n,
-	//       amounts: [83333n],
-	//       buyer: "0xBEa26DE685Ef828b60cA53b40Ecc9Bab35645fDF",
-	//       transaction_hash:
-	//         "0x1950a5ca8fead2fae235b56ef4b42ac80f05370096910f18cc578c1c18abd755",
-	//     },
-	//     {
-	//       creation_block_timestamp: 1729245763n,
-	//       amounts: [416666n],
-	//       buyer: "0x223c656ED35bFB7A8E358140ca1E2077BE090b2E",
-	//       transaction_hash:
-	//         "0x7436c32a04e43643bef629ac79f99012736954c6aa2bef018fb1ff4a87771c9d",
-	//     },
-	//   ];
 
 	return (
-		<div className="flex w-full flex-col gap-2">
-			<ul className="flex w-full flex-col gap-1">
-				{hypercert.sales?.map((sale) => {
-					const soldUnits = sale.amounts.reduce((acc, curr) => acc + curr, 0n);
-					const percent = calculateBigIntPercentage(soldUnits, totalUnits);
-
-					return (
-						<li
-							key={sale.transactionHash}
-							className="flex items-center justify-between rounded-2xl border border-border bg-background px-4 py-2"
-						>
-							<div className="flex items-center gap-4">
-								<EthAvatar address={sale.buyer as `0x${string}`} size={40} />
-								<div className="flex h-full flex-col items-start gap-1">
-									<EthAddress address={sale.buyer} />
-									<span className="flex items-center text-muted-foreground text-sm">
-										<Calendar size={14} className="mr-2" />
-										<span>
-											{bigintToFormattedDate(sale.creationBlockTimestamp)}
-										</span>
-									</span>
-								</div>
-							</div>
-							<span className="font-bold text-lg text-primary">
-								{pricePerPercentInUSD === undefined || percent === undefined
-									? "N/A"
-									: `$${(pricePerPercentInUSD * percent).toFixed(2)}`}
+		<Wrapper
+			buyFraction={
+				<BuyFraction
+					text={
+						<p className="flex flex-col items-center justify-center text-center">
+							<span className="font-bold text-lg">
+								Join the movement and make a difference.
 							</span>
-						</li>
-					);
-				})}
-			</ul>
-			<BuyFraction
-				text="To support this contribution, buy a fraction of the hypercert."
-				hypercert={hypercert}
-			/>
-		</div>
+							<span>Grab your share of the hypercert today!</span>
+						</p>
+					}
+					hypercert={hypercert}
+				/>
+			}
+		>
+			<div className="flex w-full flex-col gap-2">
+				<ul className="flex w-full flex-col gap-1">
+					{hypercert.sales?.map((sale) => {
+						const soldUnits = sale.amounts.reduce(
+							(acc, curr) => acc + curr,
+							0n,
+						);
+						const percent = calculateBigIntPercentage(soldUnits, totalUnits);
+
+						return (
+							<li
+								key={sale.transactionHash}
+								className="flex items-center justify-between rounded-2xl border border-border bg-background px-4 py-2"
+							>
+								<div className="flex items-center gap-4">
+									<EthAvatar address={sale.buyer as `0x${string}`} size={40} />
+									<div className="flex h-full flex-col items-start gap-1">
+										<EthAddress address={sale.buyer} />
+										<span className="flex items-center text-muted-foreground text-sm">
+											<Calendar size={14} className="mr-2" />
+											<span>
+												{bigintToFormattedDate(sale.creationBlockTimestamp)}
+											</span>
+										</span>
+									</div>
+								</div>
+								<span className="font-bold text-lg text-primary">
+									{pricePerPercentInUSD === undefined || percent === undefined
+										? "N/A"
+										: `$${(pricePerPercentInUSD * percent).toFixed(2)}`}
+								</span>
+							</li>
+						);
+					})}
+				</ul>
+			</div>
+		</Wrapper>
 	);
 };
 
