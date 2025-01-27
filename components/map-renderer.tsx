@@ -12,7 +12,6 @@ interface MapRendererProps {
 }
 
 export type MapData = {
-	geoJSON: unknown;
 	baseUrl: string;
 	metadata: HypercertMetadata;
 };
@@ -31,16 +30,25 @@ export default function MapRenderer({ uri }: MapRendererProps) {
 				if (!validationResult.valid) {
 					throw new Error("Invalid metadata");
 				}
+				// Type assertion since we've validated the data
+				const validatedData = validationResult.data as {
+					properties: Array<{ src: string }>;
+				};
 
-				// @ts-ignore
-				const geoJSON = JSON.parse(validationResult.data.properties[0].value);
-				const polygon = geoJSON.features[0].geometry.coordinates[0];
-				const _baseUrl = `https://www.trace.gainforest.app/?polygon=${encodeURI(
-					JSON.stringify(polygon),
-				)}&satellite=true`;
+				// Now TypeScript knows the structure
+				const geoJSONUri = validatedData.properties[0].src;
+
+				const cidRegex = /^ipfs:\/\/(.+)$/;
+				const match = geoJSONUri.match(cidRegex);
+
+				if (!match) {
+					throw new Error("Invalid IPFS URI format");
+				}
+
+				const cid = match[1];
+				const _baseUrl = `https://impact-evaluator-demo.vercel.app/?geojsonUrl=https://gateway.pinata.cloud/ipfs/${cid}`;
 
 				setMapData({
-					geoJSON,
 					baseUrl: _baseUrl,
 					metadata: validationResult.data as HypercertMetadata,
 				});
