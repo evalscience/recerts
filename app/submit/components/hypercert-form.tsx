@@ -1,6 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import * as turf from "@turf/turf";
 import { format } from "date-fns";
 import { ArrowRight, CalendarIcon, TriangleAlert } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -99,6 +100,12 @@ const HypercertMintSchema = z.object({
 	acceptTerms: z.boolean(),
 	confirmContributorsPermission: z.boolean(),
 	geojson: z.string().optional(),
+	areaActivity: z.enum(
+		["Restoration", "Conservation", "Landscape", "Community", "Science"],
+		{
+			required_error: "Please select what you're doing with this area",
+		},
+	),
 });
 
 type MintingFormValues = z.infer<typeof HypercertMintSchema>;
@@ -108,6 +115,7 @@ const HypercertForm = () => {
 	const [badges, setBadges] = useState<string[]>([]);
 	const [openMintDialog, setOpenMintDialog] = useState(false);
 	const [geoJSONFile, setGeoJSONFile] = useState<File | null>(null);
+	const [geoJSONArea, setGeoJSONArea] = useState<number | null>(null);
 	const {
 		mintHypercert,
 		mintStatus,
@@ -137,22 +145,72 @@ const HypercertForm = () => {
 			acceptTerms: false,
 			confirmContributorsPermission: false,
 			geojson: "",
+			areaActivity: undefined,
 		},
 		mode: "onChange",
 	});
 
 	const tags = form.watch("tags") || "";
 	useEffect(() => {
+		const calculateArea = async () => {
+			let geoJSONData = null;
+			const geoJSONUrl = form.getValues("geojson");
+
+			try {
+				if (geoJSONUrl) {
+					const response = await fetch(geoJSONUrl);
+					geoJSONData = await response.json();
+				} else if (geoJSONFile) {
+					const text = await geoJSONFile.text();
+					geoJSONData = JSON.parse(text);
+				}
+
+				if (geoJSONData) {
+					const area = turf.area(geoJSONData);
+					setGeoJSONArea(Math.round(area / 10000));
+				} else {
+					setGeoJSONArea(null);
+				}
+			} catch (error) {
+				console.error("Error calculating area:", error);
+				setGeoJSONArea(null);
+			}
+		};
+
+		calculateArea();
+	}, [geoJSONFile, form]);
+
+	useEffect(() => {
+		const areaActivity = form.getValues("areaActivity");
+
 		if (tags) {
 			const tagArray = tags
 				.split(",")
 				.map((tag) => tag.trim())
 				.filter((tag) => tag !== "");
-			setBadges(["🌱", ...tagArray]);
+			const baseBadges = [...tagArray];
+
+			// Add area badges if available
+			const areaBadges = [];
+			if (geoJSONArea) {
+				areaBadges.push(`⭔ ${geoJSONArea} ha`);
+			}
+			if (areaActivity) {
+				areaBadges.push(`🌱 ${areaActivity}`);
+			}
+
+			setBadges([...areaBadges, ...baseBadges]);
 		} else {
-			setBadges(["🌱"]);
+			const areaBadges = [];
+			if (geoJSONArea) {
+				areaBadges.push(`⭔ ${geoJSONArea} ha`);
+			}
+			if (areaActivity) {
+				areaBadges.push(`🌱 ${areaActivity}`);
+			}
+			setBadges(areaBadges);
 		}
-	}, [tags]);
+	}, [tags, geoJSONArea, form]);
 
 	const generateImage = async () => {
 		if (imageRef.current === null) {
@@ -342,6 +400,45 @@ const HypercertForm = () => {
 									<div className="flex flex-col gap-4 rounded-2xl bg-background p-4">
 										<FormField
 											control={form.control}
+											name="areaActivity"
+											render={({ field }) => (
+												<FormItem>
+													<FormLabel>
+														What are you doing with this area?
+													</FormLabel>
+													<FormControl>
+														<select
+															className="w-full rounded-md border border-input bg-background px-3 py-2"
+															{...field}
+															value={field.value || ""}
+														>
+															<option value="" disabled>
+																Select an activity...
+															</option>
+															<option value="Restoration">
+																Restoration - Bringing nature back
+															</option>
+															<option value="Conservation">
+																Conservation - Letting nature do its own thing
+															</option>
+															<option value="Landscape">
+																Landscape - Managing diverse activities
+															</option>
+															<option value="Community">
+																Community - Empowering local community
+															</option>
+															<option value="Science">
+																Science - Researching and monitoring
+															</option>
+														</select>
+													</FormControl>
+													<FormMessage />
+												</FormItem>
+											)}
+										/>
+
+										<FormField
+											control={form.control}
 											name="tags"
 											render={({ field }) => (
 												<FormItem>
@@ -432,118 +529,6 @@ const HypercertForm = () => {
 											/>
 										</div>
 
-										{/* <div className="flex flex-col gap-2 md:flex-row">
-                      <FormField
-                        control={form.control}
-                        name="projectDates.workStartDate"
-                        render={({ field }) => (
-                          <FormItem className="flex w-full flex-col">
-                            <FormLabel>Work Start Date</FormLabel>
-                            <Popover>
-                              <PopoverTrigger asChild>
-                                <FormControl>
-                                  <Button
-                                    variant={"outline"}
-                                    className={cn(
-                                      "w-full rounded-sm border-input pl-3 text-left font-normal",
-                                      !field.value && "text-muted-foreground"
-                                    )}
-                                  >
-                                    {field.value ? (
-                                      format(field.value, "PPP")
-                                    ) : (
-                                      <span>Pick a date</span>
-                                    )}
-                                    <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                                  </Button>
-                                </FormControl>
-                              </PopoverTrigger>
-
-                              <PopoverContent
-                                className="w-auto p-0"
-                                align="start"
-                              >
-                                <Calendar
-                                  mode="single"
-                                  selected={field.value}
-                                  onSelect={field.onChange}
-                                  disabled={(date) =>
-                                    date >
-                                    form.watch("projectDates.workEndDate")
-                                  }
-                                  initialFocus
-                                />
-                              </PopoverContent>
-                            </Popover>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                      <FormField
-                        control={form.control}
-                        name="projectDates.workEndDate"
-                        render={({ field }) => (
-                          <FormItem className="flex w-full flex-col">
-                            <FormLabel>Work End Date</FormLabel>
-                            <Popover>
-                              <PopoverTrigger asChild>
-                                <FormControl>
-                                  <Button
-                                    variant={"outline"}
-                                    className={cn(
-                                      "w-full rounded-sm border-input pl-3 text-left font-normal",
-                                      !field.value && "text-muted-foreground"
-                                    )}
-                                  >
-                                    {field.value ? (
-                                      format(field.value, "PPP")
-                                    ) : (
-                                      <span>Pick a date</span>
-                                    )}
-                                    <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                                  </Button>
-                                </FormControl>
-                              </PopoverTrigger>
-                              <PopoverContent
-                                className="w-auto p-0"
-                                align="start"
-                              >
-                                <Calendar
-                                  mode="single"
-                                  selected={field.value}
-                                  onSelect={field.onChange}
-                                  disabled={(date) =>
-                                    date <
-                                    form.watch("projectDates.workStartDate")
-                                  }
-                                  initialFocus
-                                />
-                              </PopoverContent>
-                            </Popover>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                    </div> */}
-										<FormField
-											control={form.control}
-											name="contributors"
-											render={({ field }) => (
-												<FormItem>
-													<FormLabel>
-														List of Contributors to the Work
-													</FormLabel>
-													<FormControl>
-														<Textarea
-															className="bg-inherit"
-															placeholder="0xWalletAddress1, 0xWalletAddress2, ..."
-															{...field}
-														/>
-													</FormControl>
-													<FormMessage />
-												</FormItem>
-											)}
-										/>
 										<FormField
 											control={form.control}
 											name="geojson"

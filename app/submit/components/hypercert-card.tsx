@@ -53,7 +53,7 @@ const HypercertCard = forwardRef<HTMLDivElement, HypercertCardProps>(
 			) : null;
 
 		const maxVisibleTags = 6;
-		const maxBadgeLength = 14;
+		const maxBadgeLength = 18;
 
 		const clipBadge = (badge: string) =>
 			badge.length > maxBadgeLength
@@ -109,7 +109,7 @@ const HypercertCard = forwardRef<HTMLDivElement, HypercertCardProps>(
 					</h5>
 					<section className="border-black border-t-[1.5px]">
 						<div className="flex items-center justify-between pt-1 pb-2">
-							<span className="font-medium text-xs uppercase">work</span>
+							<span className="font-medium text-xs uppercase">ecocert</span>
 							<span className="font-medium text-xs uppercase">
 								{formattedDateRange}
 							</span>
