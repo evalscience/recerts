@@ -228,14 +228,22 @@ export type FullHypercert = {
 
 export const fetchFullHypercertById = async (
 	hypercertId: string,
+	testingLog?: string,
 ): Promise<FullHypercert> => {
+	if (testingLog) {
+		console.log("calling from fetchFullHypercertById", testingLog);
+	}
 	const [error, response] = await catchError<
 		FullHypercertByHypercertIdQueryResponse,
 		ApiError
 	>(
-		fetchGraphQL(fullHypercertByHypercertIdQuery, {
-			hypercert_id: hypercertId,
-		}),
+		fetchGraphQL(
+			fullHypercertByHypercertIdQuery,
+			{
+				hypercert_id: hypercertId,
+			},
+			testingLog,
+		),
 	);
 	if (error) {
 		throw error;
