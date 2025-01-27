@@ -46,7 +46,7 @@ export async function POST(request: Request) {
 		console.log(pinataResponse.data);
 
 		const cid = pinataResponse.data.IpfsHash;
-		const link = `https://gateway.pinata.cloud/ipfs/${cid}`;
+		const link = `ipfs://${cid}`;
 
 		return NextResponse.json({ cid, link }, { status: 200 });
 	} catch (error) {
