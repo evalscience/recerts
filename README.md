@@ -1,4 +1,4 @@
-# Kampung: Fund regenerative impact work
+# Ecocertain: Fund and proof impactful regenerative work
 
 The goal of this hypercerts platform is to enable continuous funding for all of our project partners. Funders will be able to fund any of our partner projects' impact work, and receive a fraction of that hypercert (proportional to the amount that they have funded) in return.
 

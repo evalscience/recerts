@@ -148,9 +148,9 @@ const HypercertForm = () => {
 				.split(",")
 				.map((tag) => tag.trim())
 				.filter((tag) => tag !== "");
-			setBadges([...tagArray]);
+			setBadges(["🌱", ...tagArray]);
 		} else {
-			setBadges([]);
+			setBadges(["🌱"]);
 		}
 	}, [tags]);
 
@@ -676,7 +676,6 @@ const HypercertForm = () => {
 						<div className="flex w-full justify-center rounded-3xl bg-beige-muted p-8 md:block md:w-auto md:justify-start md:bg-transparent md:p-0">
 							<HypercertCard
 								title={form.watch("title") || undefined}
-								description={form.watch("description") || undefined}
 								banner={form.watch("banner") || undefined}
 								logo={form.watch("logo") || undefined}
 								workStartDate={form.watch("projectDates.0")}

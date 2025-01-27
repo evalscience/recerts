@@ -12,7 +12,7 @@ interface SiteConfig {
 }
 
 export const siteConfig: SiteConfig = {
-  name: "Hyperforest",
+  name: "Ecocertain",
   title: "By GainForest.Earth",
   description:
     "Fund impactful regenerative projects",
