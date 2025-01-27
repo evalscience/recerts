@@ -218,7 +218,7 @@ const HypercertForm = () => {
 				properties: [
 					{
 						trait_type: "geoJSON", //human readable
-						type: "applications/geo+json", //MIME type
+						type: "application/geo+json", //MIME type
 						src: geoJSONipfsLink, //IPFS link
 						name: `${normalize(values.title.replaceAll(" ", ""))}.geojson`,
 					},
