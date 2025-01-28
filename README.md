@@ -2,7 +2,7 @@
 
 The goal of this hypercerts platform is to enable continuous funding for all of our project partners. Funders will be able to fund any of our partner projects' impact work, and receive a fraction of that hypercert (proportional to the amount that they have funded) in return.
 
-The (beta) app is accessible on hypercerts-platform.vercel.app.
+The (beta) app is accessible on [ecocertain.vercel.app](https://ecocertain.vercel.app/).
 
 Partner projects define their work scope, cost and timeline, and funders anywhere in the world can fund this project at any time.
 
