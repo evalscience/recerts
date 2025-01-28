@@ -38,6 +38,7 @@ import {
 import { Dialog } from "@/components/ui/dialog";
 import useMintHypercert from "@/hooks/use-mint-hypercert";
 import { toPng } from "html-to-image";
+import { normalize } from "viem/ens";
 import hypercertCard from "./hypercert-card";
 import HypercertCard from "./hypercert-card";
 import { HypercertMintDialog } from "./hypercert-mint-dialog";
@@ -190,6 +191,20 @@ const HypercertForm = () => {
 				}
 			}
 
+			let geoJSONipfsLink = null;
+			try {
+				const ipfsUploadResponse = await fetch("/api/ipfs-upload", {
+					method: "POST",
+					headers: { "Content-Type": "application/json" },
+					body: JSON.stringify(geoJSONData),
+				});
+
+				const data = await ipfsUploadResponse.json();
+				geoJSONipfsLink = data.link;
+			} catch (error) {
+				console.log("Error uploading GeoJSON to IPFS:", error);
+			}
+
 			const metadata: HypercertMetadata = {
 				name: values.title,
 				description: values.description,
@@ -202,8 +217,10 @@ const HypercertForm = () => {
 				version: "2.0",
 				properties: [
 					{
-						trait_type: "GeoJSON",
-						data: geoJSONData,
+						trait_type: "geoJSON", //human readable
+						type: "application/geo+json", //MIME type
+						src: geoJSONipfsLink, //IPFS link
+						name: `${normalize(values.title.replaceAll(" ", ""))}.geojson`,
 					},
 				],
 				impactScope: ["all"],
