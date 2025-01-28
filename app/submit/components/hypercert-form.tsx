@@ -531,6 +531,24 @@ const HypercertForm = () => {
 
 										<FormField
 											control={form.control}
+											name="contributors"
+											render={({ field }) => (
+												<FormItem>
+													<FormLabel>List of Contributors</FormLabel>
+													<FormControl>
+														<Textarea
+															className="bg-inherit"
+															placeholder="0xWalletAddress1, 0xWalletAddress2, ..."
+															{...field}
+														/>
+													</FormControl>
+													<FormMessage />
+												</FormItem>
+											)}
+										/>
+
+										<FormField
+											control={form.control}
 											name="geojson"
 											render={({ field }) => (
 												<FormItem>
