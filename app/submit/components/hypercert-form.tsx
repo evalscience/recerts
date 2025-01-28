@@ -1,6 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import * as turf from "@turf/turf";
 import { format } from "date-fns";
 import { ArrowRight, CalendarIcon, TriangleAlert } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -28,7 +29,6 @@ import {
 	PopoverContent,
 	PopoverTrigger,
 } from "@/components/ui/popover";
-import { Separator } from "@/components/ui/separator";
 import { Textarea } from "@/components/ui/textarea";
 import {
 	type HypercertMetadata,
@@ -38,7 +38,6 @@ import {
 import { Dialog } from "@/components/ui/dialog";
 import useMintHypercert from "@/hooks/use-mint-hypercert";
 import { toPng } from "html-to-image";
-import hypercertCard from "./hypercert-card";
 import HypercertCard from "./hypercert-card";
 import { HypercertMintDialog } from "./hypercert-mint-dialog";
 
@@ -99,6 +98,12 @@ const HypercertMintSchema = z.object({
 	acceptTerms: z.boolean(),
 	confirmContributorsPermission: z.boolean(),
 	geojson: z.string().optional(),
+	areaActivity: z.enum(
+		["Restoration", "Conservation", "Landscape", "Community", "Science"],
+		{
+			required_error: "Please select what you're doing with this area",
+		},
+	),
 });
 
 type MintingFormValues = z.infer<typeof HypercertMintSchema>;
@@ -108,6 +113,7 @@ const HypercertForm = () => {
 	const [badges, setBadges] = useState<string[]>([]);
 	const [openMintDialog, setOpenMintDialog] = useState(false);
 	const [geoJSONFile, setGeoJSONFile] = useState<File | null>(null);
+	const [geoJSONArea, setGeoJSONArea] = useState<number | null>(null);
 	const {
 		mintHypercert,
 		mintStatus,
@@ -137,22 +143,75 @@ const HypercertForm = () => {
 			acceptTerms: false,
 			confirmContributorsPermission: false,
 			geojson: "",
+			areaActivity: undefined,
 		},
 		mode: "onChange",
 	});
 
 	const tags = form.watch("tags") || "";
+	const geojsonValue = form.watch("geojson");
+	const areaActivity = form.getValues("areaActivity");
+
 	useEffect(() => {
+		const calculateArea = async () => {
+			let geoJSONData = null;
+
+			try {
+				if (geojsonValue) {
+					const response = await fetch(geojsonValue);
+					if (!response.ok) throw new Error("Failed to fetch GeoJSON");
+					geoJSONData = await response.json();
+				} else if (geoJSONFile) {
+					const text = await geoJSONFile.text();
+					geoJSONData = JSON.parse(text);
+				}
+
+				if (geoJSONData) {
+					const area = turf.area(geoJSONData);
+					const hectares = Math.round(area / 10000);
+					console.log("Calculated area:", area, "Hectares:", hectares);
+					setGeoJSONArea(hectares);
+				} else {
+					setGeoJSONArea(null);
+				}
+			} catch (error) {
+				console.error("Error calculating area:", error);
+				setGeoJSONArea(null);
+			}
+		};
+
+		calculateArea();
+	}, [geoJSONFile, geojsonValue]);
+
+	useEffect(() => {
+		// Add area badges if available
+		const areaBadges = [];
+		if (geoJSONArea) {
+			areaBadges.push(`⭔ ${geoJSONArea} ha`);
+		}
+		if (areaActivity) {
+			areaBadges.push(`🌱 ${areaActivity}`);
+		}
+
 		if (tags) {
 			const tagArray = tags
 				.split(",")
 				.map((tag) => tag.trim())
 				.filter((tag) => tag !== "");
-			setBadges([...tagArray]);
+			const baseBadges = [...tagArray];
+
+			setBadges([...areaBadges, ...baseBadges]);
 		} else {
-			setBadges([]);
+			const areaBadges = [];
+			if (geoJSONArea) {
+				areaBadges.push(`⭔ ${geoJSONArea} ha`);
+			}
+			if (areaActivity) {
+				areaBadges.push(`🌱 ${areaActivity}`);
+			}
+			setBadges(areaBadges);
 		}
-	}, [tags]);
+	}, [tags, geoJSONArea, areaActivity]);
 
 	const generateImage = async () => {
 		if (imageRef.current === null) {
@@ -239,6 +298,31 @@ const HypercertForm = () => {
 		},
 		[badges, mintHypercert, generateImage, geoJSONFile],
 	);
+
+	const getTracePreviewUrl = (
+		geojsonData: {
+			features?: Array<{ geometry: { coordinates: number[][] } }>;
+			geometry?: { coordinates: number[][] };
+		} | null,
+	) => {
+		try {
+			if (!geojsonData) return null;
+
+			// Extract coordinates from GeoJSON
+			const coordinates =
+				geojsonData.features?.[0]?.geometry?.coordinates ||
+				geojsonData.geometry?.coordinates;
+
+			if (!coordinates) return null;
+
+			// Encode the coordinates for the URL
+			const encodedPolygon = encodeURIComponent(JSON.stringify(coordinates));
+			return `https://trace.gainforest.app/?polygon=${encodedPolygon}`;
+		} catch (error) {
+			console.error("Error generating trace preview URL:", error);
+			return null;
+		}
+	};
 
 	return (
 		<Dialog open={openMintDialog} onOpenChange={setOpenMintDialog}>
@@ -342,6 +426,45 @@ const HypercertForm = () => {
 									<div className="flex flex-col gap-4 rounded-2xl bg-background p-4">
 										<FormField
 											control={form.control}
+											name="areaActivity"
+											render={({ field }) => (
+												<FormItem>
+													<FormLabel>
+														What are you doing with this area?
+													</FormLabel>
+													<FormControl>
+														<select
+															className="w-full rounded-md border border-input bg-background px-3 py-2"
+															{...field}
+															value={field.value || ""}
+														>
+															<option value="" disabled>
+																Select an activity...
+															</option>
+															<option value="Restoration">
+																Restoration - Bringing nature back
+															</option>
+															<option value="Conservation">
+																Conservation - Letting nature do its own thing
+															</option>
+															<option value="Landscape">
+																Landscape - Managing diverse activities
+															</option>
+															<option value="Community">
+																Community - Empowering local community
+															</option>
+															<option value="Science">
+																Science - Researching and monitoring
+															</option>
+														</select>
+													</FormControl>
+													<FormMessage />
+												</FormItem>
+											)}
+										/>
+
+										<FormField
+											control={form.control}
 											name="tags"
 											render={({ field }) => (
 												<FormItem>
@@ -432,107 +555,12 @@ const HypercertForm = () => {
 											/>
 										</div>
 
-										{/* <div className="flex flex-col gap-2 md:flex-row">
-                      <FormField
-                        control={form.control}
-                        name="projectDates.workStartDate"
-                        render={({ field }) => (
-                          <FormItem className="flex w-full flex-col">
-                            <FormLabel>Work Start Date</FormLabel>
-                            <Popover>
-                              <PopoverTrigger asChild>
-                                <FormControl>
-                                  <Button
-                                    variant={"outline"}
-                                    className={cn(
-                                      "w-full rounded-sm border-input pl-3 text-left font-normal",
-                                      !field.value && "text-muted-foreground"
-                                    )}
-                                  >
-                                    {field.value ? (
-                                      format(field.value, "PPP")
-                                    ) : (
-                                      <span>Pick a date</span>
-                                    )}
-                                    <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                                  </Button>
-                                </FormControl>
-                              </PopoverTrigger>
-
-                              <PopoverContent
-                                className="w-auto p-0"
-                                align="start"
-                              >
-                                <Calendar
-                                  mode="single"
-                                  selected={field.value}
-                                  onSelect={field.onChange}
-                                  disabled={(date) =>
-                                    date >
-                                    form.watch("projectDates.workEndDate")
-                                  }
-                                  initialFocus
-                                />
-                              </PopoverContent>
-                            </Popover>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                      <FormField
-                        control={form.control}
-                        name="projectDates.workEndDate"
-                        render={({ field }) => (
-                          <FormItem className="flex w-full flex-col">
-                            <FormLabel>Work End Date</FormLabel>
-                            <Popover>
-                              <PopoverTrigger asChild>
-                                <FormControl>
-                                  <Button
-                                    variant={"outline"}
-                                    className={cn(
-                                      "w-full rounded-sm border-input pl-3 text-left font-normal",
-                                      !field.value && "text-muted-foreground"
-                                    )}
-                                  >
-                                    {field.value ? (
-                                      format(field.value, "PPP")
-                                    ) : (
-                                      <span>Pick a date</span>
-                                    )}
-                                    <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                                  </Button>
-                                </FormControl>
-                              </PopoverTrigger>
-                              <PopoverContent
-                                className="w-auto p-0"
-                                align="start"
-                              >
-                                <Calendar
-                                  mode="single"
-                                  selected={field.value}
-                                  onSelect={field.onChange}
-                                  disabled={(date) =>
-                                    date <
-                                    form.watch("projectDates.workStartDate")
-                                  }
-                                  initialFocus
-                                />
-                              </PopoverContent>
-                            </Popover>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                    </div> */}
 										<FormField
 											control={form.control}
 											name="contributors"
 											render={({ field }) => (
 												<FormItem>
-													<FormLabel>
-														List of Contributors to the Work
-													</FormLabel>
+													<FormLabel>List of Contributors</FormLabel>
 													<FormControl>
 														<Textarea
 															className="bg-inherit"
@@ -544,6 +572,7 @@ const HypercertForm = () => {
 												</FormItem>
 											)}
 										/>
+
 										<FormField
 											control={form.control}
 											name="geojson"
@@ -563,7 +592,7 @@ const HypercertForm = () => {
 															/>
 															<Input
 																type="file"
-																accept=".geojson,application/geo+json"
+																accept=".geojson,.json,.txt,application/geo+json,application/json,text/plain"
 																onChange={(e) => {
 																	const file = e.target.files?.[0];
 																	if (file) {
@@ -575,6 +604,17 @@ const HypercertForm = () => {
 														</div>
 													</FormControl>
 													<FormMessage />
+													{field.value && (
+														<div className="mt-4 aspect-video w-full rounded-lg border border-border">
+															<iframe
+																src={`https://trace.gainforest.app/?geojsonUrl=${encodeURIComponent(
+																	field.value,
+																)}`}
+																className="h-full w-full rounded-lg"
+																title="GeoJSON Preview"
+															/>
+														</div>
+													)}
 												</FormItem>
 											)}
 										/>
@@ -676,7 +716,6 @@ const HypercertForm = () => {
 						<div className="flex w-full justify-center rounded-3xl bg-beige-muted p-8 md:block md:w-auto md:justify-start md:bg-transparent md:p-0">
 							<HypercertCard
 								title={form.watch("title") || undefined}
-								description={form.watch("description") || undefined}
 								banner={form.watch("banner") || undefined}
 								logo={form.watch("logo") || undefined}
 								workStartDate={form.watch("projectDates.0")}

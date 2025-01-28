@@ -86,7 +86,7 @@ const ImpactDetails = ({ hypercert }: { hypercert: FullHypercert }) => {
 					rel="noopener noreferrer"
 				>
 					<Button variant={"link"} className="group gap-1 p-0">
-						<span>View Hypercert</span>
+						<span>View Ecocert</span>
 						<ArrowUpRight
 							size={18}
 							className="group-hover:-translate-y-0.5 opacity-70 transition-transform duration-300 ease-in-out group-hover:translate-x-0.5 group-hover:opacity-100"
@@ -100,7 +100,7 @@ const ImpactDetails = ({ hypercert }: { hypercert: FullHypercert }) => {
 					rel="noopener noreferrer"
 				>
 					<Button variant={"link"} className="group gap-1 p-0">
-						<span>What is a Hypercert?</span>
+						<span>What is a Ecocert?</span>
 						<ArrowUpRight
 							size={18}
 							className="group-hover:-translate-y-0.5 opacity-70 transition-transform duration-300 ease-in-out group-hover:translate-x-0.5 group-hover:opacity-100"
