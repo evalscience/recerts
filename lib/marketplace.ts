@@ -29,7 +29,7 @@ export async function fetchOrder(hypercertId: string): Promise<Order | null> {
 				`[server] ${response.data.length} orders found for hypercert ${hypercertId}`,
 			);
 		}
-		// Assuming there is only one item per order for the VoiceDeck use case
+		// Assuming there is only one item per order for the Ecocerta use case
 		return { hypercertId, ...response.data[0] } as Order;
 	}
 	return null;
