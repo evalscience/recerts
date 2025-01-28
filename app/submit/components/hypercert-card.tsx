@@ -1,17 +1,14 @@
-import { Badge } from "@/components/ui/badge";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { Sparkle } from "lucide-react";
+import { ArrowRight, Sparkle } from "lucide-react";
 import Image from "next/image";
 import { forwardRef, memo } from "react";
 
 export interface HypercertCardProps {
 	title?: string;
-	description?: string;
-	badges?: string[];
 	banner?: string;
 	logo?: string;
 	workStartDate?: Date;
 	workEndDate?: Date;
+	badges?: string[];
 	displayOnly?: boolean;
 	hypercertId?: string;
 	contributors?: string[];
@@ -20,48 +17,58 @@ export interface HypercertCardProps {
 const HypercertCard = forwardRef<HTMLDivElement, HypercertCardProps>(
 	(
 		{
-			title = "Hypercert Title",
-			description = "Your description here",
-			badges,
+			title = "Your title here",
 			banner,
+			logo,
 			workStartDate,
 			workEndDate,
-			logo,
-			hypercertId,
+			badges = [],
 			displayOnly = false,
-			contributors = [],
 		}: HypercertCardProps,
 		ref,
 	) => {
-		title = title ?? "Your title here";
-		description = description ?? "Your description here";
-
-		// TODO: Create a date formatter function
 		const formattedDateRange =
-			workStartDate && workEndDate
-				? workStartDate === workEndDate
-					? workStartDate.toLocaleDateString("en-US", {
+			workStartDate && workEndDate ? (
+				workStartDate === workEndDate ? (
+					workStartDate.toLocaleDateString("en-US", {
+						year: "numeric",
+						month: "short",
+						day: "numeric",
+					})
+				) : (
+					<span className="flex items-center">
+						{workStartDate.toLocaleDateString("en-US", {
 							year: "numeric",
 							month: "short",
 							day: "numeric",
-					  })
-					: `${workStartDate.toLocaleDateString("en-US", {
+						})}
+						<ArrowRight size={12} className="mx-1 inline" />
+						{workEndDate.toLocaleDateString("en-US", {
 							year: "numeric",
 							month: "short",
 							day: "numeric",
-					  })} - ${workEndDate.toLocaleDateString("en-US", {
-							year: "numeric",
-							month: "short",
-							day: "numeric",
-					  })}`
-				: "";
+						})}
+					</span>
+				)
+			) : null;
+
+		const maxVisibleTags = 6;
+		const maxBadgeLength = 18;
+
+		const clipBadge = (badge: string) =>
+			badge.length > maxBadgeLength
+				? `${badge.slice(0, maxBadgeLength - 3)}...`
+				: badge;
+
+		const visibleBadges = badges.slice(0, maxVisibleTags).map(clipBadge);
+		const hiddenBadgesCount = badges.length - visibleBadges.length;
 
 		return (
 			<article
 				ref={ref}
-				className="relative w-[275px] overflow-clip rounded-xl border-[1.5px] border-slate-500 bg-black"
+				className="relative h-[420px] w-[336px] overflow-clip rounded-xl border-[1px] border-black bg-black"
 			>
-				<header className="relative flex h-[135px] w-full items-center justify-center overflow-clip rounded-b-xl">
+				<header className="relative flex h-[173px] w-full items-center justify-center overflow-clip rounded-b-xl">
 					{banner ? (
 						<Image
 							src={`https://cors-proxy.hypercerts.workers.dev/?url=${banner}`}
@@ -93,39 +100,43 @@ const HypercertCard = forwardRef<HTMLDivElement, HypercertCardProps>(
 						)}
 					</div>
 				</section>
-				<section className="space-y-2 rounded-t-xl border-black border-t-[1.5px] bg-white p-3 pt-4">
-					<div className="flex items-center">
-						<span className="text-slate-600 text-xs uppercase">
-							{formattedDateRange}
-						</span>
-					</div>
+				<section className="flex h-[246px] flex-col justify-between rounded-t-xl border-black border-t-[1px] bg-white p-3 pt-4">
 					<h5
-						className="line-clamp-2 h-10 text-ellipsis font-semibold text-base text-slate-800 leading-tight tracking-tight"
+						className="line-clamp-3 text-ellipsis py-1 font-semibold text-[28px] text-slate-800 leading-[30px] tracking-[-0.03em]"
 						title={title}
 					>
 						{title}
 					</h5>
-					<p className="line-clamp-2 text-slate-600 text-sm">{description}</p>
-					{Array.isArray(contributors) && contributors.length > 0 && (
-						<div className="flex flex-col gap-1">
-							<div className="flex flex-wrap gap-1">
-								{contributors.map((address: string) => (
-									<Badge key={address} variant="outline">
-										{address && `${address.slice(0, 6)}...${address.slice(-4)}`}
-									</Badge>
+					<section className="border-black border-t-[1.5px]">
+						<div className="flex items-center justify-between pt-1 pb-2">
+							<span className="font-medium text-xs uppercase">ecocert</span>
+							<span className="font-medium text-xs uppercase">
+								{formattedDateRange}
+							</span>
+						</div>
+						<div className="mt-auto h-[62px] w-full overflow-hidden">
+							<div className="flex h-full flex-wrap content-end justify-start gap-1 pb-1">
+								{visibleBadges.map((badge) => (
+									<span
+										key={badge}
+										className="flex items-center rounded-lg border-[1.5px] border-black px-2 py-1 text-base leading-none"
+										title={
+											badge.endsWith("...")
+												? badges.find((b) => b.startsWith(badge.slice(0, -3)))
+												: badge
+										}
+									>
+										{badge}
+									</span>
 								))}
+								{hiddenBadgesCount > 0 && (
+									<div className="flex items-center justify-center rounded-full border border-black bg-neutral-100 px-2 py-1 font-medium text-slate-900 text-sm leading-none">
+										+{hiddenBadgesCount}
+									</div>
+								)}
 							</div>
 						</div>
-					)}
-					<ScrollArea className="h-[50px]">
-						<div className="flex flex-wrap gap-1">
-							{badges?.map((badge) => (
-								<Badge key={badge} variant="secondary">
-									{badge}
-								</Badge>
-							))}
-						</div>
-					</ScrollArea>
+					</section>
 				</section>
 			</article>
 		);
