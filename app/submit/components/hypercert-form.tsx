@@ -29,7 +29,6 @@ import {
 	PopoverContent,
 	PopoverTrigger,
 } from "@/components/ui/popover";
-import { Separator } from "@/components/ui/separator";
 import { Textarea } from "@/components/ui/textarea";
 import {
 	type HypercertMetadata,
@@ -39,7 +38,6 @@ import {
 import { Dialog } from "@/components/ui/dialog";
 import useMintHypercert from "@/hooks/use-mint-hypercert";
 import { toPng } from "html-to-image";
-import hypercertCard from "./hypercert-card";
 import HypercertCard from "./hypercert-card";
 import { HypercertMintDialog } from "./hypercert-mint-dialog";
 
@@ -151,14 +149,16 @@ const HypercertForm = () => {
 	});
 
 	const tags = form.watch("tags") || "";
+	const geojsonValue = form.watch("geojson");
+
 	useEffect(() => {
 		const calculateArea = async () => {
 			let geoJSONData = null;
-			const geoJSONUrl = form.getValues("geojson");
 
 			try {
-				if (geoJSONUrl) {
-					const response = await fetch(geoJSONUrl);
+				if (geojsonValue) {
+					const response = await fetch(geojsonValue);
+					if (!response.ok) throw new Error("Failed to fetch GeoJSON");
 					geoJSONData = await response.json();
 				} else if (geoJSONFile) {
 					const text = await geoJSONFile.text();
@@ -167,7 +167,9 @@ const HypercertForm = () => {
 
 				if (geoJSONData) {
 					const area = turf.area(geoJSONData);
-					setGeoJSONArea(Math.round(area / 10000));
+					const hectares = Math.round(area / 10000);
+					console.log("Calculated area:", area, "Hectares:", hectares);
+					setGeoJSONArea(hectares);
 				} else {
 					setGeoJSONArea(null);
 				}
@@ -178,7 +180,7 @@ const HypercertForm = () => {
 		};
 
 		calculateArea();
-	}, [geoJSONFile, form]);
+	}, [geoJSONFile, geojsonValue]);
 
 	useEffect(() => {
 		const areaActivity = form.getValues("areaActivity");
@@ -297,6 +299,31 @@ const HypercertForm = () => {
 		},
 		[badges, mintHypercert, generateImage, geoJSONFile],
 	);
+
+	const getTracePreviewUrl = (
+		geojsonData: {
+			features?: Array<{ geometry: { coordinates: number[][] } }>;
+			geometry?: { coordinates: number[][] };
+		} | null,
+	) => {
+		try {
+			if (!geojsonData) return null;
+
+			// Extract coordinates from GeoJSON
+			const coordinates =
+				geojsonData.features?.[0]?.geometry?.coordinates ||
+				geojsonData.geometry?.coordinates;
+
+			if (!coordinates) return null;
+
+			// Encode the coordinates for the URL
+			const encodedPolygon = encodeURIComponent(JSON.stringify(coordinates));
+			return `https://trace.gainforest.app/?polygon=${encodedPolygon}`;
+		} catch (error) {
+			console.error("Error generating trace preview URL:", error);
+			return null;
+		}
+	};
 
 	return (
 		<Dialog open={openMintDialog} onOpenChange={setOpenMintDialog}>
@@ -578,6 +605,17 @@ const HypercertForm = () => {
 														</div>
 													</FormControl>
 													<FormMessage />
+													{field.value && (
+														<div className="mt-4 aspect-video w-full rounded-lg border border-border">
+															<iframe
+																src={`https://trace.gainforest.app/?geojsonUrl=${encodeURIComponent(
+																	field.value,
+																)}`}
+																className="h-full w-full rounded-lg"
+																title="GeoJSON Preview"
+															/>
+														</div>
+													)}
 												</FormItem>
 											)}
 										/>
