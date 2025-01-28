@@ -1,7 +1,7 @@
 import { defaultWagmiConfig } from "@web3modal/wagmi/react/config";
 
 import { cookieStorage, createStorage } from "wagmi";
-import { getVoiceDeckUrl } from "./endpoint";
+import { getEcocertainUrl } from "./endpoint";
 import { sepolia } from "viem/chains";
 
 // Get projectId at https://cloud.walletconnect.com
@@ -11,9 +11,9 @@ if (!projectId) throw new Error("Project ID is not defined");
 
 // TODO: Add correct data
 const metadata = {
-  name: "VoiceDeck",
-  description: "Funding for Indian journalists",
-  url: getVoiceDeckUrl(), // origin must match your domain & subdomain
+  name: "Ecocertain",
+  description: "Fund impactful regenerative projects",
+  url: getEcocertainUrl(), // origin must match your domain & subdomain
   icons: ["https://avatars.githubusercontent.com/u/37784886"],
 };
 

@@ -62,7 +62,7 @@ const archia = localFont({
 });
 
 export const metadata: Metadata = {
-	metadataBase: new URL("https://app.voicedeck.org/"),
+	metadataBase: new URL("https://ecocertain.xyz/"),
 	title: { default: siteConfig.name, template: "%s | GainForest.Earth" },
 	description: siteConfig.description,
 	icons: [
@@ -80,7 +80,7 @@ export const metadata: Metadata = {
 		},
 	],
 	openGraph: {
-		title: { default: "Nature Project", template: "%s | GainForest.Earth" },
+		title: { default: "Ecocertain", template: "%s | GainForest.Earth" },
 		description: siteConfig.description,
 		type: "website",
 		images: [{ url: "/opengraph-image.png", alt: "GainForest.Earth" }],
@@ -88,7 +88,7 @@ export const metadata: Metadata = {
 	twitter: {
 		card: "summary_large_image",
 		site: "@edge-esmeralda",
-		title: { default: "Nature Project", template: "%s | GainForest.Earth" },
+		title: { default: "Ecocertain", template: "%s | GainForest.Earth" },
 		description: siteConfig.description,
 		images: [{ url: "/opengraph-image.png", alt: "GainForest.Earth" }],
 	},
