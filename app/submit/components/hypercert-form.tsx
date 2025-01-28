@@ -150,6 +150,7 @@ const HypercertForm = () => {
 
 	const tags = form.watch("tags") || "";
 	const geojsonValue = form.watch("geojson");
+	const areaActivity = form.getValues("areaActivity");
 
 	useEffect(() => {
 		const calculateArea = async () => {
@@ -183,7 +184,14 @@ const HypercertForm = () => {
 	}, [geoJSONFile, geojsonValue]);
 
 	useEffect(() => {
-		const areaActivity = form.getValues("areaActivity");
+		// Add area badges if available
+		const areaBadges = [];
+		if (geoJSONArea) {
+			areaBadges.push(`⭔ ${geoJSONArea} ha`);
+		}
+		if (areaActivity) {
+			areaBadges.push(`🌱 ${areaActivity}`);
+		}
 
 		if (tags) {
 			const tagArray = tags
@@ -191,15 +199,6 @@ const HypercertForm = () => {
 				.map((tag) => tag.trim())
 				.filter((tag) => tag !== "");
 			const baseBadges = [...tagArray];
-
-			// Add area badges if available
-			const areaBadges = [];
-			if (geoJSONArea) {
-				areaBadges.push(`⭔ ${geoJSONArea} ha`);
-			}
-			if (areaActivity) {
-				areaBadges.push(`🌱 ${areaActivity}`);
-			}
 
 			setBadges([...areaBadges, ...baseBadges]);
 		} else {
@@ -212,7 +211,7 @@ const HypercertForm = () => {
 			}
 			setBadges(areaBadges);
 		}
-	}, [tags, geoJSONArea, form]);
+	}, [tags, geoJSONArea, areaActivity]);
 
 	const generateImage = async () => {
 		if (imageRef.current === null) {
@@ -593,7 +592,7 @@ const HypercertForm = () => {
 															/>
 															<Input
 																type="file"
-																accept=".geojson,application/geo+json"
+																accept=".geojson,.json,.txt,application/geo+json,application/json,text/plain"
 																onChange={(e) => {
 																	const file = e.target.files?.[0];
 																	if (file) {
