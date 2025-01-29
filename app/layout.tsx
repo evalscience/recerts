@@ -11,43 +11,13 @@ import { NavMenu } from "@/components/global/nav-menu";
 import { siteConfig } from "@/config/site";
 import { config } from "@/config/wagmi";
 import { WagmiContextProvider } from "@/contexts/wagmi";
+import { Libre_Baskerville } from "next/font/google";
 import { headers } from "next/headers";
-import Script from "next/script";
 
-const baskerville = localFont({
-	src: [
-		{
-			path: "./fonts/BaskervilleDisplayPT/Regular.otf",
-			weight: "400",
-			style: "normal",
-		},
-		{
-			path: "./fonts/BaskervilleDisplayPT/Italic.otf",
-			weight: "400",
-			style: "italic",
-		},
-		{
-			path: "./fonts/BaskervilleDisplayPT/Medium.otf",
-			weight: "500",
-			style: "normal",
-		},
-		{
-			path: "./fonts/BaskervilleDisplayPT/MediumItalic.otf",
-			weight: "500",
-			style: "italic",
-		},
-		{
-			path: "./fonts/BaskervilleDisplayPT/Bold.otf",
-			weight: "700",
-			style: "normal",
-		},
-		{
-			path: "./fonts/BaskervilleDisplayPT/BoldItalic.otf",
-			weight: "700",
-			style: "italic",
-		},
-	],
+const baskerville = Libre_Baskerville({
 	variable: "--font-baskerville",
+	subsets: ["latin"],
+	weight: ["400", "700"],
 });
 
 const archia = localFont({

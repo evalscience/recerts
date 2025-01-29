@@ -51,8 +51,6 @@ const Loading = () => {
 					<div className="flex flex-1 flex-col gap-2">
 						{/* title */}
 						<Skeleton className="h-12 w-1/2" />
-						{/* metadata */}
-						<Skeleton className="h-8 w-[80%]" />
 
 						<div className="flex flex-wrap items-center gap-2">
 							{/* tags */}

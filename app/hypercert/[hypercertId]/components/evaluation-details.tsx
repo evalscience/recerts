@@ -15,14 +15,14 @@ const EvaluationDetails = () => {
 					<span className="font-bold text-lg">Verified by Gainforest</span>
 				</div>
 			</EvervaultCard>
-			{/* <div className="flex w-full flex-col items-center gap-1 px-8 py-4">
-        <span className="text-center text-muted-foreground leading-none">
-          This hypercerts and the work it represents have been verified by
-        </span>
-        <span className="text-center font-bold text-foreground text-xl">
-          GainForest.Earth
-        </span>
-      </div> */}
+			<div className="flex w-full flex-col items-center gap-1 px-8 py-4">
+				<span className="text-center text-muted-foreground leading-none">
+					This hypercerts and the work it represents have been verified by
+				</span>
+				<span className="text-center font-bold text-foreground text-xl">
+					GainForest.Earth
+				</span>
+			</div>
 			{false && (
 				<div className="mt-4 flex w-full flex-col gap-2">
 					<span className="font-bold text-muted-foreground text-sm">

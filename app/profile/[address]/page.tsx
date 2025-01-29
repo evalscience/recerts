@@ -132,7 +132,7 @@ export default async function ProfilePage({
 					</div>
 				)}
 			</div>
-			<Content fractions={validFractions} />
+			<Content fractions={validFractions} address={address} />
 		</MotionWrapper>
 	);
 }

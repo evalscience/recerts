@@ -38,6 +38,17 @@ export type FractionWithCountAndWorth = Fraction & {
 	count: number;
 };
 
+export const FractionCardSkeleton = () => {
+	return (
+		<div className="flex animate-pulse flex-col gap-2 rounded-2xl bg-background/80 p-4">
+			<div className="h-[200px] w-full animate-pulse rounded-xl bg-beige-muted delay-700" />
+			<div className="h-[36px] w-[50%] animate-pulse rounded-xl bg-beige-muted delay-1000" />
+			<div className="mt-2 h-[28px] w-[full] animate-pulse rounded-xl bg-beige-muted delay-1000" />
+			<div className="h-[28px] w-[30%] animate-pulse rounded-xl bg-beige-muted delay-1000" />
+		</div>
+	);
+};
+
 export const NoFractions = () => {
 	return (
 		<div className="flex flex-col items-center gap-4 pt-6 text-center md:px-20">

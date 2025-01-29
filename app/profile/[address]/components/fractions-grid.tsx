@@ -1,5 +1,6 @@
 import type { Fraction } from "@/app/graphql-queries/user-fractions";
 import React, { useCallback } from "react";
+import CardGridWrapper from "./card-grid-wrapper";
 import FractionCard, {
 	type FractionWithCountAndWorth,
 	NoFractions,
@@ -67,12 +68,12 @@ const FractionsGrid = ({
 
 	if (filteredUniqueHypercertFractions.length === 0) return <NoFractions />;
 	return (
-		<div className="grid w-full grid-cols-1 gap-4 lg:grid-cols-2">
+		<CardGridWrapper>
 			{filteredUniqueHypercertFractions.map((fraction) => {
 				if (fraction.fractionId === undefined) return null;
 				return <FractionCard key={fraction.id} fraction={fraction} />;
 			})}
-		</div>
+		</CardGridWrapper>
 	);
 };
 
