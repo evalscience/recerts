@@ -61,10 +61,10 @@ const Page = async ({ params }: PageProps) => {
 				<div className="flex flex-col justify-start gap-4 md:flex-row md:justify-between">
 					<div className="flex flex-col gap-2">
 						<h1 className="font-baskerville font-bold text-4xl leading-tight">
-							{hypercert.name ?? "Untitled"}
+							{hypercert.metadata.name ?? "Untitled"}
 						</h1>
 						<ul className="mt-1 flex flex-wrap items-center gap-2">
-							{hypercert.work.scope?.map((scope, i) => (
+							{hypercert.metadata.work.scope.map((scope, i) => (
 								<li
 									key={scope.toLowerCase()}
 									className="rounded-full bg-beige-muted px-3 py-1 text-beige-muted-foreground"

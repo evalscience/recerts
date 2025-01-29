@@ -14,6 +14,7 @@ import {
 	type SaleByUserHypercert,
 	fetchSalesByUser,
 } from "@/app/graphql-queries/sales";
+import { convertCurrencyPriceToUSD } from "@/lib/utils";
 import ProfileCard from "./components/profile-card";
 import SalesGrid from "./components/sales-grid";
 import StatCard from "./components/stat-card";
@@ -23,19 +24,6 @@ export type CombinedSale = {
 	unitsBought: bigint;
 	hypercert: SaleByUserHypercert;
 	id: string;
-};
-
-// ❗❗❗ Use the `currency` param in the following function get the latest price data.
-// ❗❗❗ Using 1USD for now, because the currency is USD pegged for now.
-const convertCurrencyPriceToUSD = (currency: string, tokens: bigint) => {
-	const weiFactor = BigInt(10 ** 18);
-	const precision = 4;
-	const precisionMultiplier = BigInt(10 ** precision);
-
-	return (
-		Number((tokens * precisionMultiplier) / weiFactor) /
-		Number(precisionMultiplier)
-	);
 };
 
 const combineSales = (sales: SaleByUser[]) => {

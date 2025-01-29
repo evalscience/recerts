@@ -142,16 +142,11 @@ const fullHypercertByHypercertIdQuery = graphql(`
     hypercerts(where: { hypercert_id: { eq: $hypercert_id } }) {
       data {
         units
+        uri
+        creation_block_timestamp
+        creator_address
         contract {
           chain_id
-        }
-        sales {
-          data {
-            amounts
-            buyer
-            creation_block_timestamp
-            transaction_hash
-          }
         }
         metadata {
           image
@@ -174,15 +169,33 @@ const fullHypercertByHypercertIdQuery = graphql(`
             id
             price
             chainId
-            amounts
             pricePerPercentInToken
             pricePerPercentInUSD
             currency
           }
         }
-        uri
-        creation_block_timestamp
-        creator_address
+        attestations {
+          data {
+            attester
+            creation_block_timestamp
+            data
+            eas_schema {
+              id
+              schema
+            }
+            id
+          }
+        }
+        sales {
+          data {
+            amounts
+            buyer
+            currency
+            currency_amount
+            creation_block_timestamp
+            transaction_hash
+          }
+        }
       }
     }
   }
@@ -193,36 +206,55 @@ type FullHypercertByHypercertIdQueryResponse = ResultOf<
 
 export type FullHypercert = {
 	hypercertId: string;
+
+	saleStatus: "coming" | "open" | "sold";
+	totalUnits: bigint;
+	unitsForSale: bigint;
+	uri?: string;
 	creationBlockTimestamp: bigint;
 	creatorAddress: string;
 	chainId?: string;
-	name?: string;
-	description?: string;
-	work: {
-		scope?: string[];
-		from?: bigint;
-		to?: bigint;
+
+	metadata: {
+		image?: string;
+		name?: string;
+		description?: string;
+		work: {
+			scope: string[];
+			from?: bigint;
+			to?: bigint;
+		};
+		contributors: string[];
 	};
-	contributors?: string[];
-	image?: string;
-	uri?: string;
-	totalUnits: bigint;
-	sales?: {
-		amounts: bigint[];
-		buyer: string;
-		creationBlockTimestamp: bigint;
-		transactionHash: string;
-	}[];
-	unitsForSale?: bigint;
-	pricePerPercentInUSD?: number;
-	orders?: {
+
+	cheapestOrder: {
+		pricePerPercentInUSD?: number;
+	};
+	orders: {
 		id: string;
 		price: number;
 		chainId: string;
-		// amounts: string[];
 		pricePerPercentInToken: number;
 		pricePerPercentInUSD: number;
 		currency: string;
+	}[];
+	attestations: {
+		attester: string;
+		creationBlockTimestamp: bigint;
+		data: string;
+		easSchema: {
+			id: string;
+			schema: string;
+		};
+		id: string;
+	}[];
+	sales: {
+		unitsBought: bigint;
+		buyer: string;
+		currency: string;
+		currencyAmount: bigint;
+		creationBlockTimestamp: bigint;
+		transactionHash: string;
 	}[];
 };
 
@@ -258,58 +290,97 @@ export const fetchFullHypercertById = async (
 			type: "PAYLOAD",
 		};
 
-	const sales = hypercert.sales?.data?.map((sale) => {
+	const cheapestOrder = hypercert.orders?.cheapestOrder;
+	const unitsForSale =
+		typeCastApiResponseToBigInt(hypercert.orders?.totalUnitsForSale) ?? 0n;
+
+	let saleStatus: "coming" | "open" | "sold" = "open";
+	if (!cheapestOrder) {
+		if (unitsForSale === 0n) {
+			saleStatus = "sold";
+		} else {
+			saleStatus = "coming";
+		}
+	}
+
+	const metadata = hypercert.metadata;
+	const pricePerPercentInUSD = cheapestOrder?.pricePerPercentInUSD
+		? Number(cheapestOrder?.pricePerPercentInUSD)
+		: undefined;
+
+	const orders = hypercert.orders?.data ?? [];
+	const parsedOrders = orders.map((order) => {
 		return {
-			amounts: sale.amounts as bigint[],
+			id: order.id as string,
+			price: Number(order.price),
+			pricePerPercentInToken: Number(order.pricePerPercentInToken),
+			pricePerPercentInUSD: Number(order.pricePerPercentInUSD),
+			currency: order.currency as string,
+			chainId: order.chainId as string,
+		};
+	});
+
+	const sales = hypercert.sales?.data ?? [];
+	const parsedSales = sales.map((sale) => {
+		return {
+			unitsBought: typeCastApiResponseToBigInt(sale.amounts?.[0] ?? 0) ?? 0n,
 			buyer: sale.buyer as string,
-			creationBlockTimestamp: sale.creation_block_timestamp as bigint,
+			currency: sale.currency as string,
+			currencyAmount:
+				typeCastApiResponseToBigInt(sale.currency_amount ?? 0) ?? 0n,
+			creationBlockTimestamp:
+				typeCastApiResponseToBigInt(sale.creation_block_timestamp) ?? 0n,
 			transactionHash: sale.transaction_hash as string,
 		};
 	});
 
-	const pricePerPercentInUSD =
-		hypercert.orders?.cheapestOrder?.pricePerPercentInUSD;
-	const pricePerPercentInUSDNumber = pricePerPercentInUSD
-		? Number(pricePerPercentInUSD)
-		: undefined;
-
-	const orders = hypercert.orders?.data?.map((order) => {
-		return {
-			id: order.id as string,
-			price: Number(order.price),
-			chainId: order.chainId as string,
-			// amounts: order.amounts as string[],
-			pricePerPercentInToken: Number(order.pricePerPercentInToken),
-			pricePerPercentInUSD: Number(order.pricePerPercentInUSD),
-			currency: order.currency as string,
-		};
-	});
+	const attestations = hypercert.attestations?.data ?? [];
+	const parsedAttestations = attestations
+		.map((attestation) => {
+			if (!attestation.attester) return null;
+			const easSchema = attestation.eas_schema as {
+				id: string;
+				schema: string;
+			};
+			return {
+				attester: attestation.attester,
+				creationBlockTimestamp:
+					typeCastApiResponseToBigInt(attestation.creation_block_timestamp) ??
+					0n,
+				data: attestation.data as string,
+				easSchema,
+				id: attestation.id,
+			};
+		})
+		.filter((attestation) => attestation !== null);
 
 	return {
 		hypercertId,
+		saleStatus,
+		totalUnits: typeCastApiResponseToBigInt(hypercert.units) ?? 0n,
+		unitsForSale,
+		uri: hypercert.uri ?? undefined,
 		creationBlockTimestamp:
 			typeCastApiResponseToBigInt(hypercert.creation_block_timestamp) ?? 0n,
-		creatorAddress: hypercert.creator_address as string,
+		creatorAddress: hypercert.creator_address ?? "0x0",
 		chainId: (hypercert.contract?.chain_id as string) ?? undefined,
-		name: hypercert.metadata?.name ?? undefined,
-		description: hypercert.metadata?.description ?? undefined,
-		work: {
-			scope: hypercert.metadata?.work_scope ?? undefined,
-			from: typeCastApiResponseToBigInt(
-				hypercert.metadata?.work_timeframe_from,
-			),
-			to: typeCastApiResponseToBigInt(hypercert.metadata?.work_timeframe_to),
+		metadata: {
+			image: metadata?.image ?? undefined,
+			name: metadata?.name ?? undefined,
+			description: metadata?.description ?? undefined,
+			work: {
+				scope: metadata?.work_scope ?? [],
+				from: typeCastApiResponseToBigInt(metadata?.work_timeframe_from) ?? 0n,
+				to: typeCastApiResponseToBigInt(metadata?.work_timeframe_to) ?? 0n,
+			},
+			contributors: metadata?.contributors ?? [],
 		},
-		contributors: hypercert.metadata?.contributors ?? undefined,
-		image: hypercert.metadata?.image ?? undefined,
-		uri: hypercert.uri ?? undefined,
-		totalUnits: typeCastApiResponseToBigInt(hypercert.units) ?? 0n,
-		sales,
-		unitsForSale: typeCastApiResponseToBigInt(
-			hypercert.orders?.totalUnitsForSale,
-		),
-		pricePerPercentInUSD: pricePerPercentInUSDNumber,
-		orders: orders,
+		cheapestOrder: {
+			pricePerPercentInUSD,
+		},
+		orders: parsedOrders,
+		sales: parsedSales,
+		attestations: parsedAttestations,
 	};
 };
 

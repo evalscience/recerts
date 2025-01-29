@@ -7,7 +7,7 @@ import React, { useEffect, useRef, useState } from "react";
 import SectionWrapper from "./SectionWrapper";
 
 const Contributors = ({ hypercert }: { hypercert: FullHypercert }) => {
-	const contributors = hypercert.contributors;
+	const contributors = hypercert.metadata.contributors;
 
 	const [viewingAll, setViewingAll] = useState(false);
 	const contributorsWrapperRef = useRef<HTMLDivElement>(null);

@@ -41,7 +41,7 @@ export type SaleByUser = {
 	currency: string;
 	currencyAmount: bigint;
 	unitsBought: bigint;
-	creationBlockTimestamp: number;
+	creationBlockTimestamp: bigint;
 	transactionHash: string;
 	id: string;
 	hypercert: SaleByUserHypercert;
@@ -66,8 +66,9 @@ export const fetchSalesByUser = async (userAddress: `0x${string}`) => {
 			currency: sale.currency,
 			currencyAmount:
 				typeCastApiResponseToBigInt(sale.currency_amount ?? 0) ?? 0n,
-			unitsBought: typeCastApiResponseToBigInt(sale.amounts) ?? 0n,
-			creationBlockTimestamp: Number(sale.creation_block_timestamp),
+			unitsBought: typeCastApiResponseToBigInt(sale.amounts?.[0] ?? 0) ?? 0n,
+			creationBlockTimestamp:
+				typeCastApiResponseToBigInt(sale.creation_block_timestamp) ?? 0n,
 			transactionHash: sale.transaction_hash,
 			id: sale.id,
 			hypercert: {
@@ -105,7 +106,7 @@ export type SaleByHypercert = {
 	currency: string;
 	currencyAmount: bigint;
 	unitsBought: bigint;
-	creationBlockTimestamp: number;
+	creationBlockTimestamp: bigint;
 	transactionHash: string;
 	id: string;
 	buyer: string;
@@ -125,8 +126,9 @@ export const fetchSalesByHypercert = async (hypercertId: string) => {
 			currency: sale.currency,
 			currencyAmount:
 				typeCastApiResponseToBigInt(sale.currency_amount ?? 0) ?? 0n,
-			unitsBought: typeCastApiResponseToBigInt(sale.amounts) ?? 0n,
-			creationBlockTimestamp: Number(sale.creation_block_timestamp),
+			unitsBought: typeCastApiResponseToBigInt(sale.amounts?.[0] ?? 0) ?? 0n,
+			creationBlockTimestamp:
+				typeCastApiResponseToBigInt(sale.creation_block_timestamp) ?? 0n,
 			transactionHash: sale.transaction_hash,
 			id: sale.id,
 			buyer: sale.buyer,

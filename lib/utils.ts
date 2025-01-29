@@ -103,3 +103,16 @@ export function bigintToFormattedDate(timestamp: bigint): string {
   // Format the date using toLocaleDateString
   return date.toLocaleDateString("en-GB", options);
 }
+
+// ❗❗❗ Use the `currency` param in the following function get the latest price data.
+// ❗❗❗ Using 1USD for now, because the currency is USD pegged for now.
+export const convertCurrencyPriceToUSD = (currency: string, tokens: bigint) => {
+  const weiFactor = BigInt(10 ** 18);
+  const precision = 4;
+  const precisionMultiplier = BigInt(10 ** precision);
+
+  return (
+    Number((tokens * precisionMultiplier) / weiFactor) /
+    Number(precisionMultiplier)
+  );
+};

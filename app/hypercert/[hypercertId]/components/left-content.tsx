@@ -23,6 +23,7 @@ const MetadataCard = ({
 };
 
 const Metadata = ({ hypercert }: { hypercert: FullHypercert }) => {
+	const work = hypercert.metadata.work;
 	return (
 		<ScrollArea
 			className="w-full"
@@ -54,20 +55,19 @@ const Metadata = ({ hypercert }: { hypercert: FullHypercert }) => {
 				>
 					{bigintToFormattedDate(hypercert.creationBlockTimestamp)}
 				</MetadataCard>
-				{hypercert.work.from !== undefined &&
-					hypercert.work.to !== undefined && (
-						<MetadataCard
-							title={
-								<span className="flex items-center gap-1">
-									<CalendarDays size={14} /> Work Timeframe
-								</span>
-							}
-						>
-							{bigintToFormattedDate(hypercert.work.from)}
-							{" - "}
-							{bigintToFormattedDate(hypercert.work.to)}
-						</MetadataCard>
-					)}
+				{work.from !== undefined && work.to !== undefined && (
+					<MetadataCard
+						title={
+							<span className="flex items-center gap-1">
+								<CalendarDays size={14} /> Work Timeframe
+							</span>
+						}
+					>
+						{bigintToFormattedDate(work.from)}
+						{" - "}
+						{bigintToFormattedDate(work.to)}
+					</MetadataCard>
+				)}
 				<div className="h-2 w-[20%]" />
 			</div>
 			<ScrollBar orientation="horizontal" />
@@ -78,10 +78,10 @@ const Metadata = ({ hypercert }: { hypercert: FullHypercert }) => {
 const LeftContent = ({ hypercert }: { hypercert: FullHypercert }) => {
 	return (
 		<div className="flex w-full flex-initial flex-col gap-6 md:w-auto md:flex-[3]">
-			{hypercert.image && (
+			{hypercert.metadata.image && (
 				<div className="flex w-full flex-col items-center justify-center overflow-hidden rounded-2xl border border-border bg-beige-muted/80 p-2">
 					<div className="w-full max-w-sm">
-						<NFT3D src={hypercert.image} />
+						<NFT3D src={hypercert.metadata.image} />
 					</div>
 					<section className="mt-2 flex w-full flex-col gap-2 rounded-xl bg-background p-3 shadow-[0px_-10px_20px_rgba(0,0,0,0.1)]">
 						<Metadata hypercert={hypercert} />
@@ -90,7 +90,7 @@ const LeftContent = ({ hypercert }: { hypercert: FullHypercert }) => {
 								Description
 							</h2>
 							<p className="text-justify leading-tight">
-								{hypercert.description}
+								{hypercert.metadata.description}
 							</p>
 						</div>
 					</section>

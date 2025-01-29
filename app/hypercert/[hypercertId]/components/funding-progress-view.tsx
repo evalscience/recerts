@@ -7,7 +7,11 @@ import React from "react";
 import PaymentFlow from "./PaymentFlow";
 
 const FundingProgressView = ({ hypercert }: { hypercert: FullHypercert }) => {
-	const { totalUnits, unitsForSale, pricePerPercentInUSD } = hypercert;
+	const {
+		totalUnits,
+		unitsForSale,
+		cheapestOrder: { pricePerPercentInUSD },
+	} = hypercert;
 	if (unitsForSale === undefined) return null;
 	const unitsSold = totalUnits - unitsForSale;
 	const percentCompleted = calculateBigIntPercentage(unitsSold, totalUnits);
@@ -19,7 +23,8 @@ const FundingProgressView = ({ hypercert }: { hypercert: FullHypercert }) => {
 				<div className="flex flex-col items-start">
 					<span className="text-muted-foreground">Reached</span>
 					<span className="font-bold text-xl">
-						${(percentCompleted * pricePerPercentInUSD).toFixed()}
+						{pricePerPercentInUSD}$
+						{(percentCompleted * pricePerPercentInUSD).toFixed()}
 					</span>
 				</div>
 				<div className="flex flex-col items-end">
