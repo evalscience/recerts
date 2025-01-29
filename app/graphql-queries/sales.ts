@@ -64,7 +64,8 @@ export const fetchSalesByUser = async (userAddress: `0x${string}`) => {
 
 		return {
 			currency: sale.currency,
-			currencyAmount: typeCastApiResponseToBigInt(sale.currency_amount) ?? 0n,
+			currencyAmount:
+				typeCastApiResponseToBigInt(sale.currency_amount ?? 0) ?? 0n,
 			unitsBought: typeCastApiResponseToBigInt(sale.amounts) ?? 0n,
 			creationBlockTimestamp: Number(sale.creation_block_timestamp),
 			transactionHash: sale.transaction_hash,
@@ -122,7 +123,8 @@ export const fetchSalesByHypercert = async (hypercertId: string) => {
 	const SalesByHypercert = sales.map((sale) => {
 		return {
 			currency: sale.currency,
-			currencyAmount: typeCastApiResponseToBigInt(sale.currency_amount) ?? 0n,
+			currencyAmount:
+				typeCastApiResponseToBigInt(sale.currency_amount ?? 0) ?? 0n,
 			unitsBought: typeCastApiResponseToBigInt(sale.amounts) ?? 0n,
 			creationBlockTimestamp: Number(sale.creation_block_timestamp),
 			transactionHash: sale.transaction_hash,
