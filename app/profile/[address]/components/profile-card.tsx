@@ -30,7 +30,7 @@ const ProfileCard = ({
 	address: `0x${string}`;
 	stats: {
 		hypercertsCreated: number;
-		fractionsCreated: number;
+		salesMadeCount: number;
 	};
 }) => {
 	const { data: ensName, isFetching: isEnsNameLoading } = useEnsName({
@@ -88,7 +88,7 @@ const ProfileCard = ({
 						</span>
 					</div>
 				)}
-				{stats.hypercertsCreated + stats.fractionsCreated >= 0 && (
+				{stats.hypercertsCreated + stats.salesMadeCount >= 0 && (
 					<span className="flex h-6 items-center justify-center rounded-full bg-beige-muted px-2 text-center text-beige-muted-foreground text-sm">
 						{stats.hypercertsCreated > 0 ? "Community Member" : "Contributor"}
 					</span>

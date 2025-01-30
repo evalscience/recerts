@@ -43,7 +43,7 @@ const HeroTitle = () => {
 					duration: 0.5,
 					delay: 0.2,
 				}}
-				className="inline-block bg-gradient-to-b from-green-400 to-green-700 bg-clip-text px-4 py-1 font-black text-6xl text-transparent italic"
+				className="inline-block bg-gradient-to-b from-green-400 to-green-700 bg-clip-text px-4 py-1 font-bold text-6xl text-transparent italic"
 			>
 				impactful
 			</motion.span>

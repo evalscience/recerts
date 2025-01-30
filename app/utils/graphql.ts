@@ -1,7 +1,6 @@
 import { HYPERCERTS_API_URL, UNISWAP_API_URL } from "@/config/graphql";
 import type { TadaDocumentNode } from "gql.tada";
 import { request } from "graphql-request";
-import { unstable_cache } from "next/cache";
 import { isObject } from ".";
 
 export type ApiError = {
@@ -107,10 +106,7 @@ export async function fetchGraphQL<ResponseType, VariablesType>(
 	}
 }
 
-export async function uncachedFetchHypercertsGraphQL<
-	ResponseType,
-	VariablesType,
->(
+export async function fetchHypercertsGraphQL<ResponseType, VariablesType>(
 	query: TadaDocumentNode<ResponseType, VariablesType, unknown>,
 	variables?: VariablesType,
 	testingLog?: string,
@@ -120,11 +116,6 @@ export async function uncachedFetchHypercertsGraphQL<
 	}
 	return fetchGraphQL(HYPERCERTS_API_URL, query, variables, testingLog);
 }
-export const fetchHypercertsGraphQL = unstable_cache(
-	uncachedFetchHypercertsGraphQL,
-	["fetch-hypercerts-graphql"],
-	{ revalidate: 10 },
-);
 
 export async function fetchUniswapGraphQL<ResponseType, VariablesType>(
 	query: TadaDocumentNode<ResponseType, VariablesType, unknown>,
