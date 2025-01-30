@@ -4,7 +4,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import EthAvatar from "@/components/ui/eth-avatar";
 import { calculateBigIntPercentage } from "@/lib/calculateBigIntPercentage";
-import { bigintToFormattedDate } from "@/lib/utils";
+import { bigintToFormattedDate, convertCurrencyPriceToUSD } from "@/lib/utils";
 import { blo } from "blo";
 import { Calendar, HandHeart, UserCircle2 } from "lucide-react";
 import type React from "react";
@@ -54,7 +54,6 @@ const Wrapper = ({
 };
 
 const Support = ({ hypercert }: { hypercert: FullHypercert }) => {
-	const { totalUnits, pricePerPercentInUSD } = hypercert;
 	const salesCount = hypercert.sales?.length ?? 0;
 	if (salesCount === 0) {
 		return (
@@ -98,11 +97,10 @@ const Support = ({ hypercert }: { hypercert: FullHypercert }) => {
 			<div className="flex w-full flex-col gap-2">
 				<ul className="flex w-full flex-col gap-1">
 					{hypercert.sales?.map((sale) => {
-						const soldUnits = sale.amounts.reduce(
-							(acc, curr) => acc + curr,
-							0n,
+						const amountInUSD = convertCurrencyPriceToUSD(
+							sale.currency,
+							sale.currencyAmount,
 						);
-						const percent = calculateBigIntPercentage(soldUnits, totalUnits);
 
 						return (
 							<li
@@ -122,9 +120,7 @@ const Support = ({ hypercert }: { hypercert: FullHypercert }) => {
 									</div>
 								</div>
 								<span className="font-bold text-lg text-primary">
-									{pricePerPercentInUSD === undefined || percent === undefined
-										? "N/A"
-										: `$${(pricePerPercentInUSD * percent).toFixed(2)}`}
+									${Math.floor(amountInUSD * 100) / 100}
 								</span>
 							</li>
 						);

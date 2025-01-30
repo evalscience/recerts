@@ -1,20 +1,31 @@
-"use client";
 import { Badge } from "@/components/ui/badge";
-
-import type { Hypercert } from "@/app/graphql-queries/hypercerts";
-import { Fraction } from "@/app/graphql-queries/user-fractions";
 import { Button } from "@/components/ui/button";
-import { bigintToFormattedDate, cn } from "@/lib/utils";
-import { ArrowUpRight, CalendarRange, Loader2, RotateCw } from "lucide-react";
+import { ArrowUpRight } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import type { CombinedSale } from "../page";
 
-function HypercertCard({ hypercert }: { hypercert: Hypercert }) {
-	const { hypercertId, name, description, image } = hypercert;
+export default function SalesCard({
+	combinedSale,
+}: {
+	combinedSale: CombinedSale;
+}) {
+	const { totalAmountInUSD } = combinedSale;
+	const {
+		hypercertId,
+		metadata: { name, description, image, workScope },
+	} = combinedSale.hypercert;
 
 	return (
 		<article className="group relative flex flex-col overflow-hidden rounded-2xl border border-border">
+			{
+				<div className="flex items-center justify-center bg-background px-4 py-2 text-center">
+					<span className="mx-6 font-bold text-primary">
+						${Math.floor(totalAmountInUSD * 100) / 100}
+					</span>
+				</div>
+			}
+
 			<div className="relative flex h-[200px] w-full items-start justify-center overflow-hidden rounded-t-2xl bg-muted p-4">
 				<Image
 					// src={`/api/hypercert/${hypercert_id}/image`}
@@ -40,11 +51,21 @@ function HypercertCard({ hypercert }: { hypercert: Hypercert }) {
 					boxShadow: "0 -10px 10px rgba(0, 0, 0, 0.1)",
 				}}
 			>
+				<div className="flex flex-wrap gap-1">
+					{workScope?.map((scope) => (
+						<Badge
+							key={scope}
+							variant="secondary"
+							className={"items-center justify-between rounded-3xl"}
+						>
+							<p className="ml-1 font-light text-xs">{scope}</p>
+						</Badge>
+					))}
+				</div>
 				<p
-					className={cn(
-						"line-clamp-2 max-h-12 flex-1 text-ellipsis font-semibold",
-						name ? "font-baskerville text-foreground" : "text-muted-foreground",
-					)}
+					className={`line-clamp-2 max-h-12 flex-1 text-ellipsis font-baskerville font-semibold text-lg leading-5${
+						name ? "text-foreground" : "text-muted-foreground"
+					}`}
 				>
 					{name ?? "[Untitled]"}
 				</p>
@@ -59,5 +80,3 @@ function HypercertCard({ hypercert }: { hypercert: Hypercert }) {
 		</article>
 	);
 }
-
-export default HypercertCard;

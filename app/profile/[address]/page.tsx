@@ -1,35 +1,62 @@
-import {
-	ArrowUpRight,
-	ArrowUpRightFromSquare,
-	HeartHandshakeIcon,
-	Settings2,
-	Star,
-} from "lucide-react";
+import { ArrowUpRightFromSquare, Star } from "lucide-react";
 import Link from "next/link";
 import type { Address } from "viem";
 
-import { cn, isNotNull } from "@/lib/utils";
-
 import PageError from "@/app/components/shared/PageError";
-import {
-	type Fraction,
-	type OwnedFractions,
-	fetchFractionsByOwnerId,
-} from "@/app/graphql-queries/user-fractions";
-import {
-	type UserHypercerts,
-	fetchHypercertsByUserId,
-} from "@/app/graphql-queries/user-hypercerts";
-import { SideBar } from "@/app/profile/[address]/components/sidebar";
+
+import { fetchHypercertsByUserId } from "@/app/graphql-queries/user-hypercerts";
 import { catchError } from "@/app/utils";
-import { buttonVariants } from "@/components/ui/button";
 import { MotionWrapper } from "@/components/ui/motion-wrapper";
 import { Separator } from "@/components/ui/separator";
-import type { ApiError } from "@/types/api";
-import Content from "./components/content";
-import FractionsGrid from "./components/fractions-grid";
+
+import {
+	type SaleByUser,
+	type SaleByUserHypercert,
+	fetchSalesByUser,
+} from "@/app/graphql-queries/sales";
+import { convertCurrencyPriceToUSD } from "@/lib/utils";
 import ProfileCard from "./components/profile-card";
+import SalesGrid from "./components/sales-grid";
 import StatCard from "./components/stat-card";
+
+export type CombinedSale = {
+	totalAmountInUSD: number;
+	unitsBought: bigint;
+	hypercert: SaleByUserHypercert;
+	id: string;
+};
+
+const combineSales = (sales: SaleByUser[]) => {
+	const saleIndexer = new Map<string, number>();
+	const combinedSales: CombinedSale[] = [];
+
+	for (let i = 0; i < sales.length; i++) {
+		const sale = sales[i];
+		const amountInUSD = convertCurrencyPriceToUSD(
+			sale.currency,
+			sale.currencyAmount,
+		);
+
+		const hypercertId = sale.hypercert.hypercertId;
+		if (!saleIndexer.has(hypercertId)) {
+			saleIndexer.set(hypercertId, combinedSales.length);
+			combinedSales.push({
+				totalAmountInUSD: amountInUSD,
+				unitsBought: sale.unitsBought,
+				hypercert: sale.hypercert,
+				id: sale.id,
+			});
+			continue;
+		}
+
+		const index = saleIndexer.get(hypercertId);
+		if (index === undefined) continue; // This will never happen.
+		combinedSales[index].totalAmountInUSD += amountInUSD;
+		combinedSales[index].unitsBought += sale.unitsBought;
+	}
+
+	return combinedSales;
+};
 
 export default async function ProfilePage({
 	params: { address },
@@ -37,10 +64,20 @@ export default async function ProfilePage({
 	params: { address: Address };
 }) {
 	// const DUMMY_ADDRESS = "0x223c656ed35bfb7a8e358140ca1e2077be090b2e";
-	const [hypercertsError, userHypercerts] = await catchError<
-		UserHypercerts,
-		ApiError
-	>(fetchHypercertsByUserId(address));
+	const [salesError, sales] = await catchError(fetchSalesByUser(address));
+
+	if (salesError) {
+		return (
+			<PageError
+				title="We couldn't load the user data."
+				body="Please try refreshing the page or check the URL."
+			/>
+		);
+	}
+
+	const [hypercertsError, userHypercerts] = await catchError(
+		fetchHypercertsByUserId(address),
+	);
 	if (hypercertsError) {
 		return (
 			<PageError
@@ -50,18 +87,13 @@ export default async function ProfilePage({
 		);
 	}
 
-	const [fractionsError, ownedFractions] = await catchError<
-		OwnedFractions,
-		ApiError
-	>(fetchFractionsByOwnerId(address));
-	if (fractionsError) {
-		return (
-			<PageError
-				title="We couldn't load the user data."
-				body="Please try refreshing the page or check the URL."
-			/>
-		);
-	}
+	const combinedSales = combineSales(sales ?? []);
+	const totalSalesInUSD =
+		Math.floor(
+			combinedSales.reduce((acc, sale) => {
+				return acc + sale.totalAmountInUSD;
+			}, 0) * 100,
+		) / 100;
 
 	const { hypercerts } = userHypercerts;
 	const hypercertIdSet = new Set<string>();
@@ -73,17 +105,6 @@ export default async function ProfilePage({
 		return true;
 	});
 	const validHypercertsCount = validHypercerts.length;
-
-	const { fractions } = ownedFractions;
-	const validFractions = fractions.filter((fraction) => {
-		if (fraction.fractionId === undefined) return false;
-		const noWork = Object.keys(fraction.work).every(
-			(key) => fraction.work[key as keyof Fraction["work"]] === undefined,
-		);
-		if (fraction.contributors === undefined && noWork) return false;
-		return true;
-	});
-	const validFractionsCount = validFractions.length;
 
 	return (
 		<MotionWrapper
@@ -98,7 +119,7 @@ export default async function ProfilePage({
 					address={address}
 					stats={{
 						hypercertsCreated: validHypercertsCount,
-						fractionsCreated: validFractionsCount,
+						salesMadeCount: sales.length,
 					}}
 				/>
 				{validHypercertsCount > 0 && (
@@ -132,7 +153,21 @@ export default async function ProfilePage({
 					</div>
 				)}
 			</div>
-			<Content fractions={validFractions} />
+			<section className="flex flex-1 flex-col gap-8">
+				<section className="flex items-stretch gap-4">
+					<StatCard
+						title={"Hypercerts supported"}
+						display={combinedSales.length}
+					/>
+					<StatCard title={"Total contributions"} display={totalSalesInUSD} />
+				</section>
+				<section className="flex w-full flex-col gap-4">
+					<span className="font-baskerville font-bold text-3xl">
+						Recent Support Activity
+					</span>
+					<SalesGrid combinedSales={combinedSales} />
+				</section>
+			</section>
 		</MotionWrapper>
 	);
 }
