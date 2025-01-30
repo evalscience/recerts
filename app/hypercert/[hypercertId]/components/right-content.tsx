@@ -17,7 +17,7 @@ const RightContent = ({ hypercert }: { hypercert: FullHypercert }) => {
 			)}
 			<Contributors hypercert={hypercert} />
 			<SectionWrapper title={"Verification"}>
-				<EvaluationDetails />
+				<EvaluationDetails hypercert={hypercert} />
 			</SectionWrapper>
 		</div>
 	);
