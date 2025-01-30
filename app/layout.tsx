@@ -6,13 +6,13 @@ import "./globals.css";
 
 import { cookieToInitialState } from "wagmi";
 
-import { Footer } from "@/components/global/footer";
-import { NavMenu } from "@/components/global/nav-menu";
 import { siteConfig } from "@/config/site";
 import { config } from "@/config/wagmi";
 import { WagmiContextProvider } from "@/contexts/wagmi";
 import { Libre_Baskerville } from "next/font/google";
 import { headers } from "next/headers";
+import Footer from "./components/Footer";
+import Header from "./components/Header";
 
 const baskerville = Libre_Baskerville({
 	variable: "--font-baskerville",
@@ -80,7 +80,7 @@ export default function RootLayout({
 				)}
 			>
 				<WagmiContextProvider initialState={initialState}>
-					<NavMenu />
+					<Header />
 					<div className="flex-1">{children}</div>
 					<Footer />
 				</WagmiContextProvider>

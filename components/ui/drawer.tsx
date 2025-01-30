@@ -1,4 +1,5 @@
 "use client";
+
 import * as React from "react";
 import { Drawer as DrawerPrimitive } from "vaul";
 
@@ -42,12 +43,12 @@ const DrawerContent = React.forwardRef<
 		<DrawerPrimitive.Content
 			ref={ref}
 			className={cn(
-				"fixed inset-x-0 bottom-0 z-50 mt-24 flex h-auto flex-col rounded-t-[10px] border border-stone-300 bg-stone-200 dark:border-stone-300 dark:bg-stone-400",
+				"fixed inset-x-0 bottom-0 z-50 mt-24 flex h-auto flex-col rounded-t-[10px] border bg-background",
 				className,
 			)}
 			{...props}
 		>
-			<div className="mx-auto mt-4 h-2 w-[100px] rounded-full bg-stone-500 dark:bg-stone-100" />
+			<div className="mx-auto mt-4 h-2 w-[100px] rounded-full bg-muted" />
 			{children}
 		</DrawerPrimitive.Content>
 	</DrawerPortal>
@@ -97,7 +98,7 @@ const DrawerDescription = React.forwardRef<
 >(({ className, ...props }, ref) => (
 	<DrawerPrimitive.Description
 		ref={ref}
-		className={cn("text-sm text-stone-500 dark:text-stone-400", className)}
+		className={cn("text-muted-foreground text-sm", className)}
 		{...props}
 	/>
 ));
