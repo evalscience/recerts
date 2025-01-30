@@ -23,8 +23,7 @@ const FundingProgressView = ({ hypercert }: { hypercert: FullHypercert }) => {
 				<div className="flex flex-col items-start">
 					<span className="text-muted-foreground">Reached</span>
 					<span className="font-bold text-xl">
-						{pricePerPercentInUSD}$
-						{(percentCompleted * pricePerPercentInUSD).toFixed()}
+						${(percentCompleted * pricePerPercentInUSD).toFixed()}
 					</span>
 				</div>
 				<div className="flex flex-col items-end">
