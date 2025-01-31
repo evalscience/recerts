@@ -8,12 +8,11 @@ import { catchError } from "@/app/utils";
 import { Button } from "@/components/ui/button";
 import { MotionWrapper } from "@/components/ui/motion-wrapper";
 import { Separator } from "@/components/ui/separator";
-import { bigintToFormattedDate } from "@/lib/utils";
 import type { ApiError } from "@/types/api";
 import { ChevronLeft } from "lucide-react";
 import Link from "next/link";
 import React from "react";
-import FundingProgressView from "./components/funding-progress-view";
+import FundingView from "./components/FundingView";
 import LeftContent from "./components/left-content";
 import RightContent from "./components/right-content";
 
@@ -74,7 +73,7 @@ const Page = async ({ params }: PageProps) => {
 							))}
 						</ul>
 					</div>
-					<FundingProgressView hypercert={hypercert} />
+					<FundingView hypercert={hypercert} />
 				</div>
 				<div className="hidden w-full md:mt-4 md:block">
 					<Separator className="bg-beige-muted-foreground/20" />
