@@ -191,7 +191,7 @@ const HypercertForm = () => {
 			areaBadges.push(`⭔ ${geoJSONArea} ha`);
 		}
 		if (areaActivity) {
-			areaBadges.push(`🌱 ${areaActivity}`);
+			areaBadges.push(`${areaActivity}`);
 		}
 
 		if (tags) {
@@ -208,7 +208,7 @@ const HypercertForm = () => {
 				areaBadges.push(`⭔ ${geoJSONArea} ha`);
 			}
 			if (areaActivity) {
-				areaBadges.push(`🌱 ${areaActivity}`);
+				areaBadges.push(`${areaActivity}`);
 			}
 			setBadges(areaBadges);
 		}
