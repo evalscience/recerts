@@ -1,4 +1,4 @@
-import { HYPERCERTS_API_URL, UNISWAP_API_URL } from "@/config/graphql";
+import { graphqlEndpoint } from "@/config/hypercerts";
 import type { TadaDocumentNode } from "gql.tada";
 import { request } from "graphql-request";
 import { isObject } from ".";
@@ -114,12 +114,5 @@ export async function fetchHypercertsGraphQL<ResponseType, VariablesType>(
 	if (testingLog) {
 		console.log("calling from fetchHypercertsGraphQL", testingLog);
 	}
-	return fetchGraphQL(HYPERCERTS_API_URL, query, variables, testingLog);
-}
-
-export async function fetchUniswapGraphQL<ResponseType, VariablesType>(
-	query: TadaDocumentNode<ResponseType, VariablesType, unknown>,
-	variables?: VariablesType,
-): Promise<ResponseType> {
-	return fetchGraphQL(UNISWAP_API_URL, query, variables);
+	return fetchGraphQL(graphqlEndpoint, query, variables, testingLog);
 }

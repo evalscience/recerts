@@ -1,9 +1,7 @@
 import type { Hypercert } from "@/app/graphql-queries/hypercerts";
-import { Button } from "@/components/ui/button";
+import { SUPPORTED_CHAINS } from "@/config/wagmi";
 import { calculateBigIntPercentage } from "@/lib/calculateBigIntPercentage";
-import { type SupportedChainIdType, supportedChains } from "@/lib/constants";
 import { cn } from "@/lib/utils";
-import { ArrowRight } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import Progress from "../shared/progress";
@@ -21,7 +19,9 @@ const Card = ({ hypercert }: { hypercert: Hypercert }) => {
 		chainId,
 	} = hypercert;
 
-	const chainName = supportedChains.find((x) => x.id === Number(chainId))?.name;
+	const chainName = SUPPORTED_CHAINS.find(
+		(x) => x.id === Number(chainId),
+	)?.name;
 	const percentAvailable = calculateBigIntPercentage(unitsForSale, totalUnits);
 	return (
 		<Link href={`/hypercert/${hypercertId}`} passHref>

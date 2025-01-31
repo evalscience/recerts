@@ -1,6 +1,7 @@
 "use client";
 import type { FullHypercert } from "@/app/graphql-queries/hypercerts";
 import { Button } from "@/components/ui/button";
+import { SUPPORTED_CHAIN } from "@/config/wagmi";
 import useCopy from "@/hooks/use-copy";
 import { useEthersProvider } from "@/hooks/use-ethers-provider";
 import { useEthersSigner } from "@/hooks/use-ethers-signer";
@@ -155,7 +156,7 @@ const TransactionProgress = ({
 		setError(false);
 		setStatus("PREPARING");
 		const hcExchangeClient = new HypercertExchangeClient(
-			Number(chainId) ?? ChainId.SEPOLIA,
+			Number(chainId) ?? SUPPORTED_CHAIN.id,
 			// @ts-ignore
 			provider,
 			signer,

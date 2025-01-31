@@ -2,6 +2,7 @@
 import { ConnectButton } from "@/components/global/connect-button";
 import UserSheet from "@/components/global/user-sheet";
 import EthAvatar from "@/components/ui/eth-avatar";
+import { SUPPORTED_CHAINS } from "@/config/wagmi";
 import { cn } from "@/lib/utils";
 import { useWeb3Modal } from "@web3modal/wagmi/react";
 import { Loader2, UserRound } from "lucide-react";
@@ -16,18 +17,23 @@ const WalletProfile = () => {
 		return <Loader2 className="mr-2 animate-spin text-primary" />;
 	if (isDisconnected) return <ConnectButton />;
 
+	const isChainSupported =
+		SUPPORTED_CHAINS.find(
+			(supportedChain) => supportedChain.id === chain?.id,
+		) !== undefined;
+
 	return (
 		<UserSheet>
 			<div
 				className={cn(
 					"flex items-center rounded-full p-1",
-					chain?.name === "Sepolia" ? "bg-green-500/20" : "bg-red-500/20",
+					isChainSupported ? "bg-green-500/20" : "bg-red-500/20",
 				)}
 			>
 				<span
 					className={cn(
 						"mx-3 font-bold font-sans",
-						chain?.name === "Sepolia"
+						isChainSupported
 							? "text-green-700 dark:text-green-300"
 							: "text-red-700 dark:text-red-300",
 					)}
