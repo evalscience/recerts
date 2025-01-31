@@ -53,7 +53,7 @@ export function GridView({ hypercerts }: { hypercerts: Hypercert[] }) {
 			id="discover"
 		>
 			<section className="flex w-full max-w-6xl flex-1 flex-col">
-				{hypercerts.length && <Search inputState={searchInputState} />}
+				{hypercerts.length > 0 && <Search inputState={searchInputState} />}
 				<div className="p-3" />
 				{filteredHypercerts.length ? (
 					<div
