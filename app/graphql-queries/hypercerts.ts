@@ -1,3 +1,4 @@
+import { hyperboardId } from "@/config/hypercerts";
 import { typeCastApiResponseToBigInt } from "@/lib/utils";
 import type { ApiError } from "@/types/api";
 import { type ResultOf, graphql } from "gql.tada";
@@ -30,7 +31,7 @@ export const fetchHypercertIDs = async () => {
 		ApiError
 	>(
 		fetchGraphQL(hypercertIdsByHyperboardIdQuery, {
-			hyperboard_id: process.env.HYPERBOARD_ID,
+			hyperboard_id: hyperboardId,
 		}),
 	);
 	if (error) {

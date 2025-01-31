@@ -62,16 +62,6 @@ export const delay = (ms: number) =>
 export const isValidEthereumAddress = (address: string) =>
   /^0x[a-fA-F0-9]{40}$/.test(address);
 
-export const calculateBigIntPercentage = (
-  numerator: bigint | string | null | undefined,
-  denominator: bigint | string | null | undefined
-) => {
-  if (!numerator || !denominator) {
-    return undefined;
-  }
-  return Number((BigInt(numerator) * BigInt(100)) / BigInt(denominator));
-};
-
 export function typeCastApiResponseToBigInt(
   value: unknown
 ): bigint | undefined {
@@ -115,4 +105,9 @@ export const convertCurrencyPriceToUSD = (currency: string, tokens: bigint) => {
     Number((tokens * precisionMultiplier) / weiFactor) /
     Number(precisionMultiplier)
   );
+};
+
+export const formatUSD = (value: number, maxDecimals?: number) => {
+  maxDecimals = maxDecimals ?? 2;
+  return Math.floor(value * 10 ** maxDecimals) / 10 ** maxDecimals;
 };

@@ -1,5 +1,6 @@
 "use client";
 import Logo from "@/assets/Hypercerts.svg";
+import { SUPPORTED_CHAINS } from "@/config/wagmi";
 import { cn } from "@/lib/utils";
 import { useWeb3Modal } from "@web3modal/wagmi/react";
 import { blo } from "blo";
@@ -37,6 +38,10 @@ const UserSheet = ({ children }: { children: React.ReactNode }) => {
 	const { open: openWeb3Modal } = useWeb3Modal();
 
 	const { address, isConnecting, isDisconnected, chain } = useAccount();
+	const isChainSupported =
+		SUPPORTED_CHAINS.find(
+			(supportedChain) => supportedChain.id === chain?.id,
+		) !== undefined;
 
 	const [isAddressCopied, setIsAddressCopied] = useState(false);
 	const copyAddress = () => {
@@ -141,7 +146,7 @@ const UserSheet = ({ children }: { children: React.ReactNode }) => {
 							<span
 								className={cn(
 									"rounded-full px-3 py-1 font-bold font-sans",
-									chain?.name === "Sepolia"
+									isChainSupported
 										? "bg-green-500/20 text-green-700 dark:text-green-300"
 										: "bg-red-500/20 text-red-700 dark:text-red-300",
 								)}
