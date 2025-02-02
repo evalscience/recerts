@@ -16,12 +16,12 @@ const EvaluationDetails = ({ hypercert }: { hypercert: FullHypercert }) => {
 	const [viewingAll, setViewingAll] = useState(false);
 	return (
 		<div className="group overflow-hidden">
-			<EvervaultCard>
+			{/* <EvervaultCard>
 				<div className="flex w-full items-center gap-2">
 					<ShieldCheck className="text-primary" size={24} />
 					<span className="font-bold text-lg">Verified by Gainforest</span>
 				</div>
-			</EvervaultCard>
+			</EvervaultCard> */}
 			{attesters.size === 0 && (
 				<div className="flex w-full flex-col items-center gap-1 px-8 py-4">
 					<span className="text-center text-muted-foreground leading-none">
