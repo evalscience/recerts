@@ -3,7 +3,13 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as turf from "@turf/turf";
 import { format } from "date-fns";
-import { ArrowRight, CalendarIcon, TriangleAlert } from "lucide-react";
+import {
+	ArrowRight,
+	CalendarIcon,
+	Check,
+	Share2,
+	TriangleAlert,
+} from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -128,6 +134,8 @@ const HypercertForm = () => {
 		googleSheetsStatus,
 		googleSheetsError,
 	} = useMintHypercert();
+	const [isInitialized, setIsInitialized] = useState(false);
+	const [showCopied, setShowCopied] = useState(false);
 
 	const form = useForm<MintingFormValues>({
 		resolver: zodResolver(HypercertMintSchema),
@@ -340,6 +348,141 @@ const HypercertForm = () => {
 			return null;
 		}
 	};
+
+	// Initialize form from URL params
+	useEffect(() => {
+		if (typeof window === "undefined") return;
+
+		const params = new URLSearchParams(window.location.search);
+
+		// Helper function to set form value from URL param
+		const setFormValueFromParam = (key: keyof MintingFormValues) => {
+			const value = params.get(key);
+			if (!value) return;
+
+			try {
+				switch (key) {
+					case "projectDates": {
+						const dates = value.split(",");
+						if (dates.length === 2) {
+							form.setValue(key, [
+								dates[0] ? new Date(dates[0]) : undefined,
+								dates[1] ? new Date(dates[1]) : undefined,
+							]);
+						}
+						break;
+					}
+					case "acceptTerms":
+					case "confirmContributorsPermission": {
+						form.setValue(key, value === "true");
+						break;
+					}
+					case "areaActivity": {
+						if (
+							[
+								"Restoration",
+								"Conservation",
+								"Landscape",
+								"Community",
+								"Science",
+							].includes(value)
+						) {
+							form.setValue(key, value as MintingFormValues["areaActivity"]);
+						}
+						break;
+					}
+					default:
+						form.setValue(key, value);
+				}
+			} catch (error) {
+				console.error(`Error setting form value for ${key}:`, error);
+			}
+		};
+
+		// Set form values for all possible fields
+		const formFields: Array<keyof MintingFormValues> = [
+			"title",
+			"description",
+			"link",
+			"logo",
+			"banner",
+			"tags",
+			"projectDates",
+			"contributors",
+			"contact",
+			"acceptTerms",
+			"confirmContributorsPermission",
+			"geojson",
+			"areaActivity",
+		];
+
+		for (const key of formFields) {
+			setFormValueFromParam(key);
+		}
+
+		setIsInitialized(true);
+	}, [form.setValue]); // Add form.setValue to dependencies
+
+	// Update URL when form values change
+	useEffect(() => {
+		if (typeof window === "undefined" || !isInitialized) return;
+
+		const formValues = form.getValues();
+		const params = new URLSearchParams(window.location.search);
+
+		// Helper function to add param if value exists
+		const addParam = (
+			key: keyof MintingFormValues,
+			value: MintingFormValues[typeof key],
+		) => {
+			if (value === undefined || value === null || value === "") {
+				params.delete(key);
+			} else {
+				if (key === "projectDates" && Array.isArray(value)) {
+					const dates = value
+						.map((date) => date?.toISOString())
+						.filter(Boolean);
+					if (dates.length) {
+						params.set(key, dates.join(","));
+					} else {
+						params.delete(key);
+					}
+				} else if (
+					key === "acceptTerms" ||
+					key === "confirmContributorsPermission"
+				) {
+					params.set(key, String(!!value));
+				} else if (key === "geojson" && geoJSONFile) {
+					// Don't update URL if using file input
+					return;
+				} else {
+					params.set(key, String(value));
+				}
+			}
+		};
+
+		// Replace forEach with for...of
+		for (const key of Object.keys(formValues) as Array<
+			keyof MintingFormValues
+		>) {
+			addParam(key, formValues[key]);
+		}
+
+		// Fix template literal
+		const newUrl = `${window.location.pathname}${
+			params.toString() ? `?${params.toString()}` : ""
+		}`;
+		window.history.replaceState({}, "", newUrl);
+	}, [isInitialized, geoJSONFile, form.getValues]); // Fix dependencies
+
+	// Update the copyCurrentUrl function
+	const copyCurrentUrl = useCallback(() => {
+		const url = window.location.href;
+		navigator.clipboard.writeText(url).then(() => {
+			setShowCopied(true);
+			setTimeout(() => setShowCopied(false), 2000); // Hide after 2 seconds
+		});
+	}, []);
 
 	return (
 		<Dialog open={openMintDialog} onOpenChange={setOpenMintDialog}>
@@ -746,6 +889,23 @@ const HypercertForm = () => {
 							/>
 						</div>
 					</div>
+					<Button
+						type="button"
+						onClick={copyCurrentUrl}
+						className="relative gap-2"
+						variant="outline"
+						disabled={showCopied}
+					>
+						{showCopied ? (
+							<>
+								Copied! <Check size={16} className="text-green-500" />
+							</>
+						) : (
+							<>
+								Share Form <Share2 size={16} />
+							</>
+						)}
+					</Button>
 				</form>
 			</Form>
 			<HypercertMintDialog

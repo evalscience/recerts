@@ -38,13 +38,10 @@ export const metadata: Metadata = {
 	icons: [
 		{
 			rel: "icon",
-			type: "image/x-icon",
 			url: "/favicon.ico",
-			media: "(prefers-color-scheme: light)",
 		},
 		{
 			rel: "icon",
-			type: "image/png",
 			url: "/favicon-dark.ico",
 			media: "(prefers-color-scheme: dark)",
 		},
