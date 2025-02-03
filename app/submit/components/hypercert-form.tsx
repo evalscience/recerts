@@ -63,7 +63,9 @@ const HypercertMintSchema = z
 			.min(10, {
 				message: "Description is required and must be at least 10 characters",
 			})
-			.max(1200, { message: "Description must be less than 1200 characters" }),
+			.max(10000, {
+				message: "Description must be less than 10000 characters",
+			}),
 		link: z.preprocess(
 			(value) => (value === "" ? undefined : value),
 			z.string().url().optional(),
