@@ -24,7 +24,7 @@ export const restEndpoint = HYPERCERTS_API_URL_REST;
 
 //@TODO: Update the collection ids for prod and dev:
 const DEV_HYPERBOARD_ID = "3e42687a-ceeb-48f7-b8ab-99533ff0a81c";
-const PROD_HYPERBOARD_ID = "d8a64649-8ab7-4ac6-87d0-351de0df5eb0";
+const PROD_HYPERBOARD_ID = "a05c126d-a3bd-48e4-bfe9-36f494924fc4";
 
 export const collectionId = "0xa16DFb32Eb140a6f3F2AC68f41dAd8c7e83C4941";
 export const hyperboardId =
