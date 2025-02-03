@@ -102,7 +102,7 @@ const HypercertCard = forwardRef<HTMLDivElement, HypercertCardProps>(
 				</section>
 				<section className="flex h-[246px] flex-col justify-between rounded-t-xl border-black border-t-[1px] bg-white p-3 pt-4">
 					<h5
-						className="line-clamp-3 text-ellipsis py-1 font-semibold text-[28px] text-slate-800 leading-[30px] tracking-[-0.03em]"
+						className="line-clamp-3 text-ellipsis py-1 font-semibold text-[25px] text-slate-800 leading-[27px] tracking-[-0.03em]"
 						title={title}
 					>
 						{title}
