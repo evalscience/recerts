@@ -424,7 +424,12 @@ const HypercertForm = () => {
 						trait_type: "geoJSON", //human readable
 						type: "application/geo+json", //MIME type
 						src: geoJSONipfsLink, //IPFS link
-						name: `${normalize(values.title.replaceAll(" ", ""))}.geojson`,
+						name: `${
+							values.title
+								.toLowerCase()
+								.replace(/[^a-z0-9]+/g, "-") // Replace any non-alphanumeric chars with single dash
+								.replace(/^-+|-+$/g, "") // Remove leading/trailing dashes
+						}.geojson`,
 					},
 				],
 				impactScope: ["all"],
