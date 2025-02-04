@@ -3,7 +3,13 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as turf from "@turf/turf";
 import { format } from "date-fns";
-import { ArrowRight, CalendarIcon, TriangleAlert } from "lucide-react";
+import {
+	ArrowRight,
+	CalendarIcon,
+	Check,
+	Share2,
+	TriangleAlert,
+} from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -46,66 +52,93 @@ const telegramHandleRegex = /^@([a-zA-Z0-9_]{4,31})$/;
 const emailRegex =
 	/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
-const HypercertMintSchema = z.object({
-	title: z
-		.string()
-		.min(1, { message: "Hypercert Name is required" })
-		.max(180, { message: "Hypercert Name must be less than 180 characters" }),
-	description: z
-		.string()
-		.min(10, {
-			message: "Description is required and must be at least 10 characters",
-		})
-		.max(1200, { message: "Description must be less than 1200 characters" }),
-	link: z.preprocess(
-		(value) => (value === "" ? undefined : value),
-		z.string().url().optional(),
-	),
-	logo: z.string().url({ message: "Logo Image must be a valid URL" }),
-	banner: z
-		.string()
-		.url({ message: "Background Banner Image must be a valid URL" }),
-	tags: z
-		.string()
-		.refine((val) => val.split(",").every((tag) => tag.trim() !== ""), {
-			message:
-				"Tags must must not be empty, Multiple tags must be separated by commas",
-		}),
-	projectDates: z
-		.tuple([z.date().optional(), z.date().optional()])
-		.refine((data) => {
-			return Boolean(data[0] || data[1]);
-		}, "Work date range is required"),
-	contributors: z.string().refine(
-		(value) => {
-			const addresses = value.split(", ").map((addr) => addr.trim());
-			return addresses.every((address) => isValidEthereumAddress(address));
-		},
-		{
-			message:
-				"Each value must be a valid Ethereum address separated by a comma and a space.",
-		},
-	),
-	contact: z
-		.string()
-		.refine(
-			(value) =>
-				telegramHandleRegex.test(value) ||
-				/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value),
+const HypercertMintSchema = z
+	.object({
+		title: z
+			.string()
+			.min(1, { message: "Hypercert Name is required" })
+			.max(180, { message: "Hypercert Name must be less than 180 characters" }),
+		description: z
+			.string()
+			.min(10, {
+				message: "Description is required and must be at least 10 characters",
+			})
+			.max(10000, {
+				message: "Description must be less than 10000 characters",
+			}),
+		link: z.preprocess(
+			(value) => (value === "" ? undefined : value),
+			z.string().url().optional(),
+		),
+		logo: z.string().url({ message: "Logo Image must be a valid URL" }),
+		banner: z
+			.string()
+			.url({ message: "Background Banner Image must be a valid URL" }),
+		tags: z
+			.string()
+			.refine((val) => val.split(",").every((tag) => tag.trim() !== ""), {
+				message:
+					"Tags must must not be empty, Multiple tags must be separated by commas",
+			}),
+		projectDates: z
+			.tuple([z.date().optional(), z.date().optional()])
+			.refine((data) => {
+				return Boolean(data[0] || data[1]);
+			}, "Work date range is required"),
+		contributors: z.string().refine(
+			(value) => {
+				const addresses = value.split(", ").map((addr) => addr.trim());
+				return addresses.every((address) => isValidEthereumAddress(address));
+			},
 			{
-				message: "Input must be a valid Telegram handle or email address",
+				message:
+					"Each value must be a valid Ethereum address separated by a comma and a space.",
 			},
 		),
-	acceptTerms: z.boolean(),
-	confirmContributorsPermission: z.boolean(),
-	geojson: z.string().optional(),
-	areaActivity: z.enum(
-		["Restoration", "Conservation", "Landscape", "Community", "Science"],
-		{
-			required_error: "Please select what you're doing with this area",
+		contact: z
+			.string()
+			.refine(
+				(value) =>
+					telegramHandleRegex.test(value) ||
+					/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value),
+				{
+					message: "Input must be a valid Telegram handle or email address",
+				},
+			),
+		acceptTerms: z.boolean(),
+		confirmContributorsPermission: z.boolean(),
+		geojson: z.string().refine((val) => val === "" || val.startsWith("http"), {
+			message: "GeoJSON URL must be empty or start with http",
+		}),
+		geojsonFile: z.any().optional(),
+		areaActivity: z.enum(
+			["Restoration", "Conservation", "Landscape", "Community", "Science"],
+			{
+				required_error: "Please select what you're doing with this area",
+			},
+		),
+	})
+	.refine(
+		(data) => {
+			const hasUrl = !!data.geojson;
+			const hasFile = !!data.geojsonFile;
+			return (hasUrl && !hasFile) || (!hasUrl && hasFile);
 		},
-	),
-});
+		{
+			message: "Please provide either a GeoJSON URL or file",
+			path: ["geojson"],
+		},
+	)
+	.refine(
+		(data) => {
+			// Additional refinement to ensure at least one is provided
+			return !!data.geojson || !!data.geojsonFile;
+		},
+		{
+			message: "A GeoJSON URL or file is required",
+			path: ["geojson"],
+		},
+	);
 
 type MintingFormValues = z.infer<typeof HypercertMintSchema>;
 
@@ -115,6 +148,8 @@ const HypercertForm = () => {
 	const [openMintDialog, setOpenMintDialog] = useState(false);
 	const [geoJSONFile, setGeoJSONFile] = useState<File | null>(null);
 	const [geoJSONArea, setGeoJSONArea] = useState<number | null>(null);
+	const [showCopied, setShowCopied] = useState(false);
+	const [isInitialized, setIsInitialized] = useState(false);
 	const {
 		mintHypercert,
 		mintStatus,
@@ -144,6 +179,7 @@ const HypercertForm = () => {
 			acceptTerms: false,
 			confirmContributorsPermission: false,
 			geojson: "",
+			geojsonFile: undefined,
 			areaActivity: undefined,
 		},
 		mode: "onChange",
@@ -152,6 +188,115 @@ const HypercertForm = () => {
 	const tags = form.watch("tags") || "";
 	const geojsonValue = form.watch("geojson");
 	const areaActivity = form.getValues("areaActivity");
+
+	// Memoize the initialization function
+	const initializeFormFromUrl = useCallback(() => {
+		if (typeof window === "undefined") return;
+
+		const params = new URLSearchParams(window.location.search);
+		const formFields: Array<keyof MintingFormValues> = [
+			"title",
+			"description",
+			"link",
+			"logo",
+			"banner",
+			"tags",
+			"projectDates",
+			"contributors",
+			"contact",
+			"acceptTerms",
+			"confirmContributorsPermission",
+			"geojson",
+			"areaActivity",
+		];
+
+		for (const key of formFields) {
+			const value = params.get(key);
+			if (!value) continue;
+
+			try {
+				switch (key) {
+					case "projectDates": {
+						const dates = value.split(",");
+						if (dates.length === 2) {
+							form.setValue(key, [
+								dates[0] ? new Date(dates[0]) : undefined,
+								dates[1] ? new Date(dates[1]) : undefined,
+							]);
+						}
+						break;
+					}
+					case "acceptTerms":
+					case "confirmContributorsPermission": {
+						form.setValue(key, value === "true");
+						break;
+					}
+					case "areaActivity": {
+						if (
+							[
+								"Restoration",
+								"Conservation",
+								"Landscape",
+								"Community",
+								"Science",
+							].includes(value)
+						) {
+							form.setValue(key, value as MintingFormValues["areaActivity"]);
+						}
+						break;
+					}
+					default:
+						form.setValue(key, value);
+				}
+			} catch (error) {
+				console.error(`Error setting form value for ${key}:`, error);
+			}
+		}
+
+		setIsInitialized(true);
+	}, [form.setValue]); // Include form.setValue in dependencies
+
+	// Use the memoized function in useEffect
+	useEffect(() => {
+		initializeFormFromUrl();
+	}, [initializeFormFromUrl]);
+
+	// Watch ALL form fields
+	const formValues = form.watch();
+
+	// Update URL when form values change
+	useEffect(() => {
+		if (!isInitialized) return;
+
+		const params = new URLSearchParams();
+
+		// Only add non-empty values to URL
+		for (const [key, value] of Object.entries(formValues)) {
+			if (value === undefined || value === null || value === "") continue;
+
+			if (key === "projectDates" && Array.isArray(value)) {
+				const dates = value.map((date) => date?.toISOString()).filter(Boolean);
+				if (dates.length) {
+					params.set(key, dates.join(","));
+				}
+			} else if (
+				key === "acceptTerms" ||
+				key === "confirmContributorsPermission"
+			) {
+				params.set(key, String(!!value));
+			} else if (key === "geojson" && !geoJSONFile) {
+				// Only set geojson URL if not using file input
+				params.set(key, String(value));
+			} else if (key !== "geojson") {
+				params.set(key, String(value));
+			}
+		}
+
+		const newUrl = `${window.location.pathname}${
+			params.toString() ? `?${params.toString()}` : ""
+		}`;
+		window.history.replaceState({}, "", newUrl);
+	}, [formValues, isInitialized, geoJSONFile]); // Removed form from dependencies
 
 	useEffect(() => {
 		const calculateArea = async () => {
@@ -279,7 +424,12 @@ const HypercertForm = () => {
 						trait_type: "geoJSON", //human readable
 						type: "application/geo+json", //MIME type
 						src: geoJSONipfsLink, //IPFS link
-						name: `${normalize(values.title.replaceAll(" ", ""))}.geojson`,
+						name: `${
+							values.title
+								.toLowerCase()
+								.replace(/[^a-z0-9]+/g, "-") // Replace any non-alphanumeric chars with single dash
+								.replace(/^-+|-+$/g, "") // Remove leading/trailing dashes
+						}.geojson`,
 					},
 				],
 				impactScope: ["all"],
@@ -341,6 +491,59 @@ const HypercertForm = () => {
 		}
 	};
 
+	const copyCurrentUrl = useCallback(() => {
+		const url = window.location.href;
+		navigator.clipboard.writeText(url).then(() => {
+			setShowCopied(true);
+			setTimeout(() => setShowCopied(false), 2000); // Hide after 2 seconds
+		});
+	}, []);
+
+	const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+		const file = e.target.files?.[0];
+		if (file) {
+			setGeoJSONFile(file);
+			form.setValue("geojsonFile", file);
+			form.setValue("geojson", "");
+		}
+	};
+
+	const handleUrlChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+		const url = e.target.value;
+		form.setValue("geojson", url);
+		setGeoJSONFile(null);
+		form.setValue("geojsonFile", undefined);
+
+		if (url?.startsWith("http")) {
+			try {
+				const response = await fetch(url);
+				if (!response.ok) {
+					form.setError("geojson", {
+						type: "manual",
+						message: "Unable to fetch GeoJSON from URL",
+					});
+					return;
+				}
+
+				const data = await response.json();
+				if (!data.type || !data.features) {
+					form.setError("geojson", {
+						type: "manual",
+						message: "Invalid GeoJSON format",
+					});
+					return;
+				}
+
+				form.clearErrors("geojson");
+			} catch (error) {
+				form.setError("geojson", {
+					type: "manual",
+					message: "Invalid URL or unable to parse GeoJSON",
+				});
+			}
+		}
+	};
+
 	return (
 		<Dialog open={openMintDialog} onOpenChange={setOpenMintDialog}>
 			<Form {...form}>
@@ -360,9 +563,9 @@ const HypercertForm = () => {
 											name="title"
 											render={({ field }) => (
 												<FormItem>
-													<FormLabel>Hypercert Name</FormLabel>
+													<FormLabel>Ecocert Name</FormLabel>
 													<FormControl>
-														<Input placeholder="Hypercert Title" {...field} />
+														<Input placeholder="Ecocert Title" {...field} />
 													</FormControl>
 													<FormMessage />
 												</FormItem>
@@ -409,7 +612,7 @@ const HypercertForm = () => {
 													<FormControl>
 														<Textarea
 															className="bg-inherit"
-															placeholder="Hypercert description"
+															placeholder="Ecocert description"
 															{...field}
 														/>
 													</FormControl>
@@ -425,7 +628,7 @@ const HypercertForm = () => {
 													<FormLabel>Link</FormLabel>
 													<FormControl>
 														<Input
-															placeholder="https://hypercerts.org"
+															placeholder="https://ecocertain.xyz"
 															{...field}
 														/>
 													</FormControl>
@@ -437,7 +640,7 @@ const HypercertForm = () => {
 								</section>
 								<section className="flex flex-col gap-2">
 									<h2 className="font-baskerville font-bold text-2xl">
-										Hypercert Fields
+										Ecocert Fields
 									</h2>
 
 									<div className="flex flex-col gap-4 rounded-2xl bg-background p-4">
@@ -489,7 +692,7 @@ const HypercertForm = () => {
 													<FormControl>
 														<Textarea
 															className="bg-inherit"
-															placeholder="Hypercerts, Impact, ..."
+															placeholder="Ecocerts, Impact, ..."
 															{...field}
 														/>
 													</FormControl>
@@ -602,21 +805,12 @@ const HypercertForm = () => {
 																type="text"
 																placeholder="https://example.com/data.geojson"
 																{...field}
-																onChange={(e) => {
-																	field.onChange(e.target.value);
-																	setGeoJSONFile(null);
-																}}
+																onChange={handleUrlChange}
 															/>
 															<Input
 																type="file"
 																accept=".geojson,.json,.txt,application/geo+json,application/json,text/plain"
-																onChange={(e) => {
-																	const file = e.target.files?.[0];
-																	if (file) {
-																		setGeoJSONFile(file);
-																		field.onChange("");
-																	}
-																}}
+																onChange={handleFileChange}
 															/>
 														</div>
 													</FormControl>
@@ -649,7 +843,7 @@ const HypercertForm = () => {
 												<FormItem>
 													<FormLabel>Telegram / Email</FormLabel>
 													<FormControl>
-														<Input placeholder="@Hypercerts" {...field} />
+														<Input placeholder="@gainforestnow" {...field} />
 													</FormControl>
 													<FormMessage />
 												</FormItem>
@@ -669,8 +863,7 @@ const HypercertForm = () => {
 													<div className="space-y-1 leading-none">
 														<FormLabel>
 															I confirm that all listed contributors gave their
-															permission to include their work in this
-															hypercert.
+															permission to include their work in this ecocert.
 														</FormLabel>
 													</div>
 												</FormItem>
@@ -726,6 +919,23 @@ const HypercertForm = () => {
 								<div className="flex w-full items-center justify-end gap-2">
 									<Button type="submit" className="gap-2">
 										Submit <ArrowRight size={16} />
+									</Button>
+									<Button
+										type="button"
+										onClick={copyCurrentUrl}
+										className="relative gap-2"
+										variant="outline"
+										disabled={showCopied}
+									>
+										{showCopied ? (
+											<>
+												Copied! <Check size={16} className="text-green-500" />
+											</>
+										) : (
+											<>
+												Share Form <Share2 size={16} />
+											</>
+										)}
 									</Button>
 								</div>
 							</CardContent>

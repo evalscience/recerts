@@ -180,10 +180,6 @@ const fullHypercertByHypercertIdQuery = graphql(`
             attester
             creation_block_timestamp
             data
-            eas_schema {
-              id
-              schema
-            }
             id
           }
         }
@@ -243,11 +239,11 @@ export type FullHypercert = {
 		attester: string;
 		creationBlockTimestamp: bigint;
 		data: string;
-		easSchema: {
+		id: string;
+		easSchema?: {
 			id: string;
 			schema: string;
 		};
-		id: string;
 	}[];
 	sales: {
 		unitsBought: bigint;
@@ -339,17 +335,12 @@ export const fetchFullHypercertById = async (
 	const parsedAttestations = attestations
 		.map((attestation) => {
 			if (!attestation.attester) return null;
-			const easSchema = attestation.eas_schema as {
-				id: string;
-				schema: string;
-			};
 			return {
 				attester: attestation.attester.toLowerCase(),
 				creationBlockTimestamp:
 					typeCastApiResponseToBigInt(attestation.creation_block_timestamp) ??
 					0n,
 				data: attestation.data as string,
-				easSchema,
 				id: attestation.id,
 			};
 		})

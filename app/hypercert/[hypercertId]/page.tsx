@@ -13,6 +13,7 @@ import { ChevronLeft } from "lucide-react";
 import Link from "next/link";
 import React from "react";
 import FundingView from "./components/FundingView";
+import CopyButton from "./components/copy-button";
 import LeftContent from "./components/left-content";
 import RightContent from "./components/right-content";
 import { FullHypercertProvider } from "./contexts/full-hypercert";
@@ -58,7 +59,7 @@ const Page = async ({ params }: PageProps) => {
 				<div className="flex w-full max-w-6xl flex-col gap-2 p-8">
 					<Link href={"/"}>
 						<Button variant={"link"} className="gap-2 p-0">
-							<ChevronLeft size={20} /> View all hypercerts
+							<ChevronLeft size={20} /> View all ecocerts
 						</Button>
 					</Link>
 					<div className="flex flex-col justify-start gap-4 md:flex-row md:justify-between">
@@ -66,6 +67,16 @@ const Page = async ({ params }: PageProps) => {
 							<h1 className="font-baskerville font-bold text-4xl leading-tight">
 								{hypercert.metadata.name ?? "Untitled"}
 							</h1>
+							<div className="flex items-center gap-4 text-muted-foreground text-sm">
+								<Link
+									href={`https://app.hypercerts.org/hypercerts/${hypercertId}`}
+									target="_blank"
+									className="hover:underline"
+								>
+									View at app.hypercerts
+								</Link>
+								<CopyButton id={hypercertId} />
+							</div>
 							<ul className="mt-1 flex flex-wrap items-center gap-2">
 								{hypercert.metadata.work.scope.map((scope, i) => (
 									<li

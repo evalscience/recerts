@@ -9,7 +9,7 @@ export const useHypercertClient = () => {
 	const client = useMemo(
 		() =>
 			new HypercertClient({
-				environment: "test",
+				environment: `${process.env.NEXT_PUBLIC_DEPLOY_ENV} === 'production'` ? 'production' : 'test',
 				// @ts-ignore - wagmi and viem have different typing
 				walletClient,
 			}),

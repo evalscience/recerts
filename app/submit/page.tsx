@@ -8,11 +8,11 @@ function SubmitPage() {
 			{/* <section className="flex flex-col items-center p-4 md:p-8 gap-4"> */}
 			<header className="flex w-full flex-col gap-2 py-4">
 				<h1 className="text-balance font-baskerville font-bold text-4xl md:text-5xl">
-					Create a hypercert
+					Create an ecocert
 				</h1>
 				<p className="text-beige-muted-foreground">
-					Contribute a new hypercert, and share the impact. Fill the form to get
-					started.
+					An ecocert is a verifiable record of your environmental work. Share
+					its impact with the world.
 				</p>
 			</header>
 			<section>

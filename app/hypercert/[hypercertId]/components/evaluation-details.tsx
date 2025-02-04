@@ -14,21 +14,27 @@ const EvaluationDetails = ({ hypercert }: { hypercert: FullHypercert }) => {
 		attestations.map((attestation) => attestation.attester),
 	);
 	const [viewingAll, setViewingAll] = useState(false);
+
+	const hasGainforestAttestation = [...attesters].some(
+		(attester) =>
+			attester === "0xEf48752C933b1050187e89A9F909De2b9e0BDCE6" ||
+			attester === "0x40713Ca5223eFb79E861E282495092D2563c1eCE",
+	);
+
 	return (
 		<div className="group overflow-hidden">
-			<EvervaultCard>
-				<div className="flex w-full items-center gap-2">
-					<ShieldCheck className="text-primary" size={24} />
-					<span className="font-bold text-lg">Verified by Gainforest</span>
-				</div>
-			</EvervaultCard>
+			{hasGainforestAttestation && (
+				<EvervaultCard>
+					<div className="flex w-full items-center gap-2">
+						<ShieldCheck className="text-primary" size={24} />
+						<span className="font-bold text-lg">Verified by Gainforest</span>
+					</div>
+				</EvervaultCard>
+			)}
 			{attesters.size === 0 && (
 				<div className="flex w-full flex-col items-center gap-1 px-8 py-4">
 					<span className="text-center text-muted-foreground leading-none">
-						This hypercerts and the work it represents have been verified by
-					</span>
-					<span className="text-center font-bold text-foreground text-xl">
-						GainForest.Earth
+						This hypercerts and the work has not been verified yet.
 					</span>
 				</div>
 			)}
