@@ -1,32 +1,12 @@
 [
 	{
 		"id": "0",
-		"question": "What is Hypercerts?",
-		"answer": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non risus. Suspendisse lectus tortor, dignissim sit amet, adipiscing nec, ultricies sed, dolor. Cras elementum ultrices diam. Maecenas ligula massa, varius a, semper congue, euismod non, mi."
+		"question": "What are Hypercerts?",
+		"answer": "Hypercerts are digital impact certificates. Projects create hypercerts based on the work that they have done in the past. They can then sell portions of their hypercerts to funders, thereby transferring shares of the impact claims to them."
 	},
 	{
 		"id": "1",
-		"question": "What is Hypercerts?",
-		"answer": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non risus. Suspendisse lectus tortor, dignissim sit amet, adipiscing nec, ultricies sed, dolor. Cras elementum ultrices diam. Maecenas ligula massa, varius a, semper congue, euismod non, mi."
-	},
-	{
-		"id": "2",
-		"question": "What is Hypercerts?",
-		"answer": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non risus. Suspendisse lectus tortor, dignissim sit amet, adipiscing nec, ultricies sed, dolor. Cras elementum ultrices diam. Maecenas ligula massa, varius a, semper congue, euismod non, mi."
-	},
-	{
-		"id": "3",
-		"question": "What is Hypercerts?",
-		"answer": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non risus. Suspendisse lectus tortor, dignissim sit amet, adipiscing nec, ultricies sed, dolor. Cras elementum ultrices diam. Maecenas ligula massa, varius a, semper congue, euismod non, mi."
-	},
-	{
-		"id": "4",
-		"question": "What is Hypercerts?",
-		"answer": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non risus. Suspendisse lectus tortor, dignissim sit amet, adipiscing nec, ultricies sed, dolor. Cras elementum ultrices diam. Maecenas ligula massa, varius a, semper congue, euismod non, mi."
-	},
-	{
-		"id": "5",
-		"question": "What is Hypercerts?",
-		"answer": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non risus. Suspendisse lectus tortor, dignissim sit amet, adipiscing nec, ultricies sed, dolor. Cras elementum ultrices diam. Maecenas ligula massa, varius a, semper congue, euismod non, mi."
+		"question": "What are Ecocerts?",
+		"answer": "Ecocerts are environmental hypercerts that standardizes environmental impact. Just as carbon credits created a data market for measuring and implementing carbon reduction, hypercerts creates a market for ecological data collection and verification."
 	}
 ]
