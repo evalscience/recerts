@@ -233,7 +233,7 @@ export type FullHypercert = {
 	};
 	orders: {
 		id: string;
-		price: number;
+		price: bigint;
 		chainId: string;
 		pricePerPercentInToken: number;
 		pricePerPercentInUSD: number;
@@ -313,10 +313,10 @@ export const fetchFullHypercertById = async (
 	const parsedOrders = orders.map((order) => {
 		return {
 			id: order.id as string,
-			price: Number(order.price),
+			price: typeCastApiResponseToBigInt(order.price) ?? 0n,
 			pricePerPercentInToken: Number(order.pricePerPercentInToken),
 			pricePerPercentInUSD: Number(order.pricePerPercentInUSD),
-			currency: order.currency as string,
+			currency: order.currency.toLowerCase() as string,
 			chainId: order.chainId as string,
 		};
 	});
@@ -325,13 +325,13 @@ export const fetchFullHypercertById = async (
 	const parsedSales = sales.map((sale) => {
 		return {
 			unitsBought: typeCastApiResponseToBigInt(sale.amounts?.[0] ?? 0) ?? 0n,
-			buyer: sale.buyer as string,
-			currency: sale.currency as string,
+			buyer: sale.buyer.toLowerCase(),
+			currency: sale.currency.toLowerCase(),
 			currencyAmount:
 				typeCastApiResponseToBigInt(sale.currency_amount ?? 0) ?? 0n,
 			creationBlockTimestamp:
 				typeCastApiResponseToBigInt(sale.creation_block_timestamp) ?? 0n,
-			transactionHash: sale.transaction_hash as string,
+			transactionHash: sale.transaction_hash,
 		};
 	});
 
@@ -344,7 +344,7 @@ export const fetchFullHypercertById = async (
 				schema: string;
 			};
 			return {
-				attester: attestation.attester,
+				attester: attestation.attester.toLowerCase(),
 				creationBlockTimestamp:
 					typeCastApiResponseToBigInt(attestation.creation_block_timestamp) ??
 					0n,
@@ -355,7 +355,7 @@ export const fetchFullHypercertById = async (
 		})
 		.filter((attestation) => attestation !== null);
 
-	return {
+	const fullHypercert = {
 		hypercertId,
 		saleStatus,
 		totalUnits: typeCastApiResponseToBigInt(hypercert.units) ?? 0n,
@@ -364,7 +364,8 @@ export const fetchFullHypercertById = async (
 		creationBlockTimestamp:
 			typeCastApiResponseToBigInt(hypercert.creation_block_timestamp) ?? 0n,
 		creatorAddress: hypercert.creator_address ?? "0x0",
-		chainId: (hypercert.contract?.chain_id as string) ?? undefined,
+		chainId:
+			(hypercert.contract?.chain_id as string).toLowerCase() ?? undefined,
 		metadata: {
 			image: metadata?.image ?? undefined,
 			name: metadata?.name ?? undefined,
@@ -374,7 +375,9 @@ export const fetchFullHypercertById = async (
 				from: typeCastApiResponseToBigInt(metadata?.work_timeframe_from) ?? 0n,
 				to: typeCastApiResponseToBigInt(metadata?.work_timeframe_to) ?? 0n,
 			},
-			contributors: metadata?.contributors ?? [],
+			contributors: (metadata?.contributors ?? []).map((contributor) =>
+				contributor.toLowerCase(),
+			),
 		},
 		cheapestOrder: {
 			pricePerPercentInUSD,
@@ -383,6 +386,7 @@ export const fetchFullHypercertById = async (
 		sales: parsedSales,
 		attestations: parsedAttestations,
 	};
+	return fullHypercert;
 };
 
 export type FullHypercertOrders = Exclude<FullHypercert["orders"], undefined>;

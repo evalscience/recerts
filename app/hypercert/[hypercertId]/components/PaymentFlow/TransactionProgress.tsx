@@ -1,7 +1,7 @@
 "use client";
 import type { FullHypercert } from "@/app/graphql-queries/hypercerts";
 import { Button } from "@/components/ui/button";
-import { SUPPORTED_CHAIN } from "@/config/wagmi";
+import { SUPPORTED_CHAINS } from "@/config/wagmi";
 import useCopy from "@/hooks/use-copy";
 import { useEthersProvider } from "@/hooks/use-ethers-provider";
 import { useEthersSigner } from "@/hooks/use-ethers-signer";
@@ -33,7 +33,8 @@ import React, {
 	useState,
 } from "react";
 import { useAccount } from "wagmi";
-import useOrderInfo from "./hooks/useOrderInfo";
+import useOrdersInfo from "./hooks/useOrdersInfo";
+import type { OrderPreferences } from "./hooks/usePaymentFlowDialog";
 
 type TransactionProgressStatus = {
 	title: string;
@@ -123,12 +124,12 @@ const PROGESS_CONTAINER_HEIGHT = 200;
 
 const TransactionProgress = ({
 	hypercert,
-	amountInUSD,
+	orderPreferences,
 	setVariant,
 	transactionReceiptState,
 }: {
 	hypercert: FullHypercert;
-	amountInUSD: number;
+	orderPreferences: OrderPreferences;
 	setVariant: (variant: "amount-options" | "transaction-progress") => void;
 	transactionReceiptState: [
 		transactionReceipt: ContractTransactionReceipt | null,
@@ -143,9 +144,9 @@ const TransactionProgress = ({
 	const [transactionReceipt, setTransactionReceipt] = transactionReceiptState;
 	const { copy: copyTxnHash, isCopied: isTxnHashCopied } = useCopy();
 
-	const orderInfo = useOrderInfo(hypercert);
-	const { order: firstOrder, unitsPerUSD } = orderInfo ?? {};
-	const { id: orderId } = firstOrder ?? {};
+	const ordersInfo = useOrdersInfo(hypercert);
+	const { orderId, units: unitsToBuy } = orderPreferences;
+	const preferredOrderInfo = ordersInfo.find((info) => info.id === orderId);
 
 	const { address, chainId } = useAccount();
 
@@ -156,7 +157,7 @@ const TransactionProgress = ({
 		setError(false);
 		setStatus("PREPARING");
 		const hcExchangeClient = new HypercertExchangeClient(
-			Number(chainId) ?? SUPPORTED_CHAIN.id,
+			Number(chainId) ?? SUPPORTED_CHAINS[0].id,
 			// @ts-ignore
 			provider,
 			signer,
@@ -171,20 +172,19 @@ const TransactionProgress = ({
 			return;
 		}
 		const order = orders.find((order) => order.id === orderId);
-		if (!order || !unitsPerUSD) {
+		if (!order || !unitsToBuy) {
 			setError(true);
 			return;
 		}
-		const unitsToBuy = amountInUSD * unitsPerUSD;
 
 		const takerOrder = hcExchangeClient.createFractionalSaleTakerBid(
 			order, // The order you want to buy retreived from the graphQL API
 			address, // Recipient address of the taker (if none, it will use the sender)
-			Math.floor(unitsToBuy), // Number of units to buy.
+			Math.floor(Number(unitsToBuy)), // Number of units to buy.
 			order.price, // Price per unit, in wei. In this example, we will end up with a total price of 1000 wei.
 		);
 
-		const totalPrice = BigInt(Math.floor(unitsToBuy)) * BigInt(order.price);
+		const totalPrice = unitsToBuy * BigInt(order.price);
 		let approveTx: ContractTransactionResponse;
 		try {
 			setStatus("SPEND_APPROVING");

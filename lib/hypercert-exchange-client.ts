@@ -4,7 +4,7 @@ import { HypercertExchangeClient } from "@hypercerts-org/marketplace-sdk";
 
 import { useEthersProvider } from "@/hooks/use-ethers-provider";
 import { useEthersSigner } from "@/hooks/use-ethers-signer";
-import { SUPPORTED_CHAIN } from "@/config/wagmi";
+import { SUPPORTED_CHAINS } from "@/config/wagmi";
 
 let hypercertExchangeClient: HypercertExchangeClient | null = null;
 
@@ -28,7 +28,7 @@ export const getHypercertExchangeClient = (): HypercertExchangeClient => {
   }
 
   hypercertExchangeClient = new HypercertExchangeClient(
-    SUPPORTED_CHAIN.id,
+    SUPPORTED_CHAINS[0].id,
     // @ts-ignore
     provider as unknown as Provider,
     // @ts-ignore

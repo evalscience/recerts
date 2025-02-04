@@ -15,6 +15,9 @@ import React from "react";
 import FundingView from "./components/FundingView";
 import LeftContent from "./components/left-content";
 import RightContent from "./components/right-content";
+import { FullHypercertProvider } from "./contexts/full-hypercert";
+
+export const dynamic = "force-dynamic";
 
 type PageProps = {
 	params: { hypercertId: string };
@@ -44,46 +47,48 @@ const Page = async ({ params }: PageProps) => {
 	}
 
 	return (
-		<MotionWrapper
-			type="main"
-			className="flex w-full flex-col items-center justify-start"
-			initial={{ opacity: 0, filter: "blur(10px)" }}
-			animate={{ opacity: 1, filter: "blur(0px)" }}
-			transition={{ duration: 0.5 }}
-		>
-			<div className="flex w-full max-w-6xl flex-col gap-2 p-8">
-				<Link href={"/"}>
-					<Button variant={"link"} className="gap-2 p-0">
-						<ChevronLeft size={20} /> View all hypercerts
-					</Button>
-				</Link>
-				<div className="flex flex-col justify-start gap-4 md:flex-row md:justify-between">
-					<div className="flex flex-col gap-2">
-						<h1 className="font-baskerville font-bold text-4xl leading-tight">
-							{hypercert.metadata.name ?? "Untitled"}
-						</h1>
-						<ul className="mt-1 flex flex-wrap items-center gap-2">
-							{hypercert.metadata.work.scope.map((scope, i) => (
-								<li
-									key={scope.toLowerCase()}
-									className="rounded-full bg-beige-muted px-3 py-1 text-beige-muted-foreground"
-								>
-									{scope}
-								</li>
-							))}
-						</ul>
+		<FullHypercertProvider value={hypercert}>
+			<MotionWrapper
+				type="main"
+				className="flex w-full flex-col items-center justify-start"
+				initial={{ opacity: 0, filter: "blur(10px)" }}
+				animate={{ opacity: 1, filter: "blur(0px)" }}
+				transition={{ duration: 0.5 }}
+			>
+				<div className="flex w-full max-w-6xl flex-col gap-2 p-8">
+					<Link href={"/"}>
+						<Button variant={"link"} className="gap-2 p-0">
+							<ChevronLeft size={20} /> View all hypercerts
+						</Button>
+					</Link>
+					<div className="flex flex-col justify-start gap-4 md:flex-row md:justify-between">
+						<div className="flex flex-col gap-2">
+							<h1 className="font-baskerville font-bold text-4xl leading-tight">
+								{hypercert.metadata.name ?? "Untitled"}
+							</h1>
+							<ul className="mt-1 flex flex-wrap items-center gap-2">
+								{hypercert.metadata.work.scope.map((scope, i) => (
+									<li
+										key={scope.toLowerCase()}
+										className="rounded-full bg-beige-muted px-3 py-1 text-beige-muted-foreground"
+									>
+										{scope}
+									</li>
+								))}
+							</ul>
+						</div>
+						<FundingView hypercert={hypercert} />
 					</div>
-					<FundingView hypercert={hypercert} />
+					<div className="hidden w-full md:mt-4 md:block">
+						<Separator className="bg-beige-muted-foreground/20" />
+					</div>
+					<section className="mt-4 flex flex-col items-start gap-4 lg:flex-row lg:gap-8">
+						<LeftContent hypercert={hypercert} />
+						<RightContent hypercert={hypercert} />
+					</section>
 				</div>
-				<div className="hidden w-full md:mt-4 md:block">
-					<Separator className="bg-beige-muted-foreground/20" />
-				</div>
-				<section className="mt-4 flex flex-col items-start gap-4 md:flex-row md:gap-8">
-					<LeftContent hypercert={hypercert} />
-					<RightContent hypercert={hypercert} />
-				</section>
-			</div>
-		</MotionWrapper>
+			</MotionWrapper>
+		</FullHypercertProvider>
 	);
 };
 
