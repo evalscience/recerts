@@ -11,11 +11,7 @@ const OpenVariant = ({
 	reached,
 	goal,
 	hypercert,
-}: {
-	reached: number;
-	goal: number;
-	hypercert: FullHypercert;
-}) => {
+}: { reached: number; goal: number; hypercert: FullHypercert }) => {
 	return (
 		<div className="flex h-full w-full flex-col justify-between">
 			<div className="flex w-full flex-col">
@@ -93,7 +89,7 @@ const VariantSelector = ({ hypercert }: { hypercert: FullHypercert }) => {
 
 const FundingView = ({ hypercert }: { hypercert: FullHypercert }) => {
 	return (
-		<div className="relative h-40 w-full max-w-full overflow-hidden rounded-xl border border-border bg-background/50 p-4 md:w-auto md:max-w-md md:flex-1">
+		<div className="relative h-40 w-full max-w-full overflow-hidden rounded-xl border border-border bg-background/50 p-4 md:w-auto md:max-w-md md:flex-1 md:basis-full">
 			<VariantSelector hypercert={hypercert} />
 		</div>
 	);
