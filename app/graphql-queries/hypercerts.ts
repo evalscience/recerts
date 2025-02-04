@@ -180,10 +180,6 @@ const fullHypercertByHypercertIdQuery = graphql(`
             attester
             creation_block_timestamp
             data
-            eas_schema {
-              id
-              schema
-            }
             id
           }
         }
