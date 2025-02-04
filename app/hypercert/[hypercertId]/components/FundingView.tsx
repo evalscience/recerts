@@ -7,7 +7,11 @@ import { ArrowRight, CircleAlert, Clock } from "lucide-react";
 import React from "react";
 import PaymentFlow from "./PaymentFlow";
 
-const OpenVariant = ({ reached, goal }: { reached: number; goal: number }) => {
+const OpenVariant = ({
+	reached,
+	goal,
+	hypercert,
+}: { reached: number; goal: number; hypercert: FullHypercert }) => {
 	return (
 		<div className="flex h-full w-full flex-col justify-between">
 			<div className="flex w-full flex-col">
@@ -27,7 +31,7 @@ const OpenVariant = ({ reached, goal }: { reached: number; goal: number }) => {
 				/>
 			</div>
 			<div className="mt-4 flex items-center justify-end">
-				<PaymentFlow>
+				<PaymentFlow hypercert={hypercert}>
 					<Button className="gap-2" size={"sm"}>
 						Buy <ArrowRight size={16} />
 					</Button>
@@ -78,6 +82,7 @@ const VariantSelector = ({ hypercert }: { hypercert: FullHypercert }) => {
 		<OpenVariant
 			reached={formatUSD(percentCompleted * pricePerPercentInUSD)}
 			goal={formatUSD(100 * pricePerPercentInUSD)}
+			hypercert={hypercert}
 		/>
 	);
 };
