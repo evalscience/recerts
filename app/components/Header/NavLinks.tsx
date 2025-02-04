@@ -51,6 +51,14 @@ const navLinks: NavLinkConfig[] = [
 		},
 	},
 	{
+		href: "/submit",
+		text: "Submit",
+		Icon: Home,
+		pathCheck: {
+			equals: "/submit",
+		},
+	},
+	{
 		href: "https://testnet.hypercerts.org/docs/intro",
 		text: "FAQs",
 		Icon: MessageCircleQuestion,
