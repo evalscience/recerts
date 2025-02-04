@@ -8,14 +8,11 @@ import { catchError } from "@/app/utils";
 import { Button } from "@/components/ui/button";
 import { MotionWrapper } from "@/components/ui/motion-wrapper";
 import { Separator } from "@/components/ui/separator";
-import { bigintToFormattedDate } from "@/lib/utils";
 import type { ApiError } from "@/types/api";
 import { ChevronLeft } from "lucide-react";
-import { unstable_cache } from "next/cache";
 import Link from "next/link";
 import React from "react";
-import CreatorAddress from "./components/creator-address";
-import FundingProgressView from "./components/funding-progress-view";
+import FundingView from "./components/FundingView";
 import LeftContent from "./components/left-content";
 import RightContent from "./components/right-content";
 
@@ -23,18 +20,18 @@ type PageProps = {
 	params: { hypercertId: string };
 };
 
-const getCachedHypercert = unstable_cache(
-	async (hypercertId: string) => fetchFullHypercertById(hypercertId),
-	["full-hypercert"],
-	{
-		revalidate: 10,
-	},
-);
+// const getCachedHypercert = unstable_cache(
+// 	async (hypercertId: string) => fetchFullHypercertById(hypercertId),
+// 	["full-hypercert"],
+// 	{
+// 		revalidate: 10,
+// 	},
+// );
 
 const Page = async ({ params }: PageProps) => {
 	const { hypercertId } = params;
 	const [error, hypercert] = await catchError<FullHypercert, ApiError>(
-		getCachedHypercert(hypercertId),
+		fetchFullHypercertById(hypercertId),
 	);
 
 	if (error) {
@@ -62,20 +59,11 @@ const Page = async ({ params }: PageProps) => {
 				</Link>
 				<div className="flex flex-col justify-start gap-4 md:flex-row md:justify-between">
 					<div className="flex flex-col gap-2">
-						<h1 className="font-baskerville font-bold text-5xl">
-							{hypercert.name ?? "Untitled"}
+						<h1 className="font-baskerville font-bold text-4xl leading-tight">
+							{hypercert.metadata.name ?? "Untitled"}
 						</h1>
-						<div className="inline-flex flex-wrap items-center text-muted-foreground text-sm">
-							<span className="mr-1">Created by</span>{" "}
-							<CreatorAddress
-								className="bg-beige-muted text-beige-muted-foreground"
-								address={hypercert.creatorAddress}
-							/>{" "}
-							<span className="mx-1">on</span>{" "}
-							{bigintToFormattedDate(hypercert.creationBlockTimestamp)}
-						</div>
-						<ul className="mt-2 flex flex-wrap items-center gap-2">
-							{hypercert.work.scope?.map((scope, i) => (
+						<ul className="mt-1 flex flex-wrap items-center gap-2">
+							{hypercert.metadata.work.scope.map((scope, i) => (
 								<li
 									key={scope.toLowerCase()}
 									className="rounded-full bg-beige-muted px-3 py-1 text-beige-muted-foreground"
@@ -85,7 +73,7 @@ const Page = async ({ params }: PageProps) => {
 							))}
 						</ul>
 					</div>
-					<FundingProgressView hypercert={hypercert} />
+					<FundingView hypercert={hypercert} />
 				</div>
 				<div className="hidden w-full md:mt-4 md:block">
 					<Separator className="bg-beige-muted-foreground/20" />

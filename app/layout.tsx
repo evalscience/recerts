@@ -6,48 +6,18 @@ import "./globals.css";
 
 import { cookieToInitialState } from "wagmi";
 
-import { Footer } from "@/components/global/footer";
-import { NavMenu } from "@/components/global/nav-menu";
 import { siteConfig } from "@/config/site";
 import { config } from "@/config/wagmi";
 import { WagmiContextProvider } from "@/contexts/wagmi";
+import { Libre_Baskerville } from "next/font/google";
 import { headers } from "next/headers";
-import Script from "next/script";
+import Footer from "./components/Footer";
+import Header from "./components/Header";
 
-const baskerville = localFont({
-	src: [
-		{
-			path: "./fonts/BaskervilleDisplayPT/Regular.otf",
-			weight: "400",
-			style: "normal",
-		},
-		{
-			path: "./fonts/BaskervilleDisplayPT/Italic.otf",
-			weight: "400",
-			style: "italic",
-		},
-		{
-			path: "./fonts/BaskervilleDisplayPT/Medium.otf",
-			weight: "500",
-			style: "normal",
-		},
-		{
-			path: "./fonts/BaskervilleDisplayPT/MediumItalic.otf",
-			weight: "500",
-			style: "italic",
-		},
-		{
-			path: "./fonts/BaskervilleDisplayPT/Bold.otf",
-			weight: "700",
-			style: "normal",
-		},
-		{
-			path: "./fonts/BaskervilleDisplayPT/BoldItalic.otf",
-			weight: "700",
-			style: "italic",
-		},
-	],
+const baskerville = Libre_Baskerville({
 	variable: "--font-baskerville",
+	subsets: ["latin"],
+	weight: ["400", "700"],
 });
 
 const archia = localFont({
@@ -62,25 +32,22 @@ const archia = localFont({
 });
 
 export const metadata: Metadata = {
-	metadataBase: new URL("https://app.voicedeck.org/"),
+	metadataBase: new URL("https://ecocertain.xyz/"),
 	title: { default: siteConfig.name, template: "%s | GainForest.Earth" },
 	description: siteConfig.description,
 	icons: [
 		{
 			rel: "icon",
-			type: "image/x-icon",
 			url: "/favicon.ico",
-			media: "(prefers-color-scheme: light)",
 		},
 		{
 			rel: "icon",
-			type: "image/png",
 			url: "/favicon-dark.ico",
 			media: "(prefers-color-scheme: dark)",
 		},
 	],
 	openGraph: {
-		title: { default: "Nature Project", template: "%s | GainForest.Earth" },
+		title: { default: "Ecocertain", template: "%s | GainForest.Earth" },
 		description: siteConfig.description,
 		type: "website",
 		images: [{ url: "/opengraph-image.png", alt: "GainForest.Earth" }],
@@ -88,7 +55,7 @@ export const metadata: Metadata = {
 	twitter: {
 		card: "summary_large_image",
 		site: "@edge-esmeralda",
-		title: { default: "Nature Project", template: "%s | GainForest.Earth" },
+		title: { default: "Ecocertain", template: "%s | GainForest.Earth" },
 		description: siteConfig.description,
 		images: [{ url: "/opengraph-image.png", alt: "GainForest.Earth" }],
 	},
@@ -110,7 +77,7 @@ export default function RootLayout({
 				)}
 			>
 				<WagmiContextProvider initialState={initialState}>
-					<NavMenu />
+					<Header />
 					<div className="flex-1">{children}</div>
 					<Footer />
 				</WagmiContextProvider>

@@ -12,10 +12,19 @@ interface MapRendererProps {
 }
 
 export type MapData = {
-	geoJSON: unknown;
 	baseUrl: string;
 	metadata: HypercertMetadata;
 };
+
+type ValidatedProperties = {
+	properties: Array<{
+		trait_type: string;
+		type: string;
+		src: string;
+		name: string;
+	}>;
+};
+
 export default function MapRenderer({ uri }: MapRendererProps) {
 	const [mapData, setMapData] = useState<MapData | null>(null);
 	const [error, setError] = useState<string | null>(null);
@@ -31,16 +40,31 @@ export default function MapRenderer({ uri }: MapRendererProps) {
 				if (!validationResult.valid) {
 					throw new Error("Invalid metadata");
 				}
+				// Type assertion since we've validated the data
+				const validatedData = validationResult.data as ValidatedProperties;
 
-				// @ts-ignore
-				const geoJSON = JSON.parse(validationResult.data.properties[0].value);
-				const polygon = geoJSON.features[0].geometry.coordinates[0];
-				const _baseUrl = `https://www.trace.gainforest.app/?polygon=${encodeURI(
-					JSON.stringify(polygon),
-				)}&satellite=true`;
+				// Find the property with trait_type "geoJSON"
+				const geoJSONProperty = validatedData.properties.find(
+					(prop) => prop.trait_type === "geoJSON",
+				);
+
+				if (!geoJSONProperty) {
+					throw new Error("No site boundary found");
+				}
+
+				const geoJSONUri = geoJSONProperty.src;
+
+				const cidRegex = /^ipfs:\/\/(.+)$/;
+				const match = geoJSONUri.match(cidRegex);
+
+				if (!match) {
+					throw new Error("Invalid IPFS URI format");
+				}
+
+				const cid = match[1];
+				const _baseUrl = `https://www.trace.gainforest.app/?geojsonUrl=https://gateway.pinata.cloud/ipfs/${cid}`;
 
 				setMapData({
-					geoJSON,
 					baseUrl: _baseUrl,
 					metadata: validationResult.data as HypercertMetadata,
 				});
@@ -55,7 +79,7 @@ export default function MapRenderer({ uri }: MapRendererProps) {
 	}, [uri]);
 
 	return (
-		<div className="flex aspect-square h-auto min-h-[300px] w-full max-w-[400px] flex-col items-center justify-center gap-2 overflow-hidden md:max-w-full">
+		<div className="flex aspect-square h-auto min-h-[300px] w-full max-w-[400px] flex-col items-center justify-center gap-2 overflow-hidden rounded-xl md:max-w-full">
 			{error ? (
 				<>
 					<CircleAlert className="mb-4 text-muted-foreground/75" size={50} />

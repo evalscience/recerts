@@ -6,7 +6,6 @@ import {
 	DialogHeader,
 	DialogTitle,
 } from "@/components/ui/dialog";
-import useMintHypercert from "@/hooks/use-mint-hypercert";
 import { type HypercertMetadata, MintingError } from "@hypercerts-org/sdk";
 import type { MutationStatus } from "@tanstack/query-core";
 import { ArrowUpRight, Badge, BadgeCheck, BadgeX, Loader } from "lucide-react";
@@ -151,6 +150,7 @@ const HypercertMintDialog = ({
 						<div className="flex items-center justify-start gap-2">
 							<a
 								className="flex items-center text-blue-600"
+								// @sharfy: TODO: Should this be dynamic... for now?
 								href={`https://sepolia.etherscan.io/tx/${receiptData.transactionHash}`}
 							>
 								<span className="text-sm">View transaction on etherscan</span>

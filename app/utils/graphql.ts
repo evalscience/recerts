@@ -1,4 +1,4 @@
-import { HYPERCERTS_API_URL, UNISWAP_API_URL } from "@/config/graphql";
+import { graphqlEndpoint } from "@/config/hypercerts";
 import type { TadaDocumentNode } from "gql.tada";
 import { request } from "graphql-request";
 import { isObject } from ".";
@@ -19,9 +19,17 @@ export async function fetchGraphQL<ResponseType, VariablesType>(
 	apiUrl: string,
 	query: TadaDocumentNode<ResponseType, VariablesType, unknown>,
 	variables?: VariablesType,
+	testingLog?: string,
 ): Promise<ResponseType> {
 	try {
+		if (testingLog) {
+			console.log("calling from fetchGraphQL", testingLog);
+			console.log("making request");
+		}
 		const response = await request(apiUrl, query, variables ?? {});
+		if (testingLog) {
+			console.log("got response");
+		}
 		return response;
 	} catch (error) {
 		console.log(error);
@@ -101,13 +109,10 @@ export async function fetchGraphQL<ResponseType, VariablesType>(
 export async function fetchHypercertsGraphQL<ResponseType, VariablesType>(
 	query: TadaDocumentNode<ResponseType, VariablesType, unknown>,
 	variables?: VariablesType,
+	testingLog?: string,
 ): Promise<ResponseType> {
-	return fetchGraphQL(HYPERCERTS_API_URL, query, variables);
-}
-
-export async function fetchUniswapGraphQL<ResponseType, VariablesType>(
-	query: TadaDocumentNode<ResponseType, VariablesType, unknown>,
-	variables?: VariablesType,
-): Promise<ResponseType> {
-	return fetchGraphQL(UNISWAP_API_URL, query, variables);
+	if (testingLog) {
+		console.log("calling from fetchHypercertsGraphQL", testingLog);
+	}
+	return fetchGraphQL(graphqlEndpoint, query, variables, testingLog);
 }

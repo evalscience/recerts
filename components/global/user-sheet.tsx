@@ -1,9 +1,12 @@
 "use client";
 import Logo from "@/assets/Hypercerts.svg";
+import { SUPPORTED_CHAINS } from "@/config/wagmi";
+import { cn } from "@/lib/utils";
 import { useWeb3Modal } from "@web3modal/wagmi/react";
 import { blo } from "blo";
 import {
 	AlertCircle,
+	CircleCheck,
 	Copy,
 	CopyCheck,
 	Loader2,
@@ -34,7 +37,11 @@ const UserSheet = ({ children }: { children: React.ReactNode }) => {
 	const [open, setOpen] = useState(false);
 	const { open: openWeb3Modal } = useWeb3Modal();
 
-	const { address, isConnecting, isDisconnected } = useAccount();
+	const { address, isConnecting, isDisconnected, chain } = useAccount();
+	const isChainSupported =
+		SUPPORTED_CHAINS.find(
+			(supportedChain) => supportedChain.id === chain?.id,
+		) !== undefined;
 
 	const [isAddressCopied, setIsAddressCopied] = useState(false);
 	const copyAddress = () => {
@@ -63,7 +70,7 @@ const UserSheet = ({ children }: { children: React.ReactNode }) => {
 						height={400}
 						className="h-[200px] w-full origin-bottom scale-[1.1] transition-all group-hover:scale-[1.01]"
 					/>
-					<span className="absolute top-4 left-4 flex scale-100 items-center gap-1 rounded-full bg-white/70 px-2 py-1 text-black text-sm backdrop-blur-lg">
+					<span className="absolute top-4 left-4 flex scale-100 items-center gap-1 rounded-full bg-white/70 px-2 py-1 pr-4 text-black text-sm backdrop-blur-lg">
 						<Image
 							src="/assets/media/images/logo.svg"
 							className="h-6 w-6 object-cover object-center brightness-[0.6] drop-shadow-sm"
@@ -85,7 +92,7 @@ const UserSheet = ({ children }: { children: React.ReactNode }) => {
 								Not Connected
 							</span>
 							<p className="flex w-[80%] items-center justify-center text-center text-muted-foreground">
-								Please connect your wallet to use the application.
+								Please connect your wallet to use the app.
 							</p>
 							<Button
 								className="gap-2"
@@ -111,35 +118,40 @@ const UserSheet = ({ children }: { children: React.ReactNode }) => {
 				) : (
 					<div className="-mt-12 flex w-full flex-1 flex-col">
 						<div className="flex w-full flex-col items-center gap-4 px-4">
-							<EthAvatar
-								address={address as `0x${string}`}
-								size={96}
-								className="border-4 border-foreground shadow-xl"
-							/>
-							<span className="flex w-[80%] items-center justify-center break-all text-center font-bold text-lg text-muted-foreground leading-none">
-								<span>
-									<ENSName address={address} />
-								</span>
+							<div className="flex scale-100 items-center justify-center rounded-full border-4 border-primary bg-transparent p-1 shadow-xl">
+								<EthAvatar address={address as `0x${string}`} size={96} />
+							</div>
+							<span className="mt-2 flex w-[80%] items-center justify-center break-all text-center font-bold text-lg text-muted-foreground leading-none">
 								<TooltipProvider>
 									<Tooltip>
-										<TooltipTrigger asChild>
-											<Button
-												variant={"ghost"}
+										<TooltipTrigger>
+											<span
 												onClick={copyAddress}
-												disabled={!address}
+												onKeyDown={(e) => e.key === "Enter" && copyAddress()}
 											>
 												{isAddressCopied ? (
-													<CopyCheck size={16} />
+													<span className="flex items-center gap-2 text-foreground">
+														<CircleCheck className="text-primary" size={18} />
+														<span>Copied</span>
+													</span>
 												) : (
-													<Copy size={16} />
+													<ENSName address={address} />
 												)}
-											</Button>
+											</span>
 										</TooltipTrigger>
-										<TooltipContent>
-											{isAddressCopied ? "Copied" : "Copy Address"}
-										</TooltipContent>
+										<TooltipContent>Click to copy Address</TooltipContent>
 									</Tooltip>
 								</TooltipProvider>
+							</span>
+							<span
+								className={cn(
+									"rounded-full px-3 py-1 font-bold font-sans",
+									isChainSupported
+										? "bg-green-500/20 text-green-700 dark:text-green-300"
+										: "bg-red-500/20 text-red-700 dark:text-red-300",
+								)}
+							>
+								{chain?.name ?? "Unknown Chain"}
 							</span>
 						</div>
 						<div className="flex w-full flex-1 flex-col items-center p-4">
