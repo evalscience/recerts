@@ -1,0 +1,12 @@
+[
+	{
+		"id": "0",
+		"question": "What are Hypercerts?",
+		"answer": "Hypercerts are digital impact certificates. Projects create hypercerts based on the work that they have done in the past. They can then sell portions of their hypercerts to funders, thereby transferring shares of the impact claims to them."
+	},
+	{
+		"id": "1",
+		"question": "What are Ecocerts?",
+		"answer": "Ecocerts are environmental hypercerts that standardizes environmental impact. Just as carbon credits created a data market for measuring and implementing carbon reduction, hypercerts creates a market for ecological data collection and verification."
+	}
+]
