@@ -5,13 +5,17 @@ import type {
 	FullHypercertWithOrder,
 } from "@/app/graphql-queries/hypercerts";
 import { Button } from "@/components/ui/button";
+import { SUPPORTED_CHAINS } from "@/config/wagmi";
 import type { ContractTransactionReceipt } from "ethers";
 import { type Dispatch, type SetStateAction, useState } from "react";
 import { useAccount } from "wagmi";
 import AmountOptions from "../AmountOptions";
 import Prerequisites from "../Prerequisites";
 import TransactionProgress from "../TransactionProgress";
-import useOrderInfo from "./useOrderInfo";
+import useOrdersInfo from "./useOrdersInfo";
+import useUserFunds from "./useUserFunds";
+
+const supportedChainIds: number[] = SUPPORTED_CHAINS.map((chain) => chain.id);
 
 type PaymentFlowUIConfig = {
 	title: string;
@@ -22,6 +26,11 @@ type PaymentFlowUIConfig = {
 		SetStateAction<"amount-options" | "transaction-progress">
 	>;
 	transactionReceipt?: ContractTransactionReceipt;
+};
+
+export type OrderPreferences = {
+	orderId: string;
+	units: bigint;
 };
 
 const InvalidPaymentFlowUIConfig: PaymentFlowUIConfig = {
@@ -37,24 +46,46 @@ const InvalidPaymentFlowUIConfig: PaymentFlowUIConfig = {
 const usePaymentFlowDialog = (
 	hypercert: FullHypercert,
 ): PaymentFlowUIConfig => {
-	const { isConnected, chainId: currentChainId } = useAccount();
-	const orderInfo = useOrderInfo(hypercert);
-	const { order, pricePerUnitInUSD, totalSalePriceInUSD } = orderInfo ?? {};
-	const { chainId: supportedChainId } = order ?? {};
-	const currentChainIdStr = currentChainId?.toString();
+	const { address, isConnected, chainId: currentChainId } = useAccount();
+	const ordersInfo = useOrdersInfo(hypercert);
+	const orderChainIds = ordersInfo.map((order) => order.data.chainId);
+
+	const orderChainIdsSupportedByApp = SUPPORTED_CHAINS.filter((chain) =>
+		orderChainIds.includes(chain.id.toString()),
+	);
+	const isCurrentChainSupportedByApp =
+		currentChainId !== undefined && supportedChainIds.includes(currentChainId);
+	const isCurrentChainSupportedByOrders =
+		currentChainId !== undefined &&
+		orderChainIds.includes(currentChainId.toString());
 
 	const [variant, setVariant] = useState<
 		"amount-options" | "transaction-progress"
 	>("amount-options");
-	const [amountInUSD, setAmountInUSD] = useState<number | undefined>(undefined);
+
+	const [orderPreferences, setOrderPreferences] = useState<
+		OrderPreferences | undefined
+	>(undefined);
+	const preferredOrderInfo = ordersInfo.find(
+		(info) => info.id === orderPreferences?.orderId,
+	);
+	const preferredCurrencyAddress = preferredOrderInfo?.data.currency;
+
+	const userFunds = useUserFunds(
+		(preferredCurrencyAddress ?? "0x0") as `0x${string}`,
+	);
+	const {
+		data: { raw: rawBalanceInCurrency },
+	} = userFunds;
+
 	const [transactionReceipt, setTransactionReceipt] =
 		useState<ContractTransactionReceipt | null>(null);
 
 	if (
 		!isConnected ||
-		!supportedChainId ||
-		!currentChainIdStr ||
-		currentChainIdStr !== supportedChainId
+		orderChainIdsSupportedByApp.length === 0 ||
+		!isCurrentChainSupportedByApp ||
+		!isCurrentChainSupportedByOrders
 	) {
 		return {
 			title: "Complete the prerequisites",
@@ -63,16 +94,13 @@ const usePaymentFlowDialog = (
 				<Prerequisites
 					{...{
 						isConnected,
-						currentChainId: currentChainIdStr,
-						supportedChainId,
+						orderChainIdsSupportedByApp,
+						isCurrentChainSupportedByApp,
+						isCurrentChainSupportedByOrders,
 					}}
 				/>
 			),
 		};
-	}
-
-	if (!order || !pricePerUnitInUSD || !totalSalePriceInUSD) {
-		return InvalidPaymentFlowUIConfig;
 	}
 
 	if (variant === "amount-options") {
@@ -83,17 +111,22 @@ const usePaymentFlowDialog = (
 				<AmountOptions
 					{...{
 						hypercert: hypercert as FullHypercertWithOrder,
-						amountInUSDState: [amountInUSD, setAmountInUSD],
-						setVariant,
+						orderPreferencesState: [orderPreferences, setOrderPreferences],
+						userFunds,
 					}}
 				/>
 			),
 			nextButton: (
 				<Button
 					disabled={
-						amountInUSD === undefined ||
-						amountInUSD < pricePerUnitInUSD ||
-						amountInUSD > totalSalePriceInUSD
+						preferredOrderInfo === undefined ||
+						orderPreferences === undefined ||
+						orderPreferences.units <= 0n ||
+						orderPreferences.units > hypercert.unitsForSale ||
+						(rawBalanceInCurrency !== undefined &&
+							rawBalanceInCurrency <
+								preferredOrderInfo.pricePerUnit.inToken.precisionMultiplied *
+									orderPreferences.units)
 					}
 					onClick={() => setVariant("transaction-progress")}
 				>
@@ -103,7 +136,16 @@ const usePaymentFlowDialog = (
 		};
 	}
 
-	if (amountInUSD === undefined) {
+	if (
+		preferredOrderInfo === undefined ||
+		orderPreferences === undefined ||
+		orderPreferences.units <= 0n ||
+		orderPreferences.units > hypercert.unitsForSale ||
+		(rawBalanceInCurrency !== undefined &&
+			rawBalanceInCurrency <
+				preferredOrderInfo.pricePerUnit.inToken.precisionMultiplied *
+					orderPreferences.units)
+	) {
 		return InvalidPaymentFlowUIConfig;
 	}
 
@@ -115,7 +157,7 @@ const usePaymentFlowDialog = (
 				<TransactionProgress
 					{...{
 						hypercert,
-						amountInUSD,
+						orderPreferences,
 						setVariant,
 						transactionReceiptState: [
 							transactionReceipt,

@@ -6,7 +6,7 @@ import { createWeb3Modal } from "@web3modal/wagmi/react";
 
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
-import { config, projectId, SUPPORTED_CHAIN } from "@/config/wagmi";
+import { config, projectId, SUPPORTED_CHAINS } from "@/config/wagmi";
 import { type State, WagmiProvider } from "wagmi";
 
 // Setup queryClient
@@ -19,7 +19,7 @@ createWeb3Modal({
   wagmiConfig: config,
   projectId,
   // @ts-ignore
-  defaultChain: SUPPORTED_CHAIN,
+  defaultChain: SUPPORTED_CHAINS[0],
   enableAnalytics: true, // Optional - defaults to your Cloud configuration
 });
 

@@ -5,6 +5,7 @@ import EthAvatar from "@/components/ui/eth-avatar";
 import { EvervaultCard } from "@/components/ui/evervault-card";
 import { Separator } from "@/components/ui/separator";
 import UserChip from "@/components/user-chip";
+import { cn } from "@/lib/utils";
 import { Info, ShieldCheck } from "lucide-react";
 import React, { useState } from "react";
 
@@ -31,17 +32,32 @@ const EvaluationDetails = ({ hypercert }: { hypercert: FullHypercert }) => {
 					</div>
 				</EvervaultCard>
 			)}
-			{attesters.size === 0 && (
+			{attesters.size === 0 ? (
 				<div className="flex w-full flex-col items-center gap-1 px-8 py-4">
 					<span className="text-center text-muted-foreground leading-none">
-						This hypercerts and the work has not been verified yet.
+						This hypercert and the work has not been verified yet.
 					</span>
 				</div>
+			) : (
+				// Display subtitle if there are no attesters other than gainforest.
+				attesters.size === 1 &&
+				hasGainforestAttestation && (
+					<div className="flex w-full flex-col items-center gap-1 px-8 py-4">
+						<span className="text-center text-muted-foreground leading-none">
+							This hypercert and the work has been verified by Gainforest.
+						</span>
+					</div>
+				)
 			)}
 			{attesters.size > 0 && (
-				<div className="mt-4 flex w-full flex-col gap-2">
+				<div
+					className={cn(
+						"flex w-full flex-col gap-2",
+						hasGainforestAttestation ? "mt-4" : "",
+					)}
+				>
 					<span className="font-bold text-muted-foreground text-sm">
-						Other Evaluators:
+						{hasGainforestAttestation ? "Other Evaluators" : "Evaluators"}:
 					</span>
 					<ul className="flex flex-wrap items-center gap-1">
 						{[...attesters]

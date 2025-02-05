@@ -7,15 +7,7 @@ import { ArrowRight, CircleAlert, Clock } from "lucide-react";
 import React from "react";
 import PaymentFlow from "./PaymentFlow";
 
-const OpenVariant = ({
-	reached,
-	goal,
-	hypercert,
-}: {
-	reached: number;
-	goal: number;
-	hypercert: FullHypercert;
-}) => {
+const OpenVariant = ({ reached, goal }: { reached: number; goal: number }) => {
 	return (
 		<div className="flex h-full w-full flex-col justify-between">
 			<div className="flex w-full flex-col">
@@ -35,7 +27,7 @@ const OpenVariant = ({
 				/>
 			</div>
 			<div className="mt-4 flex items-center justify-end">
-				<PaymentFlow hypercert={hypercert}>
+				<PaymentFlow>
 					<Button className="gap-2" size={"sm"}>
 						Buy <ArrowRight size={16} />
 					</Button>
@@ -77,23 +69,22 @@ const VariantSelector = ({ hypercert }: { hypercert: FullHypercert }) => {
 		unitsForSale,
 		cheapestOrder: { pricePerPercentInUSD },
 	} = hypercert;
-	if (unitsForSale === undefined) return <ComingVariant />;
+	if (pricePerPercentInUSD === undefined) return <ComingVariant />;
+	if (unitsForSale === 0n) return <SoldVariant />;
 	const unitsSold = totalUnits - unitsForSale;
 	const percentCompleted = calculateBigIntPercentage(unitsSold, totalUnits);
 	if (percentCompleted === undefined) return <SoldVariant />;
-	if (pricePerPercentInUSD === undefined) return <SoldVariant />;
 	return (
 		<OpenVariant
 			reached={formatUSD(percentCompleted * pricePerPercentInUSD)}
 			goal={formatUSD(100 * pricePerPercentInUSD)}
-			hypercert={hypercert}
 		/>
 	);
 };
 
 const FundingView = ({ hypercert }: { hypercert: FullHypercert }) => {
 	return (
-		<div className="relative h-40 w-full max-w-full overflow-hidden rounded-xl border border-border bg-background/50 p-4 md:w-auto md:max-w-md md:flex-1">
+		<div className="relative h-40 w-full max-w-full overflow-hidden rounded-xl border border-border bg-background/50 p-4 md:w-auto md:max-w-md md:flex-1 md:basis-full">
 			<VariantSelector hypercert={hypercert} />
 		</div>
 	);
