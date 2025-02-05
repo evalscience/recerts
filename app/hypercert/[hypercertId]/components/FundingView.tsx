@@ -69,11 +69,11 @@ const VariantSelector = ({ hypercert }: { hypercert: FullHypercert }) => {
 		unitsForSale,
 		cheapestOrder: { pricePerPercentInUSD },
 	} = hypercert;
-	if (unitsForSale === undefined) return <ComingVariant />;
+	if (pricePerPercentInUSD === undefined) return <ComingVariant />;
+	if (unitsForSale === 0n) return <SoldVariant />;
 	const unitsSold = totalUnits - unitsForSale;
 	const percentCompleted = calculateBigIntPercentage(unitsSold, totalUnits);
 	if (percentCompleted === undefined) return <SoldVariant />;
-	if (pricePerPercentInUSD === undefined) return <SoldVariant />;
 	return (
 		<OpenVariant
 			reached={formatUSD(percentCompleted * pricePerPercentInUSD)}

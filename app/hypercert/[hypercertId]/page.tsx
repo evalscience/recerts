@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button";
 import { MotionWrapper } from "@/components/ui/motion-wrapper";
 import { Separator } from "@/components/ui/separator";
 import type { ApiError } from "@/types/api";
-import { ChevronLeft } from "lucide-react";
+import { ArrowUpRight, ChevronLeft } from "lucide-react";
 import Link from "next/link";
 import React from "react";
 import FundingView from "./components/FundingView";
@@ -67,16 +67,6 @@ const Page = async ({ params }: PageProps) => {
 							<h1 className="font-baskerville font-bold text-4xl leading-tight">
 								{hypercert.metadata.name ?? "Untitled"}
 							</h1>
-							<div className="flex items-center gap-4 text-muted-foreground text-sm">
-								<Link
-									href={`https://app.hypercerts.org/hypercerts/${hypercertId}`}
-									target="_blank"
-									className="hover:underline"
-								>
-									View at app.hypercerts
-								</Link>
-								<CopyButton id={hypercertId} />
-							</div>
 							<ul className="mt-1 flex flex-wrap items-center gap-2">
 								{hypercert.metadata.work.scope.map((scope, i) => (
 									<li
@@ -87,10 +77,22 @@ const Page = async ({ params }: PageProps) => {
 									</li>
 								))}
 							</ul>
+							<div className="mt-1 flex items-center gap-2 text-muted-foreground text-sm">
+								<CopyButton text={hypercertId} />
+								<Link
+									href={`https://app.hypercerts.org/hypercerts/${hypercertId}`}
+									target="_blank"
+								>
+									<Button variant={"link"} size={"sm"} className="gap-2">
+										<span>View at app.hypercerts</span>
+										<ArrowUpRight size={16} />
+									</Button>
+								</Link>
+							</div>
 						</div>
 						<FundingView hypercert={hypercert} />
 					</div>
-					<div className="hidden w-full md:mt-4 md:block">
+					<div className="hidden w-full md:mt-1 md:block">
 						<Separator className="bg-beige-muted-foreground/20" />
 					</div>
 					<section className="mt-4 flex flex-col items-start gap-4 lg:flex-row lg:gap-8">
