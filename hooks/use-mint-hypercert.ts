@@ -31,28 +31,28 @@ const useMintHypercert = () => {
 		throw new Error("Public client is not initialized");
 	}
 
-	const {
-		mutate: mintHypercert,
-		data: mintData,
-		status: mintStatus,
-		isIdle: isMintIdle,
-		isPending: isMintPending,
-		isSuccess: isMintSuccess,
-		isError: isMintError,
-		error: mintError,
-	} = useMutation({
-		mutationFn: (payload: Payload) => {
-			const { metaData, contactInfo, amount } = payload;
-			console.log("contactInfo", contactInfo);
-			console.log("amount", amount);
-			setContactInfo(contactInfo);
-			return client.mintClaim(
-				metaData,
-				parseEther("1"),
-				TransferRestrictions.FromCreatorOnly,
-			);
-		},
-	});
+  const {
+    mutate: mintHypercert,
+    data: mintData,
+    status: mintStatus,
+    isIdle: isMintIdle,
+    isPending: isMintPending,
+    isSuccess: isMintSuccess,
+    isError: isMintError,
+    error: mintError,
+  } = useMutation({
+    mutationFn: (payload: Payload) => {
+      const { metaData, contactInfo, amount } = payload;
+      console.log("contactInfo", contactInfo);
+      console.log("amount", amount);
+      setContactInfo(contactInfo);
+      return client.mintClaim(
+        metaData,
+        100_000_000n,
+        TransferRestrictions.FromCreatorOnly
+      );
+    },
+  });
 
 	console.log("mintData", mintData);
 
