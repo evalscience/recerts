@@ -13,15 +13,12 @@ import {
 } from "@/components/ui/modern-dialog-extended";
 import Image from "next/image";
 import type React from "react";
+import useFullHypercert from "../../contexts/full-hypercert";
 import usePaymentFlowDialog from "./hooks/usePaymentFlowDialog";
 
-const PaymentFlowDialog = ({
-	children,
-	hypercert,
-}: {
-	children: React.ReactNode;
-	hypercert: FullHypercert;
-}) => {
+const PaymentFlowDialog = ({ children }: { children: React.ReactNode }) => {
+	const hypercert = useFullHypercert();
+
 	const {
 		title,
 		description,
@@ -69,6 +66,7 @@ const PaymentFlowDialog = ({
 					<DialogCancel asChild>
 						{transactionReceipt ? (
 							<Button
+								variant={"secondary"}
 								onClick={() => {
 									setVariant?.("amount-options");
 								}}
@@ -93,16 +91,8 @@ const PaymentFlowDialog = ({
 	);
 };
 
-const PaymentFlow = ({
-	children,
-	hypercert,
-}: {
-	children: React.ReactNode;
-	hypercert: FullHypercert;
-}) => {
-	return (
-		<PaymentFlowDialog hypercert={hypercert}>{children}</PaymentFlowDialog>
-	);
+const PaymentFlow = ({ children }: { children: React.ReactNode }) => {
+	return <PaymentFlowDialog>{children}</PaymentFlowDialog>;
 };
 
 export default PaymentFlow;
