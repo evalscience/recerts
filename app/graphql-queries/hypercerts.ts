@@ -75,6 +75,7 @@ export type Hypercert = {
 	totalUnits: bigint;
 	unitsForSale?: bigint;
 	pricePerPercentInUSD?: number;
+	buyerCount: number;
 };
 
 const fetchHypercertById = async (hypercertId: string): Promise<Hypercert> => {
@@ -105,6 +106,11 @@ const fetchHypercertById = async (hypercertId: string): Promise<Hypercert> => {
 		? Number(pricePerPercentInUSD)
 		: undefined;
 
+	// Get unique buyers count
+	const uniqueBuyers = new Set(
+		hypercert.sales?.data?.map((sale) => sale.buyer as string) ?? [],
+	);
+
 	return {
 		hypercertId,
 		chainId: (hypercert.contract?.chain_id as string) ?? undefined,
@@ -116,6 +122,7 @@ const fetchHypercertById = async (hypercertId: string): Promise<Hypercert> => {
 			hypercert.orders?.totalUnitsForSale,
 		),
 		pricePerPercentInUSD: pricePerPercentInUSDNumber,
+		buyerCount: uniqueBuyers.size,
 	};
 };
 
