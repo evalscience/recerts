@@ -10,12 +10,18 @@ import {
 import { useEffect, useState } from "react";
 import { type TransactionReceipt, parseEther } from "viem";
 import { useSendEmailAndUpdateGoogle } from "./use-send-email-and-update-google";
+import { WaitForTransactionReceiptData } from "wagmi/query";
 
 type Payload = {
 	metaData: HypercertMetadata;
 	contactInfo: string;
 	amount: string;
 };
+
+export type HypercertMintReceiptData = {
+  hypercertId: string;
+  // biome-ignore lint/suspicious/noExplicitAny: any types need to be used here.
+} & WaitForTransactionReceiptData<any, any>;
 
 const useMintHypercert = () => {
 	const [contactInfo, setContactInfo] = useState<string>("");
@@ -98,27 +104,27 @@ const useMintHypercert = () => {
 		}
 	}, [receiptData?.hypercertId, contactInfo, sendEmailAndUpdateGoogle]);
 
-	return {
-		mintHypercert,
-		mintStatus,
-		isMintIdle,
-		isMintPending,
-		isMintSuccess,
-		isMintError,
-		mintData,
-		mintError,
-		receiptData,
-		receiptError,
-		isReceiptPending,
-		isReceiptLoading,
-		isReceiptSuccess,
-		isReceiptError,
-		googleSheetsData,
-		googleSheetsStatus,
-		googleSheetsError,
-		metaData,
-		setMetaData,
-	};
+  return {
+    mintHypercert,
+    mintStatus,
+    isMintIdle,
+    isMintPending,
+    isMintSuccess,
+    isMintError,
+    mintData,
+    mintError,
+    receiptData: receiptData as HypercertMintReceiptData | undefined,
+    receiptError,
+    isReceiptPending,
+    isReceiptLoading,
+    isReceiptSuccess,
+    isReceiptError,
+    googleSheetsData,
+    googleSheetsStatus,
+    googleSheetsError,
+    metaData,
+    setMetaData,
+  };
 };
 
 export default useMintHypercert;

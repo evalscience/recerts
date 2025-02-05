@@ -6,9 +6,18 @@ import {
 	DialogHeader,
 	DialogTitle,
 } from "@/components/ui/dialog";
+import type { HypercertMintReceiptData } from "@/hooks/use-mint-hypercert";
 import { type HypercertMetadata, MintingError } from "@hypercerts-org/sdk";
 import type { MutationStatus } from "@tanstack/query-core";
-import { ArrowUpRight, Badge, BadgeCheck, BadgeX, Loader } from "lucide-react";
+import {
+	ArrowRight,
+	ArrowUpRight,
+	Badge,
+	BadgeCheck,
+	BadgeX,
+	Loader,
+} from "lucide-react";
+import Link from "next/link";
 import type React from "react";
 import type { Dispatch, SetStateAction } from "react";
 import type { Address, WaitForTransactionReceiptErrorType } from "viem";
@@ -35,8 +44,7 @@ const HypercertMintDialog = ({
 	googleSheetsStatus: MutationStatus;
 	googleSheetsError: Error | null;
 	receiptError: WaitForTransactionReceiptErrorType | null;
-	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
-	receiptData?: WaitForTransactionReceiptData<any, any>;
+	receiptData?: HypercertMintReceiptData;
 	setOpenMintDialog: Dispatch<SetStateAction<boolean>>;
 }) => {
 	const handleCloseDialog = () => {
@@ -146,23 +154,23 @@ const HypercertMintDialog = ({
 							</>
 						)}
 					</div>
-					{isReceiptSuccess && receiptData && (
-						<div className="flex items-center justify-start gap-2">
-							<a
-								className="flex items-center text-blue-600"
-								// @sharfy: TODO: Should this be dynamic... for now?
-								href={`https://sepolia.etherscan.io/tx/${receiptData.transactionHash}`}
-							>
-								<span className="text-sm">View transaction on etherscan</span>
-								<ArrowUpRight className="h-3 w-3" />
-							</a>
-						</div>
-					)}
 				</div>
 				<DialogFooter>
-					<Button type="button" onClick={handleCloseDialog}>
+					<Button
+						type="button"
+						variant={"secondary"}
+						onClick={handleCloseDialog}
+					>
 						Close
 					</Button>
+					{isReceiptSuccess && receiptData && (
+						<Link href={`/hypercert/${receiptData.hypercertId}`}>
+							<Button type="button" className="gap-2">
+								<span>View hypercert</span>
+								<ArrowRight size={16} />
+							</Button>
+						</Link>
+					)}
 				</DialogFooter>
 			</DialogContent>
 		</div>
