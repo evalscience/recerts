@@ -135,12 +135,13 @@ const BigintSlider = ({
 		}
 	};
 
+	// biome-ignore lint/correctness/useExhaustiveDependencies(setValue, value): We don't want to update the value, when state setters or the value itself are updated
 	useEffect(() => {
 		if (!defaultValue) return;
 		if (value !== defaultValue) {
 			setValue(defaultValue);
 		}
-	}, [defaultValue, setValue, value]);
+	}, [defaultValue]);
 
 	const formatDisplayValue = (value: bigint): string => {
 		if (value >= 10000000000000000000n) {

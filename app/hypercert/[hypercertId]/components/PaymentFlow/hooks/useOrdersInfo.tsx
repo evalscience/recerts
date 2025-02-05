@@ -89,16 +89,20 @@ const useOrdersInfo = (hypercert: FullHypercert): OrdersInfo[] => {
 
 		const totalPrice = {
 			inUSD: getOrderValueData(
-				BigInt(pricePerPercentInUSD * MULTIPLIER) * 100n,
+				BigInt(Math.floor(pricePerPercentInUSD * MULTIPLIER)) * 100n,
 			),
 			inToken: getOrderValueData(
-				BigInt(pricePerPercentInToken * MULTIPLIER) * 100n,
+				BigInt(Math.floor(pricePerPercentInToken * MULTIPLIER)) * 100n,
 			),
 		};
 
 		const pricePerPercentage = {
-			inUSD: getOrderValueData(BigInt(pricePerPercentInUSD * MULTIPLIER)),
-			inToken: getOrderValueData(BigInt(pricePerPercentInToken * MULTIPLIER)),
+			inUSD: getOrderValueData(
+				BigInt(Math.floor(pricePerPercentInUSD * MULTIPLIER)),
+			),
+			inToken: getOrderValueData(
+				BigInt(Math.floor(pricePerPercentInToken * MULTIPLIER)),
+			),
 		};
 
 		const pricePerUnit = {

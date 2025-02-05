@@ -36,9 +36,8 @@ const useUserFunds = (
 	});
 
 	// Format the balance with proper decimals
-	const formattedBalance = rawBalance
-		? formatUnits(rawBalance, decimals)
-		: undefined;
+	const formattedBalance =
+		rawBalance !== undefined ? formatUnits(rawBalance, decimals) : undefined;
 
 	// Rest of the hook implementation stays the same
 	// biome-ignore lint/correctness/useExhaustiveDependencies(wagmiRefetch, setIsLoading): We don't want the useEffect block to run when these two functions change.
