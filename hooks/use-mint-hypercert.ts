@@ -48,7 +48,7 @@ const useMintHypercert = () => {
       setContactInfo(contactInfo);
       return client.mintClaim(
         metaData,
-        parseEther("1"),
+        100_000_000n,
         TransferRestrictions.FromCreatorOnly
       );
     },
