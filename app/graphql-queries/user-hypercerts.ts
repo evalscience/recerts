@@ -56,6 +56,11 @@ export const fetchHypercertsByUserId = async (
 			? Number(pricePerPercentInUSD)
 			: undefined;
 
+		// Get unique buyers count
+		const uniqueBuyers = new Set(
+			hypercert.sales?.data?.map((sale) => sale.buyer as string) ?? [],
+		);
+
 		return {
 			hypercertId: hypercert.hypercert_id as string,
 			chainId: (hypercert.contract?.chain_id as string) ?? undefined,
@@ -67,6 +72,7 @@ export const fetchHypercertsByUserId = async (
 				hypercert.orders?.totalUnitsForSale as string,
 			),
 			pricePerPercentInUSD: pricePerPercentInUSDNumber,
+			buyerCount: uniqueBuyers.size,
 		} satisfies Hypercert;
 	});
 
