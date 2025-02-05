@@ -15,6 +15,15 @@ export type ApiError = {
 		| "ABORT";
 };
 
+const headers = {
+	"Cache-Control": "no-cache",
+	Pragma: "no-cache",
+	"x-timestamp": Date.now().toString(),
+	// Add any other headers you need
+	// 'Authorization': 'Bearer your-token',
+	// 'Content-Type': 'application/json',
+};
+
 export async function fetchGraphQL<ResponseType, VariablesType>(
 	apiUrl: string,
 	query: TadaDocumentNode<ResponseType, VariablesType, unknown>,
@@ -26,7 +35,7 @@ export async function fetchGraphQL<ResponseType, VariablesType>(
 			console.log("calling from fetchGraphQL", testingLog);
 			console.log("making request");
 		}
-		const response = await request(apiUrl, query, variables ?? {});
+		const response = await request(apiUrl, query, variables ?? {}, headers);
 		if (testingLog) {
 			console.log("got response");
 		}

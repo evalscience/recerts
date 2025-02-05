@@ -1,7 +1,9 @@
 import { Button } from "@/components/ui/button";
+import { SUPPORTED_CHAINS } from "@/config/wagmi";
 import { cn } from "@/lib/utils";
 import { useWeb3Modal } from "@web3modal/wagmi/react";
 import { CheckCircle, XCircle } from "lucide-react";
+import type { Chain } from "viem";
 
 const PrerequisiteCard = ({
 	complete,
@@ -41,52 +43,63 @@ const PrerequisiteCard = ({
 
 const Prerequisites = ({
 	isConnected,
-	currentChainId,
-	supportedChainId,
+	orderChainIdsSupportedByApp,
+	isCurrentChainSupportedByApp,
+	isCurrentChainSupportedByOrders,
 }: {
 	isConnected: boolean;
-	currentChainId?: string;
-	supportedChainId?: string;
+	orderChainIdsSupportedByApp: Chain[];
+	isCurrentChainSupportedByApp: boolean;
+	isCurrentChainSupportedByOrders: boolean;
 }) => {
 	const { open: openConnectModal } = useWeb3Modal();
-	const isOnCorrectChain =
-		supportedChainId !== undefined &&
-		currentChainId !== undefined &&
-		supportedChainId === currentChainId;
 
 	return (
 		<ul className="flex flex-col gap-2">
-			<PrerequisiteCard
-				complete={isConnected}
-				title="Connect Wallet"
-				description={"Wallet connection is required."}
-				completionButton={
-					<Button size={"sm"} onClick={() => openConnectModal()}>
-						Connect
-					</Button>
-				}
-			/>
-			<PrerequisiteCard
-				complete={isConnected && isOnCorrectChain}
-				title="Switch"
-				description={
-					supportedChainId
-						? "You need to be on the correct chain."
-						: "No orders or chains found."
-				}
-				className={isConnected ? "" : supportedChainId ? "" : "opacity-50"}
-				completionButton={
-					isConnected &&
-					supportedChainId && (
-						<Button
-							size={"sm"}
-							onClick={() => openConnectModal({ view: "Networks" })}
-						>
-							Switch
-						</Button>
-					)
-				}
-			/>
+			{orderChainIdsSupportedByApp.length === 0 ? (
+				<PrerequisiteCard
+					complete={false}
+					title="Not Supported"
+					description={
+						"This hypercert does not have any orders on the supported chains."
+					}
+				/>
+			) : (
+				<>
+					<PrerequisiteCard
+						complete={isConnected}
+						title="Connect Wallet"
+						description={"Wallet connection is required."}
+						completionButton={
+							<Button size={"sm"} onClick={() => openConnectModal()}>
+								Connect
+							</Button>
+						}
+					/>
+					<PrerequisiteCard
+						complete={
+							isConnected &&
+							isCurrentChainSupportedByApp &&
+							isCurrentChainSupportedByOrders
+						}
+						title="Switch Network"
+						description={
+							"Please switch to one of the supported chains to continue."
+						}
+						className={isConnected ? "" : "opacity-50"}
+						completionButton={
+							isConnected && (
+								<Button
+									size={"sm"}
+									onClick={() => openConnectModal({ view: "Networks" })}
+								>
+									Switch
+								</Button>
+							)
+						}
+					/>
+				</>
+			)}
 		</ul>
 	);
 };
