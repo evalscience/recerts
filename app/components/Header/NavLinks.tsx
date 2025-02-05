@@ -59,10 +59,9 @@ const navLinks: NavLinkConfig[] = [
 		},
 	},
 	{
-		href: "https://testnet.hypercerts.org/docs/intro",
+		href: "/faqs",
 		text: "FAQs",
 		Icon: MessageCircleQuestion,
-		openInNewTab: true,
 		pathCheck: {
 			startsWith: "/faqs",
 		},
