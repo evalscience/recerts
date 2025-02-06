@@ -15,6 +15,11 @@ export const hypercert = `
             pricePerPercentInUSD
           }
         }
+        sales {
+          data {
+            buyer
+          }
+        }
         hypercert_id
     }
 `;
