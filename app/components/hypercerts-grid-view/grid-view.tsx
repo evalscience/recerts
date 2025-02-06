@@ -72,7 +72,7 @@ export function GridView({ hypercerts }: { hypercerts: Hypercert[] }) {
 								size={60}
 							/>
 							<p className="font-bold text-lg text-muted-foreground">
-								We couldn't find any hypercerts matching your search or filter.
+								We couldn't find any ecocerts matching your search or filter.
 							</p>
 							<p className="text-muted-foreground">
 								Please remove some of your filters and try again.

@@ -17,6 +17,7 @@ const Card = ({ hypercert }: { hypercert: Hypercert }) => {
 		unitsForSale,
 		pricePerPercentInUSD,
 		chainId,
+		buyerCount,
 	} = hypercert;
 
 	const chainName = SUPPORTED_CHAINS.find(
@@ -79,18 +80,55 @@ const Card = ({ hypercert }: { hypercert: Hypercert }) => {
 							</span>
 						</div>
 					) : (
-						<>
-							<Progress percentage={100 - (percentAvailable ?? 0)} />
-							<div className="flex w-full items-center justify-start text-muted-foreground text-sm">
-								<span className="inline-block rounded-full bg-primary/20 px-2 text-primary">
+						<div className="flex items-center justify-between">
+							<div className="space-y-1">
+								<div className="font-semibold text-sm">
 									$
 									{Math.floor(
-										(percentAvailable ?? 0) * pricePerPercentInUSD * 100,
+										(100 - (percentAvailable ?? 0)) *
+											pricePerPercentInUSD *
+											100,
 									) / 100}{" "}
-									left
-								</span>
+									USD raised
+								</div>
+								<div className="text-muted-foreground text-sm">
+									${Math.floor(pricePerPercentInUSD * 100)} target ·{" "}
+									{buyerCount} buyer{buyerCount !== 1 ? "s" : ""}
+								</div>
 							</div>
-						</>
+							<div className="relative h-16 w-16">
+								<div className="absolute inset-0 flex items-center justify-center">
+									<span className="font-medium text-sm">
+										{Math.floor(100 - (percentAvailable ?? 0))}%
+									</span>
+								</div>
+								<svg
+									className="-rotate-90 h-full w-full"
+									aria-label="Progress Circle"
+								>
+									<title>Progress Circle</title>
+									<circle
+										className="stroke-muted"
+										strokeWidth="4"
+										fill="none"
+										r="28"
+										cx="32"
+										cy="32"
+									/>
+									<circle
+										className="stroke-primary"
+										strokeWidth="4"
+										fill="none"
+										r="28"
+										cx="32"
+										cy="32"
+										strokeDasharray={`${
+											((100 - (percentAvailable ?? 0)) * 175.93) / 100
+										} 175.93`}
+									/>
+								</svg>
+							</div>
+						</div>
 					)}
 				</section>
 			</article>
