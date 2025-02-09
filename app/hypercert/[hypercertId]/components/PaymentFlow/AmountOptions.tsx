@@ -16,7 +16,7 @@ import {
 	TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { TOKENS_CONFIG } from "@/config/wagmi";
-import { cn, formatUSD } from "@/lib/utils";
+import { cn, formatDecimals } from "@/lib/utils";
 import {
 	ArrowRight,
 	CircleAlert,
@@ -322,7 +322,7 @@ const AmountOptions = ({
 						</span>
 					) : (
 						<span className="flex items-center justify-center font-sans text-foreground text-sm">
-							{formatUSD(Number(userFunds.data.formatted))}&nbsp;
+							{formatDecimals(Number(userFunds.data.formatted))}&nbsp;
 							<b>{preferredCurrencyConfig.symbol}</b>
 							<Button size={"sm"} variant={"ghost"} onClick={userFunds.refetch}>
 								<RefreshCw size={14} />
