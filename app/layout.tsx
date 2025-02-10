@@ -4,6 +4,7 @@ import localFont from "next/font/local";
 import "vaul/dist/index.css";
 import "./globals.css";
 
+import { Analytics } from "@vercel/analytics/react";
 import { cookieToInitialState } from "wagmi";
 
 import { siteConfig } from "@/config/site";
@@ -76,6 +77,7 @@ export default function RootLayout({
 					archia.variable,
 				)}
 			>
+				<Analytics />
 				<WagmiContextProvider initialState={initialState}>
 					<Header />
 					<div className="flex-1">{children}</div>

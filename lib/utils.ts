@@ -107,7 +107,7 @@ export const convertCurrencyPriceToUSD = (currency: string, tokens: bigint) => {
   );
 };
 
-export const formatUSD = (value: number, maxDecimals?: number) => {
+export const formatDecimals = (value: number, maxDecimals?: number) => {
   maxDecimals = maxDecimals ?? 2;
   return Math.floor(value * 10 ** maxDecimals) / 10 ** maxDecimals;
 };
