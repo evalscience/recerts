@@ -11,10 +11,12 @@ import {
 import { cn } from "@/lib/utils";
 import {
 	ArrowUpRight,
+	BadgePlus,
 	Home,
 	type LucideProps,
 	Menu,
 	MessageCircleQuestion,
+	Sparkle,
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -30,8 +32,9 @@ import React, {
 type NavLinkConfig = {
 	href: string;
 	text: string;
+	showIconOnlyOnDesktop?: boolean;
 	openInNewTab?: boolean;
-	Icon?: FC<LucideProps>;
+	Icon: FC<LucideProps>;
 	pathCheck?:
 		| {
 				equals: string;
@@ -45,6 +48,7 @@ const navLinks: NavLinkConfig[] = [
 	{
 		href: "/",
 		text: "Home",
+		showIconOnlyOnDesktop: false,
 		Icon: Home,
 		pathCheck: {
 			equals: "/",
@@ -53,9 +57,17 @@ const navLinks: NavLinkConfig[] = [
 	{
 		href: "/submit",
 		text: "Submit",
-		Icon: Home,
+		Icon: BadgePlus,
 		pathCheck: {
 			equals: "/submit",
+		},
+	},
+	{
+		href: "/",
+		text: "My Ecocerts",
+		Icon: Sparkle,
+		pathCheck: {
+			equals: "/",
 		},
 	},
 	{
@@ -88,7 +100,11 @@ const DesktopNavLink = ({
 				rel: "noopener noreferrer",
 			})}
 		>
-			{link.text}
+			{link.showIconOnlyOnDesktop === false ? (
+				<link.Icon size={18} />
+			) : (
+				link.text
+			)}
 			{link.openInNewTab && (
 				<ArrowUpRight
 					size={18}
@@ -112,7 +128,7 @@ const PhoneNavLink = ({
 			href={link.href}
 			className={cn(
 				buttonVariants({ variant: "ghost" }),
-				"group flex items-center justify-start rounded-md text-left font-medium text-lg",
+				"",
 				isActive ? "bg-beige" : "",
 			)}
 			{...(link.openInNewTab && {
@@ -156,7 +172,7 @@ const NavLinks = () => {
 	return (
 		<div className="relative z-10">
 			{/* On Large Devices: */}
-			<ul className="hidden gap-1 md:flex">
+			<ul className="hidden gap-0.5 md:flex">
 				{navLinks.map((link) => {
 					const isActive = getIsActive(link);
 					return (
