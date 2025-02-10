@@ -36,7 +36,7 @@ const Search = ({
 				</AnimatePresence>
 				<Input
 					type="text"
-					placeholder="Search reports by title or summary"
+					placeholder="Search ecocerts by title or summary"
 					className={cn(
 						"h-16 w-full bg-background/50 px-4 text-lg shadow-lg",
 						input === "" ? "pl-12" : "",

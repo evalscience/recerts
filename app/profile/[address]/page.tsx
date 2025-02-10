@@ -159,7 +159,15 @@ export default async function ProfilePage({
 						title={"Hypercerts supported"}
 						display={combinedSales.length}
 					/>
-					<StatCard title={"Total contributions"} display={totalSalesInUSD} />
+					<StatCard
+						title={"Total amount contributed"}
+						display={
+							<>
+								{totalSalesInUSD}
+								<span className="text-xl">&nbsp;USD</span>
+							</>
+						}
+					/>{" "}
 				</section>
 				<section className="flex w-full flex-col gap-4">
 					<span className="font-baskerville font-bold text-3xl">

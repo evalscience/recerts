@@ -3,8 +3,13 @@ import EthAddress from "@/components/eth-address";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import EthAvatar from "@/components/ui/eth-avatar";
+import { TOKENS_CONFIG } from "@/config/wagmi";
 import { calculateBigIntPercentage } from "@/lib/calculateBigIntPercentage";
-import { bigintToFormattedDate, convertCurrencyPriceToUSD } from "@/lib/utils";
+import {
+	bigintToFormattedDate,
+	convertCurrencyPriceToUSD,
+	formatDecimals,
+} from "@/lib/utils";
 import { blo } from "blo";
 import { Calendar, HandHeart, UserCircle2 } from "lucide-react";
 import type React from "react";
@@ -78,6 +83,15 @@ const Support = ({ hypercert }: { hypercert: FullHypercert }) => {
 		);
 	}
 
+	const addressToSymbol: Record<string, string> = {};
+
+	for (const chainId in TOKENS_CONFIG) {
+		const tokens = TOKENS_CONFIG[chainId];
+		for (const token of tokens) {
+			addressToSymbol[token.address] = token.symbol;
+		}
+	}
+
 	return (
 		<Wrapper
 			buyFraction={
@@ -96,35 +110,52 @@ const Support = ({ hypercert }: { hypercert: FullHypercert }) => {
 		>
 			<div className="flex w-full flex-col gap-2">
 				<ul className="flex w-full flex-col gap-1">
-					{hypercert.sales?.map((sale) => {
-						const amountInUSD = convertCurrencyPriceToUSD(
-							sale.currency,
-							sale.currencyAmount,
-						);
+					{hypercert.sales
+						?.map((sale) => {
+							const saleCurrency = sale.currency;
+							let currencySymbol: string;
+							if (
+								saleCurrency in addressToSymbol &&
+								addressToSymbol[saleCurrency]
+							) {
+								currencySymbol = addressToSymbol[saleCurrency];
+							} else {
+								return null;
+							}
+							// The currency amount we get from the response is in a multiple of 10^18
+							// We need to divide it by 10^18 to get the actual amount
+							// We first divide by 10^6 so that when we convert to number, we don't get scientific notation.
+							// We then divide by 10^12 to get the actual amount with decimal precision.
+							const saleAmount =
+								Number(sale.currencyAmount / BigInt(10 ** 6)) / 10 ** 12;
 
-						return (
-							<li
-								key={sale.transactionHash}
-								className="flex items-center justify-between rounded-2xl border border-border bg-background px-4 py-2"
-							>
-								<div className="flex items-center gap-4">
-									<EthAvatar address={sale.buyer as `0x${string}`} size={40} />
-									<div className="flex h-full flex-col items-start gap-1">
-										<EthAddress address={sale.buyer} />
-										<span className="flex items-center text-muted-foreground text-sm">
-											<Calendar size={14} className="mr-2" />
-											<span>
-												{bigintToFormattedDate(sale.creationBlockTimestamp)}
+							return (
+								<li
+									key={sale.transactionHash}
+									className="flex items-center justify-between rounded-2xl border border-border bg-background px-4 py-2"
+								>
+									<div className="flex items-center gap-4">
+										<EthAvatar
+											address={sale.buyer as `0x${string}`}
+											size={40}
+										/>
+										<div className="flex h-full flex-col items-start gap-1">
+											<EthAddress address={sale.buyer} />
+											<span className="flex items-center text-muted-foreground text-sm">
+												<Calendar size={14} className="mr-2" />
+												<span>
+													{bigintToFormattedDate(sale.creationBlockTimestamp)}
+												</span>
 											</span>
-										</span>
+										</div>
 									</div>
-								</div>
-								<span className="font-bold text-lg text-primary">
-									${Math.floor(amountInUSD * 100) / 100}
-								</span>
-							</li>
-						);
-					})}
+									<span className="font-bold text-lg text-primary">
+										<b>{formatDecimals(saleAmount)}</b> {currencySymbol}
+									</span>
+								</li>
+							);
+						})
+						?.filter((sale) => sale !== null)}
 				</ul>
 			</div>
 		</Wrapper>

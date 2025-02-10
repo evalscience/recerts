@@ -2,7 +2,7 @@ import Progress from "@/app/components/shared/progress";
 import type { FullHypercert } from "@/app/graphql-queries/hypercerts";
 import { Button } from "@/components/ui/button";
 import { calculateBigIntPercentage } from "@/lib/calculateBigIntPercentage";
-import { formatUSD } from "@/lib/utils";
+import { formatDecimals } from "@/lib/utils";
 import { ArrowRight, CircleAlert, Clock } from "lucide-react";
 import React from "react";
 import PaymentFlow from "./PaymentFlow";
@@ -76,8 +76,8 @@ const VariantSelector = ({ hypercert }: { hypercert: FullHypercert }) => {
 	if (percentCompleted === undefined) return <SoldVariant />;
 	return (
 		<OpenVariant
-			reached={formatUSD(percentCompleted * pricePerPercentInUSD)}
-			goal={formatUSD(100 * pricePerPercentInUSD)}
+			reached={formatDecimals(percentCompleted * pricePerPercentInUSD)}
+			goal={formatDecimals(100 * pricePerPercentInUSD)}
 		/>
 	);
 };
