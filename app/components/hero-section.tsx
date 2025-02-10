@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import Image from "next/image";
 import type React from "react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import HeroTitle from "./hero-title";
 
 const INTRINSIC_CARD_WIDTH = 200;
 const SECTION_HEIGHT = 420;
@@ -71,7 +72,7 @@ const HeroSection = () => {
 
 	return (
 		<motion.section
-			className="flex w-full max-w-5xl items-center justify-center"
+			className="relative flex w-full max-w-5xl items-center justify-center"
 			style={{
 				height: `${SECTION_HEIGHT}px`,
 			}}
@@ -115,6 +116,7 @@ const HeroSection = () => {
 					</motion.div>
 				</motion.div>
 			))}
+			<HeroTitle />
 		</motion.section>
 	);
 };

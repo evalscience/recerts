@@ -12,7 +12,6 @@ export default async function Home() {
 				<div className="flex w-full flex-col items-center px-4">
 					<HeroSection />
 				</div>
-				<HeroTitle />
 			</section>
 
 			<MotionWrapper
