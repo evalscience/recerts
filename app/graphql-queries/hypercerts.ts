@@ -262,10 +262,80 @@ export type FullHypercert = {
 	}[];
 };
 
+const fetchCachedHypercert = async (hypercertId: string) => {
+	try {
+		const formattedId = hypercertId.replace(/[^a-zA-Z0-9]/g, "-");
+		console.log("formattedId", formattedId);
+		const response = await fetch(
+			`https://storage.googleapis.com/ecocertain-public/ecocerts/ecocert_${formattedId}.json`,
+		);
+		if (!response.ok) return null;
+		return await response.json();
+	} catch (error) {
+		console.warn(`Failed to fetch cached hypercert ${hypercertId}:`, error);
+		return null;
+	}
+};
+
 export const fetchFullHypercertById = async (
 	hypercertId: string,
 	testingLog?: string,
 ): Promise<FullHypercert> => {
+	// Try to fetch from cache first
+	const cachedData = await fetchCachedHypercert(hypercertId);
+	if (cachedData) {
+		// Transform cached data to match FullHypercert type
+		return {
+			hypercertId,
+			saleStatus: cachedData.saleStatus || "open",
+			totalUnits: BigInt(cachedData.totalUnits || 0),
+			unitsForSale: BigInt(cachedData.unitsForSale || 0),
+			uri: cachedData.uri,
+			creationBlockTimestamp: BigInt(cachedData.creationBlockTimestamp || 0),
+			creatorAddress: cachedData.creatorAddress || "0x0",
+			chainId: cachedData.chainId?.toLowerCase(),
+			metadata: {
+				image: cachedData.metadata?.image,
+				name: cachedData.metadata?.name,
+				description: cachedData.metadata?.description,
+				work: {
+					scope: cachedData.metadata?.work?.scope || [],
+					from: BigInt(cachedData.metadata?.work?.from || 0),
+					to: BigInt(cachedData.metadata?.work?.to || 0),
+				},
+				contributors: (cachedData.metadata?.contributors || []).map((c) =>
+					c.toLowerCase(),
+				),
+			},
+			cheapestOrder: {
+				pricePerPercentInUSD: cachedData.cheapestOrder?.pricePerPercentInUSD,
+			},
+			orders: (cachedData.orders || []).map((order) => ({
+				id: order.id,
+				price: BigInt(order.price || 0),
+				pricePerPercentInToken: Number(order.pricePerPercentInToken),
+				pricePerPercentInUSD: Number(order.pricePerPercentInUSD),
+				currency: order.currency.toLowerCase(),
+				chainId: order.chainId,
+			})),
+			sales: (cachedData.sales || []).map((sale) => ({
+				unitsBought: BigInt(sale.unitsBought || 0),
+				buyer: sale.buyer.toLowerCase(),
+				currency: sale.currency.toLowerCase(),
+				currencyAmount: BigInt(sale.currencyAmount || 0),
+				creationBlockTimestamp: BigInt(sale.creationBlockTimestamp || 0),
+				transactionHash: sale.transactionHash,
+			})),
+			attestations: (cachedData.attestations || []).map((attestation) => ({
+				attester: attestation.attester.toLowerCase(),
+				creationBlockTimestamp: BigInt(attestation.creationBlockTimestamp || 0),
+				data: attestation.data,
+				id: attestation.id,
+			})),
+		};
+	}
+
+	// Fallback to GraphQL if cache miss
 	if (testingLog) {
 		console.log("calling from fetchFullHypercertById", testingLog);
 	}
