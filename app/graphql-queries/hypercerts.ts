@@ -6,6 +6,31 @@ import { catchError } from "../utils";
 import { fetchHypercertsGraphQL as fetchGraphQL } from "../utils/graphql";
 import { hypercert } from "./templates";
 
+interface CachedOrder {
+	id: string;
+	price: string | number;
+	pricePerPercentInToken: string | number;
+	pricePerPercentInUSD: string | number;
+	currency: string;
+	chainId: string;
+}
+
+interface CachedSale {
+	unitsBought: string | number;
+	buyer: string;
+	currency: string;
+	currencyAmount: string | number;
+	creationBlockTimestamp: string | number;
+	transactionHash: string;
+}
+
+interface CachedAttestation {
+	attester: string;
+	creationBlockTimestamp: string | number;
+	data: string;
+	id: string;
+}
+
 const hypercertIdsByHyperboardIdQuery = graphql(`
   query GetHypercertIdsByHyperboardId($hyperboard_id: UUID!) {
     hyperboards(where: { id: { eq: $hyperboard_id } }) {
@@ -303,14 +328,14 @@ export const fetchFullHypercertById = async (
 					from: BigInt(cachedData.metadata?.work?.from || 0),
 					to: BigInt(cachedData.metadata?.work?.to || 0),
 				},
-				contributors: (cachedData.metadata?.contributors || []).map((c) =>
-					c.toLowerCase(),
+				contributors: (cachedData.metadata?.contributors || []).map(
+					(c: string) => c.toLowerCase(),
 				),
 			},
 			cheapestOrder: {
 				pricePerPercentInUSD: cachedData.cheapestOrder?.pricePerPercentInUSD,
 			},
-			orders: (cachedData.orders || []).map((order) => ({
+			orders: (cachedData.orders || []).map((order: CachedOrder) => ({
 				id: order.id,
 				price: BigInt(order.price || 0),
 				pricePerPercentInToken: Number(order.pricePerPercentInToken),
@@ -318,7 +343,7 @@ export const fetchFullHypercertById = async (
 				currency: order.currency.toLowerCase(),
 				chainId: order.chainId,
 			})),
-			sales: (cachedData.sales || []).map((sale) => ({
+			sales: (cachedData.sales || []).map((sale: CachedSale) => ({
 				unitsBought: BigInt(sale.unitsBought || 0),
 				buyer: sale.buyer.toLowerCase(),
 				currency: sale.currency.toLowerCase(),
@@ -326,12 +351,16 @@ export const fetchFullHypercertById = async (
 				creationBlockTimestamp: BigInt(sale.creationBlockTimestamp || 0),
 				transactionHash: sale.transactionHash,
 			})),
-			attestations: (cachedData.attestations || []).map((attestation) => ({
-				attester: attestation.attester.toLowerCase(),
-				creationBlockTimestamp: BigInt(attestation.creationBlockTimestamp || 0),
-				data: attestation.data,
-				id: attestation.id,
-			})),
+			attestations: (cachedData.attestations || []).map(
+				(attestation: CachedAttestation) => ({
+					attester: attestation.attester.toLowerCase(),
+					creationBlockTimestamp: BigInt(
+						attestation.creationBlockTimestamp || 0,
+					),
+					data: attestation.data,
+					id: attestation.id,
+				}),
+			),
 		};
 	}
 
