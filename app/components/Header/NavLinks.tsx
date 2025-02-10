@@ -28,13 +28,12 @@ import React, {
 	SVGProps,
 	useCallback,
 } from "react";
+import { type ClientLink, MyHypercerts } from "./dynamic-links";
 
-type NavLinkConfig = {
-	href: string;
-	text: string;
+export type NavLinkConfig<T extends "static" | "dynamic"> = {
+	id: string;
 	showIconOnlyOnDesktop?: boolean;
 	openInNewTab?: boolean;
-	Icon: FC<LucideProps>;
 	pathCheck?:
 		| {
 				equals: string;
@@ -42,10 +41,26 @@ type NavLinkConfig = {
 		| {
 				startsWith: string;
 		  };
-};
+} & (T extends "static"
+	? {
+			type: "static";
+			href: string;
+			text: string;
+			Icon: FC<LucideProps>;
+			clientNode?: never;
+	  }
+	: {
+			type: "dynamic";
+			href?: never;
+			text?: never;
+			Icon?: never;
+			clientNode: ClientLink;
+	  });
 
-const navLinks: NavLinkConfig[] = [
+const navLinks: NavLinkConfig<"dynamic" | "static">[] = [
 	{
+		type: "static",
+		id: "home",
 		href: "/",
 		text: "Home",
 		showIconOnlyOnDesktop: false,
@@ -55,6 +70,8 @@ const navLinks: NavLinkConfig[] = [
 		},
 	},
 	{
+		type: "static",
+		id: "submit",
 		href: "/submit",
 		text: "Submit",
 		Icon: BadgePlus,
@@ -63,14 +80,13 @@ const navLinks: NavLinkConfig[] = [
 		},
 	},
 	{
-		href: "/",
-		text: "My Ecocerts",
-		Icon: Sparkle,
-		pathCheck: {
-			equals: "/",
-		},
+		type: "dynamic",
+		id: "my-hypercerts",
+		clientNode: MyHypercerts,
 	},
 	{
+		type: "static",
+		id: "faqs",
 		href: "/faqs",
 		text: "FAQs",
 		Icon: MessageCircleQuestion,
@@ -80,11 +96,11 @@ const navLinks: NavLinkConfig[] = [
 	},
 ];
 
-const DesktopNavLink = ({
+export const DesktopNavLink = ({
 	link,
 	isActive,
 }: {
-	link: NavLinkConfig;
+	link: NavLinkConfig<"static">;
 	isActive: boolean;
 }) => {
 	return (
@@ -116,11 +132,11 @@ const DesktopNavLink = ({
 	);
 };
 
-const PhoneNavLink = ({
+export const PhoneNavLink = ({
 	link,
 	isActive,
 }: {
-	link: NavLinkConfig;
+	link: NavLinkConfig<"static">;
 	isActive: boolean;
 }) => {
 	return (
@@ -155,7 +171,7 @@ const NavLinks = () => {
 	const pathname = usePathname();
 
 	const getIsActive = useCallback(
-		(link: NavLinkConfig) => {
+		(link: NavLinkConfig<"dynamic" | "static">) => {
 			if (link.pathCheck) {
 				if ("equals" in link.pathCheck) {
 					return pathname === link.pathCheck.equals;
@@ -175,6 +191,9 @@ const NavLinks = () => {
 			<ul className="hidden gap-0.5 md:flex">
 				{navLinks.map((link) => {
 					const isActive = getIsActive(link);
+					if (link.type === "dynamic") {
+						return <link.clientNode.Desktop key={link.id} />;
+					}
 					return (
 						<DesktopNavLink key={link.href} link={link} isActive={isActive} />
 					);
@@ -212,6 +231,9 @@ const NavLinks = () => {
 					<ul className="flex flex-col gap-1 p-4">
 						{navLinks.map((link) => {
 							const isActive = getIsActive(link);
+							if (link.type === "dynamic") {
+								return <link.clientNode.Mobile key={link.id} />;
+							}
 							return (
 								<PhoneNavLink key={link.href} link={link} isActive={isActive} />
 							);
