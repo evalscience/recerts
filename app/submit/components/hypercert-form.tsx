@@ -140,7 +140,7 @@ const HypercertMintSchema = z
 		},
 	);
 
-type MintingFormValues = z.infer<typeof HypercertMintSchema>;
+export type MintingFormValues = z.infer<typeof HypercertMintSchema>;
 
 const HypercertForm = () => {
 	const imageRef = useRef<HTMLDivElement | null>(null);
@@ -749,6 +749,7 @@ const HypercertForm = () => {
 																align="start"
 															>
 																<Calendar
+																	className="h-[340px]"
 																	initialFocus
 																	mode="range"
 																	defaultMonth={field.value?.[0]}
@@ -759,10 +760,6 @@ const HypercertForm = () => {
 																	onSelect={(range) => {
 																		console.log(range, field);
 																		field.onChange([range?.from, range?.to]);
-																		// field.onChange({
-																		//   workStartDate: range?.from,
-																		//   workEndDate: range?.to,
-																		// });
 																		console.log(field.value);
 																	}}
 																	numberOfMonths={2}
