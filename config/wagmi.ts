@@ -1,7 +1,7 @@
 import { defaultWagmiConfig } from "@web3modal/wagmi/react/config";
 
 import { cookieStorage, createStorage } from "wagmi";
-import { getEcocertainApiUrl, getEcocertainUrl } from "./endpoint";
+import { BASE_URL } from "./endpoint";
 import { sepolia, celo } from "viem/chains";
 
 // Get projectId at https://cloud.walletconnect.com
@@ -40,7 +40,7 @@ const normalizeTokensConfig = (config: TokensConfig): TokensConfig => {
 
 export const getUSDPeggedValue = () => new Promise<number>((res) => res(1));
 export const getUSDbySymbol = async (symbol: string): Promise<number> => {
-  const response = await fetch(`/api/pricefeed?symbol=${symbol}`);
+  const response = await fetch(`${BASE_URL}/api/pricefeed?symbol=${symbol}`);
   const data = await response.json();
   if (data.usdPrice) {
     return data.usdPrice as number;
@@ -103,7 +103,7 @@ for (const chainId in TOKENS_CONFIG) {
 const metadata = {
   name: "Ecocertain",
   description: "Fund impactful regenerative projects",
-  url: getEcocertainUrl(), // origin must match your domain & subdomain
+  url: BASE_URL, // origin must match your domain & subdomain
   icons: ["https://avatars.githubusercontent.com/u/46801808"],
 };
 
