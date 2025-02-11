@@ -11,3 +11,10 @@ export const getEcocertainUrl = () => {
     return localhost;
   }
 };
+
+export const getEcocertainApiUrl = () => {
+  if (process.env.NODE_ENV === "development") {
+    return localhost;
+  }
+  return getEcocertainUrl();
+};

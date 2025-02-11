@@ -1,9 +1,8 @@
 import { defaultWagmiConfig } from "@web3modal/wagmi/react/config";
 
 import { cookieStorage, createStorage } from "wagmi";
-import { getEcocertainUrl } from "./endpoint";
+import { getEcocertainApiUrl, getEcocertainUrl } from "./endpoint";
 import { sepolia, celo } from "viem/chains";
-import { symbol } from "zod";
 
 // Get projectId at https://cloud.walletconnect.com
 export const projectId = process.env.NEXT_PUBLIC_WC_PROJECT_ID;
@@ -40,6 +39,16 @@ const normalizeTokensConfig = (config: TokensConfig): TokensConfig => {
 };
 
 export const getUSDPeggedValue = () => new Promise<number>((res) => res(1));
+export const getUSDbySymbol = async (symbol: string): Promise<number> => {
+  const response = await fetch(
+    `${getEcocertainApiUrl()}/api/pricefeed?symbol=${symbol}`
+  );
+  const data = await response.json();
+  if (data.usdPrice) {
+    return data.usdPrice as number;
+  }
+  throw new Error("Failed to fetch USD price");
+};
 
 export const TOKENS_CONFIG: TokensConfig = normalizeTokensConfig({
   [sepolia.id]: [
@@ -53,7 +62,7 @@ export const TOKENS_CONFIG: TokensConfig = normalizeTokensConfig({
     {
       symbol: "CELO",
       address: "0x471EcE3750Da237f93B8E339c536989b8978a438",
-      usdPriceFetcher: () => new Promise<number>((res) => res(0.4)),
+      usdPriceFetcher: () => getUSDbySymbol("CELO"),
     },
     {
       symbol: "cUSD",

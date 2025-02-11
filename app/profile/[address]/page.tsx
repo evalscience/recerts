@@ -31,9 +31,17 @@ const combineSales = async (sales: SaleByUser[]) => {
 	const combinedSales: CombinedSale[] = [];
 
 	// Create an array of promises for all currency conversions
-	const conversionPromises = sales.map((sale) =>
-		convertCurrencyPriceToUSD(sale.currency, sale.currencyAmount),
-	);
+	const conversionPromises = sales.map(async (sale) => {
+		try {
+			const convertedPrice = await convertCurrencyPriceToUSD(
+				sale.currency,
+				sale.currencyAmount,
+			);
+			return convertedPrice;
+		} catch (e) {
+			return null;
+		}
+	});
 
 	// Await all promises in parallel
 	const amountsInUSD = await Promise.all(conversionPromises);
