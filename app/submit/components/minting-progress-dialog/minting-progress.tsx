@@ -1,8 +1,12 @@
 "use client";
 import { Button } from "@/components/ui/button";
+import { useHypercertClient } from "@/hooks/use-hypercerts-client";
+import { sendEmailAndUpdateGoogle } from "@/lib/sendEmailAndUpdateGoogle";
 import { cn } from "@/lib/utils";
+import { constructHypercertIdFromReceipt } from "@/utils/constructHypercertIdFromReceipt";
 import {
 	type HypercertMetadata,
+	TransferRestrictions,
 	formatHypercertData,
 } from "@hypercerts-org/sdk";
 import { motion } from "framer-motion";
@@ -16,15 +20,10 @@ import {
 	Loader2,
 	RotateCw,
 } from "lucide-react";
-import React, {
-	type Dispatch,
-	type SetStateAction,
-	useEffect,
-	useRef,
-	useState,
-} from "react";
-import { useAccount } from "wagmi";
-import type { MintingFormValues } from "./hypercert-form";
+import Link from "next/link";
+import React, { useEffect, useRef, useState } from "react";
+import { useAccount, usePublicClient } from "wagmi";
+import type { MintingFormValues } from "../hypercert-form";
 
 type MintingProgressConfig = {
 	title: string;
@@ -42,8 +41,8 @@ const mintingProgressConfigKeys = [
 	"PARSING_GEOJSON",
 	"UPLOADING_GEOJSON",
 	"GENERATING_METADATA",
-	"SIGNING",
-	"TXN_PENDING",
+	"MINTING",
+	"WAITING_TO_MINT",
 	"COMPLETED",
 ] as const;
 type MintingProgressConfigKey = (typeof mintingProgressConfigKeys)[number];
@@ -55,6 +54,10 @@ const mintingProgressConfigs: Record<
 	INITIALIZING: {
 		title: "Initializing",
 		description: "Accumulating your choices and requisites...",
+		errorState: {
+			title: "Unable to process your request",
+			description: "Please make sure your wallet is connected, and try again.",
+		},
 	},
 	GENERATING_IMG: {
 		title: "Generating Image",
@@ -91,30 +94,30 @@ const mintingProgressConfigs: Record<
 				"We couldn't prepare metadata for the mint. Please try again later.",
 		},
 	},
-	SIGNING: {
-		title: "Sign the transaction",
-		description: "Waiting for you to sign the transaction...",
+	MINTING: {
+		title: "Minting Hypercert",
+		description: "Please sign the mint transaction when asked for approval.",
 		errorState: {
 			title: "Transaction Rejected",
 			description: "The transaction was rejected.",
 		},
 	},
-	TXN_PENDING: {
-		title: "Waiting for transaction to confirm",
-		description: "Please wait while the transaction is confirmed.",
+	WAITING_TO_MINT: {
+		title: "Waiting for the transaction to complete",
+		description: "Please wait while the transaction is completed.",
 		errorState: {
-			title: "Transaction not confirmed",
-			description: "The transaction could not be confirmed.",
+			title: "Transaction not completed",
+			description: "The transaction could not be completed. Please try again.",
 		},
 	},
 	COMPLETED: {
-		title: "Transaction Completed",
-		description: "The transaction was completed successfully.",
+		title: "Hypercert Minted",
+		description: "The hypercert was successfully minted.",
 		isFinalState: true,
 	},
 };
 
-const PROGESS_CONTAINER_HEIGHT = 200;
+const PROGESS_CONTAINER_HEIGHT = 300;
 
 const catchError = async <TryReturnType,>(
 	tryFn: () => Promise<TryReturnType>,
@@ -133,20 +136,33 @@ const MintingProgress = ({
 	geoJSONFile,
 	badges,
 	visible = false,
+	setVisible,
 }: {
 	mintingFormValues: MintingFormValues;
 	generateImage: () => Promise<string | undefined>;
 	geoJSONFile: File | null;
 	badges: string[];
 	visible?: boolean;
+	setVisible: (visible: boolean) => void;
 }) => {
 	const [configKey, setConfigKey] =
 		useState<MintingProgressConfigKey>("INITIALIZING");
 	const [error, setError] = useState(true);
+	const [mintedHypercertId, setMintedHypercertId] = useState<string>();
+
+	const { isConnected, address } = useAccount();
+	const { client } = useHypercertClient();
+	const publicClient = usePublicClient();
 
 	const startTransaction = async () => {
 		setError(false);
+
+		setConfigKey("INITIALIZING");
 		const values = mintingFormValues;
+		if (!client || !publicClient || !isConnected) {
+			setError(true);
+			return;
+		}
 
 		setConfigKey("GENERATING_IMG");
 		const [image, imageGenerationError] = await catchError(generateImage);
@@ -232,10 +248,56 @@ const MintingProgress = ({
 				(values.projectDates[1] ?? new Date()).getTime() / 1000,
 			contributors: values.contributors.split(", ").filter(Boolean),
 		});
-
 		if (!formattedMetadata.valid || !formattedMetadata.data) {
 			setError(true);
 			return;
+		}
+
+		setConfigKey("MINTING");
+		const metadataPayload = formattedMetadata.data;
+		const [mintHash, mintingError] = await catchError(() =>
+			client.mintClaim(
+				metadataPayload,
+				100_000_000n,
+				TransferRestrictions.FromCreatorOnly,
+			),
+		);
+		if (mintingError) {
+			console.log(client, mintingError);
+			setError(true);
+			return;
+		}
+
+		setConfigKey("WAITING_TO_MINT");
+		const [mintReceipt, mintReceiptError] = await catchError(async () => {
+			const receipt = await publicClient.waitForTransactionReceipt({
+				hash: mintHash,
+			});
+			return receipt;
+		});
+		if (mintReceiptError || mintReceipt.status === "reverted") {
+			console.log("receipt error", mintReceiptError, mintReceipt?.status);
+			setError(true);
+			return;
+		}
+		const hypercertId = constructHypercertIdFromReceipt(
+			mintReceipt,
+			publicClient.chain.id,
+		);
+		if (!hypercertId) {
+			setError(true);
+			return;
+		}
+
+		setConfigKey("COMPLETED");
+		setMintedHypercertId(hypercertId);
+		if (mintingFormValues.contact) {
+			try {
+				sendEmailAndUpdateGoogle({
+					hypercertId,
+					contactInfo: mintingFormValues.contact,
+				});
+			} catch {}
 		}
 	};
 
@@ -300,10 +362,10 @@ const MintingProgress = ({
 					"linear-gradient(to bottom, rgb(0 0 0 / 0) 0%, rgb(0 0 0 / 1) 20% 80%, rgb(0 0 0 / 0) 100%)",
 			}}
 		>
-			<div className="absolute top-0 bottom-0 left-[11px] w-[2px] bg-gradient-to-b from-black/10 via-black to-black/10 opacity-70 dark:from-white/10 dark:via-white dark:to-white/10" />
+			<div className="absolute top-0 bottom-0 left-[17px] w-[2px] bg-gradient-to-b from-black/10 via-black to-black/10 opacity-70 dark:from-white/10 dark:via-white dark:to-white/10" />
 
 			<motion.div
-				className="flex flex-col gap-4"
+				className="flex flex-col gap-8"
 				animate={{ y: statusListYTranslation }}
 				ref={statusListRef}
 			>
@@ -323,31 +385,31 @@ const MintingProgress = ({
 							className="flex items-start gap-1"
 							data-status-key={key}
 						>
-							<div className="relative flex aspect-square h-[24px] scale-100 items-center justify-center overflow-hidden rounded-full border border-border bg-white dark:bg-black">
+							<div className="relative flex aspect-square h-[36px] scale-100 items-center justify-center overflow-hidden rounded-full border border-border bg-white dark:bg-black">
 								{showErrorVariant ? (
-									<CircleAlert size={16} className="text-destructive" />
+									<CircleAlert size={20} className="text-destructive" />
 								) : key === configKey ? (
 									mintingProgressConfig.isFinalState ? (
 										<>
-											<Check size={16} className="text-primary" />
+											<Check size={20} className="text-primary" />
 											<div className="absolute inset-0 flex items-center justify-center">
 												<div className="h-3 w-3 animate-ping rounded-full bg-primary blur-sm" />
 											</div>
 										</>
 									) : (
-										<Loader2 size={16} className="animate-spin text-primary" />
+										<Loader2 size={20} className="animate-spin text-primary" />
 									)
 								) : isOlderStep ? (
-									<Check size={16} className="text-primary" />
+									<Check size={20} className="text-primary" />
 								) : isUpcomingStep ? (
 									<Circle
-										size={14}
+										size={18}
 										className="animate-pulse text-muted-foreground"
 									/>
 								) : null}
 							</div>
 							<div
-								className="flex flex-col gap-1 px-2 transition-opacity"
+								className="flex flex-col gap-2 px-2 transition-opacity"
 								style={{
 									opacity:
 										i === currentConfigKeyIndex
@@ -359,7 +421,7 @@ const MintingProgress = ({
 							>
 								<span
 									className={cn(
-										"w-fit rounded-full border border-border bg-muted px-2 font-bold font-sans text-foreground text-sm",
+										"w-fit rounded-full border border-border px-2 font-bold font-sans text-foreground",
 										showErrorVariant ? "text-destructive" : "",
 									)}
 								>
@@ -367,7 +429,7 @@ const MintingProgress = ({
 										? mintingProgressConfigs[key].errorState?.title
 										: mintingProgressConfig.title}
 								</span>
-								<span className="font-sans text-sm">
+								<span className="font-sans">
 									{showErrorVariant
 										? mintingProgressConfigs[key].errorState?.description
 										: mintingProgressConfig.description}
@@ -376,14 +438,15 @@ const MintingProgress = ({
 									<div className="flex items-center gap-2">
 										<Button
 											size={"sm"}
+											className="gap-2"
 											variant={"outline"}
-											className="h-6 gap-1 rounded-sm p-2"
+											onClick={() => setVisible(false)}
 										>
-											<ChevronLeft size={16} /> Go back
+											Cancel
 										</Button>
 										<Button
 											size={"sm"}
-											className="h-6 gap-1 rounded-sm p-2"
+											className="gap-2"
 											onClick={startTransaction}
 										>
 											<RotateCw size={16} /> Retry
@@ -392,16 +455,11 @@ const MintingProgress = ({
 								)}
 								{mintingProgressConfig.isFinalState && (
 									<div className="flex flex-col gap-1">
-										<span className="inline-block w-[150px] truncate rounded-full border border-border px-2 text-sm">
-											hashhashhash
-										</span>
-										<Button
-											size={"sm"}
-											variant={"outline"}
-											className="h-6 w-fit gap-1 rounded-sm p-2"
-										>
-											<Copy size={16} />
-										</Button>
+										{address && (
+											<Link href={`/profile/${address}?view=created`}>
+												<Button size={"sm"}>View my hypercerts</Button>
+											</Link>
+										)}
 									</div>
 								)}
 							</div>
