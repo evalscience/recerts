@@ -38,6 +38,8 @@ const Page = async ({ params }: PageProps) => {
 		fetchFullHypercertById(hypercertId),
 	);
 
+	console.log(hypercert);
+
 	if (error) {
 		return (
 			<PageError
