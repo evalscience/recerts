@@ -26,16 +26,23 @@ export type CombinedSale = {
 	id: string;
 };
 
-const combineSales = (sales: SaleByUser[]) => {
+const combineSales = async (sales: SaleByUser[]) => {
 	const saleIndexer = new Map<string, number>();
 	const combinedSales: CombinedSale[] = [];
 
+	// Create an array of promises for all currency conversions
+	const conversionPromises = sales.map((sale) =>
+		convertCurrencyPriceToUSD(sale.currency, sale.currencyAmount),
+	);
+
+	// Await all promises in parallel
+	const amountsInUSD = await Promise.all(conversionPromises);
+
 	for (let i = 0; i < sales.length; i++) {
 		const sale = sales[i];
-		const amountInUSD = convertCurrencyPriceToUSD(
-			sale.currency,
-			sale.currencyAmount,
-		);
+		const amountInUSD = amountsInUSD[i];
+
+		if (amountInUSD === null) continue;
 
 		const hypercertId = sale.hypercert.hypercertId;
 		if (!saleIndexer.has(hypercertId)) {
@@ -93,7 +100,7 @@ export default async function ProfilePage({
 		);
 	}
 
-	const combinedSales = combineSales(sales ?? []);
+	const combinedSales = await combineSales(sales ?? []);
 	const totalSalesInUSD =
 		Math.floor(
 			combinedSales.reduce((acc, sale) => {

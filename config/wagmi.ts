@@ -17,7 +17,14 @@ export const SUPPORTED_CHAINS =
     ? PROD_CHAINS
     : DEV_CHAINS;
 
-type TokensConfig = Record<number, Array<{ symbol: string; address: string }>>;
+type TokensConfig = Record<
+  number,
+  Array<{
+    symbol: string;
+    address: string;
+    usdPriceFetcher: () => Promise<number>;
+  }>
+>;
 const normalizeTokensConfig = (config: TokensConfig): TokensConfig => {
   return Object.fromEntries(
     Object.entries(config).map(([chainId, tokens]) => {
@@ -32,32 +39,59 @@ const normalizeTokensConfig = (config: TokensConfig): TokensConfig => {
   );
 };
 
+export const getUSDPeggedValue = () => new Promise<number>((res) => res(1));
+
 export const TOKENS_CONFIG: TokensConfig = normalizeTokensConfig({
   [sepolia.id]: [
     {
       symbol: "LINK",
       address: "0x779877A7B0D9E8603169DdbD7836e478b4624789",
+      usdPriceFetcher: getUSDPeggedValue,
     },
   ],
   [celo.id]: [
     {
       symbol: "CELO",
       address: "0x471EcE3750Da237f93B8E339c536989b8978a438",
+      usdPriceFetcher: () => new Promise<number>((res) => res(0.4)),
     },
     {
       symbol: "cUSD",
       address: "0x765DE816845861e75A25fCA122bb6898B8B1282a",
+      usdPriceFetcher: getUSDPeggedValue,
     },
     {
       symbol: "USDT",
       address: "0xb020D981420744F6b0FedD22bB67cd37Ce18a1d5",
+      usdPriceFetcher: getUSDPeggedValue,
     },
     {
       symbol: "USDC",
       address: "0xcebA9300f2b948710d2653dD7B07f33A8B32118C",
+      usdPriceFetcher: getUSDPeggedValue,
     },
   ],
 });
+
+export const currencyMap: Record<
+  `0x${string}`,
+  {
+    symbol: string;
+    chainId: number;
+    usdPriceFetcher: () => Promise<number>;
+  }
+> = {};
+
+for (const chainId in TOKENS_CONFIG) {
+  const tokens = TOKENS_CONFIG[chainId];
+  for (const token of tokens) {
+    currencyMap[token.address as `0x${string}`] = {
+      symbol: token.symbol,
+      chainId: Number(chainId),
+      usdPriceFetcher: token.usdPriceFetcher,
+    };
+  }
+}
 
 const metadata = {
   name: "Ecocertain",

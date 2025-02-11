@@ -22,7 +22,7 @@ const Content = ({
 				) : (
 					<HeartHandshake className="text-primary" size={36} />
 				)}
-				<span>Created Hypercerts</span>
+				<span>{view === "created" ? "Created" : "Supported"} Hypercerts</span>
 			</span>
 			{view === "created" ? (
 				<CreatedHypercerts hypercerts={createdHypercerts} />

@@ -1,3 +1,4 @@
+import { currencyMap } from "@/config/wagmi";
 import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
 import type { Address } from "viem";
@@ -96,15 +97,24 @@ export function bigintToFormattedDate(timestamp: bigint): string {
 
 // ❗❗❗ Use the `currency` param in the following function get the latest price data.
 // ❗❗❗ Using 1USD for now, because the currency is USD pegged for now.
-export const convertCurrencyPriceToUSD = (currency: string, tokens: bigint) => {
+export const convertCurrencyPriceToUSD = async (
+  currency: string,
+  tokens: bigint
+): Promise<null | number> => {
   const weiFactor = BigInt(10 ** 18);
   const precision = 4;
   const precisionMultiplier = BigInt(10 ** precision);
 
-  return (
+  const tokensInNumber =
     Number((tokens * precisionMultiplier) / weiFactor) /
-    Number(precisionMultiplier)
-  );
+    Number(precisionMultiplier);
+
+  const currencyDetails = currencyMap[currency.toLowerCase() as `0x${string}`];
+  if (currencyDetails) {
+    const pricePerToken = await currencyDetails.usdPriceFetcher();
+    return tokensInNumber * pricePerToken;
+  }
+  return null;
 };
 
 export const formatDecimals = (value: number, maxDecimals?: number) => {
