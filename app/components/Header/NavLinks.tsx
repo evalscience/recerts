@@ -70,6 +70,11 @@ const navLinks: NavLinkConfig<"dynamic" | "static">[] = [
 		},
 	},
 	{
+		type: "dynamic",
+		id: "my-hypercerts",
+		clientNode: MyHypercerts,
+	},
+	{
 		type: "static",
 		id: "submit",
 		href: "/submit",
@@ -78,11 +83,6 @@ const navLinks: NavLinkConfig<"dynamic" | "static">[] = [
 		pathCheck: {
 			equals: "/submit",
 		},
-	},
-	{
-		type: "dynamic",
-		id: "my-hypercerts",
-		clientNode: MyHypercerts,
 	},
 	{
 		type: "static",

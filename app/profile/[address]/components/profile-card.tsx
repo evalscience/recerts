@@ -26,7 +26,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import React from "react";
-import { useAccount, useEnsName } from "wagmi";
+import { useEnsName } from "wagmi";
 
 const ProfileCard = ({
 	address,
@@ -45,8 +45,6 @@ const ProfileCard = ({
 		address,
 		chainId: 1,
 	});
-	const { address: currentAddress } = useAccount();
-	const isUserAddress = currentAddress === address;
 
 	const { copy: copyAddress, isCopied: isAddressCopied } = useCopy();
 	const { copy: copyProfileLink, isCopied: isProfileLinkCopied } = useCopy();
@@ -127,7 +125,7 @@ const ProfileCard = ({
 						>
 							<span className="flex items-center justify-start gap-2 text-left">
 								<Sparkle size={16} className="text-primary" />
-								{isUserAddress ? "My" : "Created"} Hypercerts
+								Created Hypercerts
 							</span>
 							<span className="flex items-center justify-end gap-1 text-right text-muted-foreground">
 								<span>{stats.hypercertsCreated}</span>

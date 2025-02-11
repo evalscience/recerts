@@ -1,24 +1,29 @@
 import type { Hypercert } from "@/app/graphql-queries/hypercerts";
+import { HeartHandshake, Sparkle } from "lucide-react";
 import React from "react";
 import type { CombinedSale } from "../../page";
 import CreatedHypercerts from "./created-hypercerts";
-import Header from "./header";
 import SupportedHypercerts from "./supported-hypercerts";
 
 const Content = ({
 	view,
 	combinedSales,
-	address,
 	createdHypercerts,
 }: {
 	view: "created" | "supported";
 	combinedSales: CombinedSale[];
 	createdHypercerts: Hypercert[];
-	address: string;
 }) => {
 	return (
 		<section className="mt-2 flex w-full flex-1 flex-col gap-6">
-			<Header address={address} view={view} />
+			<span className="ml-4 flex items-center gap-4 font-baskerville font-bold text-3xl">
+				{view === "created" ? (
+					<Sparkle className="text-primary" size={36} />
+				) : (
+					<HeartHandshake className="text-primary" size={36} />
+				)}
+				<span>Created Hypercerts</span>
+			</span>
 			{view === "created" ? (
 				<CreatedHypercerts hypercerts={createdHypercerts} />
 			) : (

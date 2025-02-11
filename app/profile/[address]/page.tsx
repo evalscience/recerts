@@ -148,7 +148,6 @@ export default async function ProfilePage({
 				view={view}
 				createdHypercerts={hypercerts}
 				combinedSales={combinedSales}
-				address={address}
 			/>
 		</MotionWrapper>
 	);
