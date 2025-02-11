@@ -40,9 +40,7 @@ const normalizeTokensConfig = (config: TokensConfig): TokensConfig => {
 
 export const getUSDPeggedValue = () => new Promise<number>((res) => res(1));
 export const getUSDbySymbol = async (symbol: string): Promise<number> => {
-  const response = await fetch(
-    `${getEcocertainApiUrl()}/api/pricefeed?symbol=${symbol}`
-  );
+  const response = await fetch(`/api/pricefeed?symbol=${symbol}`);
   const data = await response.json();
   if (data.usdPrice) {
     return data.usdPrice as number;
