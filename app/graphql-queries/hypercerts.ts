@@ -313,54 +313,70 @@ export const fetchFullHypercertById = async (
 		return {
 			hypercertId,
 			saleStatus: cachedData.saleStatus || "open",
-			totalUnits: BigInt(cachedData.totalUnits || 0),
-			unitsForSale: BigInt(cachedData.unitsForSale || 0),
-			uri: cachedData.uri,
-			creationBlockTimestamp: BigInt(cachedData.creationBlockTimestamp || 0),
-			creatorAddress: cachedData.creatorAddress || "0x0",
-			chainId: cachedData.chainId?.toLowerCase(),
+			totalUnits: BigInt(cachedData.hypercerts?.data?.[0]?.units || 0),
+			unitsForSale: BigInt(
+				cachedData.hypercerts?.data?.[0]?.orders?.totalUnitsForSale || 0,
+			),
+			uri: cachedData.hypercerts?.data?.[0]?.uri,
+			creationBlockTimestamp: BigInt(
+				cachedData.hypercerts?.data?.[0]?.creation_block_timestamp || 0,
+			),
+			creatorAddress:
+				cachedData.hypercerts?.data?.[0]?.creator_address || "0x0",
+			chainId:
+				cachedData.hypercerts?.data?.[0]?.contract?.chain_id?.toLowerCase(),
 			metadata: {
-				image: cachedData.metadata?.image,
-				name: cachedData.metadata?.name,
-				description: cachedData.metadata?.description,
+				image: cachedData.hypercerts?.data?.[0]?.metadata?.image,
+				name: cachedData.hypercerts?.data?.[0]?.metadata?.name ?? undefined,
+				description:
+					cachedData.hypercerts?.data?.[0]?.metadata?.description ?? undefined,
 				work: {
-					scope: cachedData.metadata?.work?.scope || [],
-					from: BigInt(cachedData.metadata?.work?.from || 0),
-					to: BigInt(cachedData.metadata?.work?.to || 0),
+					scope: cachedData.hypercerts?.data?.[0]?.metadata?.work_scope || [],
+					from: BigInt(
+						cachedData.hypercerts?.data?.[0]?.metadata?.work_timeframe_from ||
+							0,
+					),
+					to: BigInt(
+						cachedData.hypercerts?.data?.[0]?.metadata?.work_timeframe_to || 0,
+					),
 				},
-				contributors: (cachedData.metadata?.contributors || []).map(
-					(c: string) => c.toLowerCase(),
-				),
+				contributors: (
+					cachedData.hypercerts?.data?.[0]?.metadata?.contributors || []
+				).map((c: string) => c.toLowerCase()),
 			},
 			cheapestOrder: {
-				pricePerPercentInUSD: cachedData.cheapestOrder?.pricePerPercentInUSD,
+				pricePerPercentInUSD:
+					cachedData.hypercerts?.data?.[0]?.orders?.cheapestOrder
+						?.pricePerPercentInUSD,
 			},
-			orders: (cachedData.orders || []).map((order: CachedOrder) => ({
-				id: order.id,
-				price: BigInt(order.price || 0),
-				pricePerPercentInToken: Number(order.pricePerPercentInToken),
-				pricePerPercentInUSD: Number(order.pricePerPercentInUSD),
-				currency: order.currency.toLowerCase(),
-				chainId: order.chainId,
-			})),
-			sales: (cachedData.sales || []).map((sale: CachedSale) => ({
-				unitsBought: BigInt(sale.unitsBought || 0),
-				buyer: sale.buyer.toLowerCase(),
-				currency: sale.currency.toLowerCase(),
-				currencyAmount: BigInt(sale.currencyAmount || 0),
-				creationBlockTimestamp: BigInt(sale.creationBlockTimestamp || 0),
-				transactionHash: sale.transactionHash,
-			})),
-			attestations: (cachedData.attestations || []).map(
-				(attestation: CachedAttestation) => ({
-					attester: attestation.attester.toLowerCase(),
-					creationBlockTimestamp: BigInt(
-						attestation.creationBlockTimestamp || 0,
-					),
-					data: attestation.data,
-					id: attestation.id,
+			orders: (cachedData.hypercerts?.data?.[0]?.orders?.data || []).map(
+				(order: CachedOrder) => ({
+					id: order.id,
+					price: BigInt(order.price || 0),
+					pricePerPercentInToken: Number(order.pricePerPercentInToken),
+					pricePerPercentInUSD: Number(order.pricePerPercentInUSD),
+					currency: order.currency.toLowerCase(),
+					chainId: order.chainId,
 				}),
 			),
+			sales: (cachedData.hypercerts?.data?.[0]?.sales?.data || []).map(
+				(sale: CachedSale) => ({
+					unitsBought: BigInt(sale.unitsBought || 0),
+					buyer: sale.buyer.toLowerCase(),
+					currency: sale.currency.toLowerCase(),
+					currencyAmount: BigInt(sale.currencyAmount || 0),
+					creationBlockTimestamp: BigInt(sale.creationBlockTimestamp || 0),
+					transactionHash: sale.transactionHash,
+				}),
+			),
+			attestations: (
+				cachedData.hypercerts?.data?.[0]?.attestations?.data || []
+			).map((attestation: CachedAttestation) => ({
+				attester: attestation.attester.toLowerCase(),
+				creationBlockTimestamp: BigInt(attestation.creationBlockTimestamp || 0),
+				data: attestation.data,
+				id: attestation.id,
+			})),
 		};
 	}
 
