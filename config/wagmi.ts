@@ -1,8 +1,10 @@
 import { defaultWagmiConfig } from "@web3modal/wagmi/react/config";
+import getPriceFeed from "@/lib/pricefeed";
 
 import { cookieStorage, createStorage } from "wagmi";
 import { BASE_URL } from "./endpoint";
 import { sepolia, celo } from "viem/chains";
+import { RAW_TOKENS_CONFIG, TokensConfig } from "./raw-tokens";
 
 // Get projectId at https://cloud.walletconnect.com
 export const projectId = process.env.NEXT_PUBLIC_WC_PROJECT_ID;
@@ -16,69 +18,44 @@ export const SUPPORTED_CHAINS =
     ? PROD_CHAINS
     : DEV_CHAINS;
 
-type TokensConfig = Record<
-  number,
-  Array<{
-    symbol: string;
-    address: string;
-    usdPriceFetcher: () => Promise<number>;
-  }>
->;
-const normalizeTokensConfig = (config: TokensConfig): TokensConfig => {
+export const getUSDPeggedValue = () => new Promise<number>((res) => res(1));
+export const getUSDByCurrencyAddress = async (
+  currencyAddress: `0x${string}`
+): Promise<number> => {
+  const { usdPrice } = await getPriceFeed(currencyAddress);
+  if (usdPrice) {
+    return usdPrice;
+  }
+  throw new Error("Failed to fetch USD price");
+};
+
+const normalizeTokensConfig = (
+  config: TokensConfig<"raw">
+): TokensConfig<"normalized"> => {
   return Object.fromEntries(
     Object.entries(config).map(([chainId, tokens]) => {
       return [
         chainId,
-        tokens.map((token) => ({
-          ...token,
-          address: token.address.toLowerCase(),
-        })),
+        tokens.map((token) => {
+          const address = token.address.toLowerCase() as `0x${string}`;
+          const isUSDPegged = token.isUSDPegged ?? true;
+          return {
+            ...token,
+            address: token.address.toLowerCase(),
+            usdPriceFetcher:
+              token.usdPriceFetcher ?? isUSDPegged
+                ? getUSDPeggedValue
+                : () => getUSDByCurrencyAddress(address),
+            isUSDPegged,
+          };
+        }),
       ];
     })
   );
 };
 
-export const getUSDPeggedValue = () => new Promise<number>((res) => res(1));
-export const getUSDbySymbol = async (symbol: string): Promise<number> => {
-  const response = await fetch(`${BASE_URL}/api/pricefeed?symbol=${symbol}`);
-  const data = await response.json();
-  if (data.usdPrice) {
-    return data.usdPrice as number;
-  }
-  throw new Error("Failed to fetch USD price");
-};
-
-export const TOKENS_CONFIG: TokensConfig = normalizeTokensConfig({
-  [sepolia.id]: [
-    {
-      symbol: "LINK",
-      address: "0x779877A7B0D9E8603169DdbD7836e478b4624789",
-      usdPriceFetcher: getUSDPeggedValue,
-    },
-  ],
-  [celo.id]: [
-    {
-      symbol: "CELO",
-      address: "0x471EcE3750Da237f93B8E339c536989b8978a438",
-      usdPriceFetcher: () => getUSDbySymbol("CELO"),
-    },
-    {
-      symbol: "cUSD",
-      address: "0x765DE816845861e75A25fCA122bb6898B8B1282a",
-      usdPriceFetcher: getUSDPeggedValue,
-    },
-    {
-      symbol: "USDT",
-      address: "0xb020D981420744F6b0FedD22bB67cd37Ce18a1d5",
-      usdPriceFetcher: getUSDPeggedValue,
-    },
-    {
-      symbol: "USDC",
-      address: "0xcebA9300f2b948710d2653dD7B07f33A8B32118C",
-      usdPriceFetcher: getUSDPeggedValue,
-    },
-  ],
-});
+export const TOKENS_CONFIG: TokensConfig<"normalized"> =
+  normalizeTokensConfig(RAW_TOKENS_CONFIG);
 
 export const currencyMap: Record<
   `0x${string}`,
