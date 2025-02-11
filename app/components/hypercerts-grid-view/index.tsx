@@ -15,7 +15,7 @@ export async function HypercertsGridWrapper() {
 		fetchHypercerts(),
 	);
 
-	if (error) return <PageError title="We couldn't load ecocerts." />;
+	if (error) return <PageError title="We couldn't load hypercerts." />;
 
 	return <GridView hypercerts={hypercerts} />;
 }

@@ -6,31 +6,6 @@ import { catchError } from "../utils";
 import { fetchHypercertsGraphQL as fetchGraphQL } from "../utils/graphql";
 import { hypercert } from "./templates";
 
-interface CachedOrder {
-	id: string;
-	price: string | number;
-	pricePerPercentInToken: string | number;
-	pricePerPercentInUSD: string | number;
-	currency: string;
-	chainId: string;
-}
-
-interface CachedSale {
-	unitsBought: string | number;
-	buyer: string;
-	currency: string;
-	currencyAmount: string | number;
-	creationBlockTimestamp: string | number;
-	transactionHash: string;
-}
-
-interface CachedAttestation {
-	attester: string;
-	creationBlockTimestamp: string | number;
-	data: string;
-	id: string;
-}
-
 const hypercertIdsByHyperboardIdQuery = graphql(`
   query GetHypercertIdsByHyperboardId($hyperboard_id: UUID!) {
     hyperboards(where: { id: { eq: $hyperboard_id } }) {
@@ -287,100 +262,10 @@ export type FullHypercert = {
 	}[];
 };
 
-const fetchCachedHypercert = async (hypercertId: string) => {
-	try {
-		const formattedId = hypercertId.replace(/[^a-zA-Z0-9]/g, "-");
-		console.log("formattedId", formattedId);
-		const response = await fetch(
-			`https://storage.googleapis.com/ecocertain-public/ecocerts/ecocert_${formattedId}.json`,
-		);
-		if (!response.ok) return null;
-		return await response.json();
-	} catch (error) {
-		console.warn(`Failed to fetch cached hypercert ${hypercertId}:`, error);
-		return null;
-	}
-};
-
 export const fetchFullHypercertById = async (
 	hypercertId: string,
 	testingLog?: string,
 ): Promise<FullHypercert> => {
-	// Try to fetch from cache first
-	const cachedData = await fetchCachedHypercert(hypercertId);
-	if (cachedData) {
-		// Transform cached data to match FullHypercert type
-		return {
-			hypercertId,
-			saleStatus: cachedData.saleStatus || "open",
-			totalUnits: BigInt(cachedData.hypercerts?.data?.[0]?.units || 0),
-			unitsForSale: BigInt(
-				cachedData.hypercerts?.data?.[0]?.orders?.totalUnitsForSale || 0,
-			),
-			uri: cachedData.hypercerts?.data?.[0]?.uri,
-			creationBlockTimestamp: BigInt(
-				cachedData.hypercerts?.data?.[0]?.creation_block_timestamp || 0,
-			),
-			creatorAddress:
-				cachedData.hypercerts?.data?.[0]?.creator_address || "0x0",
-			chainId:
-				cachedData.hypercerts?.data?.[0]?.contract?.chain_id?.toLowerCase(),
-			metadata: {
-				image: cachedData.hypercerts?.data?.[0]?.metadata?.image,
-				name: cachedData.hypercerts?.data?.[0]?.metadata?.name ?? undefined,
-				description:
-					cachedData.hypercerts?.data?.[0]?.metadata?.description ?? undefined,
-				work: {
-					scope: cachedData.hypercerts?.data?.[0]?.metadata?.work_scope || [],
-					from: BigInt(
-						cachedData.hypercerts?.data?.[0]?.metadata?.work_timeframe_from ||
-							0,
-					),
-					to: BigInt(
-						cachedData.hypercerts?.data?.[0]?.metadata?.work_timeframe_to || 0,
-					),
-				},
-				contributors: (
-					cachedData.hypercerts?.data?.[0]?.metadata?.contributors || []
-				).map((c: string) => c.toLowerCase()),
-			},
-			cheapestOrder: {
-				pricePerPercentInUSD:
-					cachedData.hypercerts?.data?.[0]?.orders?.cheapestOrder
-						?.pricePerPercentInUSD,
-			},
-			orders: (cachedData.hypercerts?.data?.[0]?.orders?.data || []).map(
-				(order: CachedOrder) => ({
-					id: order.id,
-					price: BigInt(order.price || 0),
-					pricePerPercentInToken: Number(order.pricePerPercentInToken),
-					pricePerPercentInUSD: Number(order.pricePerPercentInUSD),
-					currency: order.currency.toLowerCase(),
-					chainId: order.chainId,
-				}),
-			),
-			sales: (cachedData.hypercerts?.data?.[0]?.sales?.data || []).map(
-				(sale: CachedSale) => ({
-					unitsBought: BigInt(sale.unitsBought || 0),
-					buyer: sale.buyer.toLowerCase(),
-					currency: sale.currency.toLowerCase(),
-					currencyAmount: BigInt(sale.currencyAmount || 0),
-					creationBlockTimestamp: BigInt(sale.creationBlockTimestamp || 0),
-					transactionHash: sale.transactionHash,
-				}),
-			),
-			attestations: (
-				cachedData.hypercerts?.data?.[0]?.attestations?.data || []
-			).map((attestation: CachedAttestation) => ({
-				attester: attestation.attester.toLowerCase(),
-				creationBlockTimestamp: BigInt(attestation.creationBlockTimestamp || 0),
-				data: attestation.data,
-				id: attestation.id,
-			})),
-		};
-	}
-
-	// Fallback to GraphQL if cache miss
 	if (testingLog) {
 		console.log("calling from fetchFullHypercertById", testingLog);
 	}
