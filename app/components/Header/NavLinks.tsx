@@ -110,6 +110,7 @@ export const DesktopNavLink = ({
 				buttonVariants({ variant: "ghost" }),
 				"group rounded-md font-semibold",
 				isActive ? "bg-beige" : "",
+				link.href === "#" ? "opacity-50 hover:opacity-50" : "",
 			)}
 			{...(link.openInNewTab && {
 				target: "_blank",
@@ -146,6 +147,7 @@ export const PhoneNavLink = ({
 				buttonVariants({ variant: "ghost" }),
 				"",
 				isActive ? "bg-beige" : "",
+				link.href === "#" ? "opacity-50 hover:opacity-50" : "",
 			)}
 			{...(link.openInNewTab && {
 				target: "_blank",
