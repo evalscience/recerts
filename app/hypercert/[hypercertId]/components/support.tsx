@@ -92,6 +92,10 @@ const Support = ({ hypercert }: { hypercert: FullHypercert }) => {
 		}
 	}
 
+	const newestToOldestSales = hypercert.sales.sort((a, b) => {
+		return Number(b.creationBlockTimestamp - a.creationBlockTimestamp);
+	});
+
 	return (
 		<Wrapper
 			buyFraction={
@@ -110,8 +114,8 @@ const Support = ({ hypercert }: { hypercert: FullHypercert }) => {
 		>
 			<div className="flex w-full flex-col gap-2">
 				<ul className="flex w-full flex-col gap-1">
-					{hypercert.sales
-						?.map((sale) => {
+					{newestToOldestSales
+						.map((sale) => {
 							const saleCurrency = sale.currency;
 							let currencySymbol: string;
 							if (
