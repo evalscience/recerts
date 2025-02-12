@@ -43,7 +43,6 @@ export const MyHypercerts: ClientLink = {
 
 		return (
 			<QuickTooltip
-				asChild
 				content={
 					data.config.href === "#" ? (
 						<div className="flex flex-col items-center gap-2">
