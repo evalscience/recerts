@@ -145,7 +145,7 @@ export const PhoneNavLink = ({
 			href={link.href}
 			className={cn(
 				buttonVariants({ variant: "ghost" }),
-				"",
+				"justify-start text-left",
 				isActive ? "bg-beige" : "",
 				link.href === "#" ? "opacity-50 hover:opacity-50" : "",
 			)}

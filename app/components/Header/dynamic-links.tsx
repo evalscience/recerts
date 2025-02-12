@@ -1,6 +1,7 @@
 "use client";
 
-import { Sparkle } from "lucide-react";
+import QuickTooltip from "@/components/ui/quicktooltip";
+import { CircleAlert, Sparkle } from "lucide-react";
 import { usePathname, useSearchParams } from "next/navigation";
 import type { FC } from "react";
 import { useAccount } from "wagmi";
@@ -40,10 +41,40 @@ export const MyHypercerts: ClientLink = {
 	Desktop: () => {
 		const data = useMyHypercertsLink();
 
-		return <DesktopNavLink link={data.config} isActive={data.isActive} />;
+		return (
+			<QuickTooltip
+				asChild
+				content={
+					data.config.href === "#" ? (
+						<div className="flex flex-col items-center gap-2">
+							<div className="flex h-10 w-10 items-center justify-center rounded-full bg-destructive/20">
+								<CircleAlert className="text-destructive" size={22} />
+							</div>
+							<span className="text-center">
+								Please connect your wallet
+								<br /> to see your hypercerts.
+							</span>
+						</div>
+					) : (
+						<>View your hypercerts.</>
+					)
+				}
+			>
+				<DesktopNavLink link={data.config} isActive={data.isActive} />
+			</QuickTooltip>
+		);
 	},
 	Mobile: () => {
 		const data = useMyHypercertsLink();
-		return <PhoneNavLink link={data.config} isActive={data.isActive} />;
+		return (
+			<div className="flex items-center justify-between gap-2">
+				<PhoneNavLink link={data.config} isActive={data.isActive} />
+				<QuickTooltip content="Please connect your wallet." openOnClick>
+					<span className="flex h-6 w-6 items-center justify-center rounded-full bg-destructive/20">
+						<CircleAlert className="text-destructive" size={16} />
+					</span>
+				</QuickTooltip>
+			</div>
+		);
 	},
 };

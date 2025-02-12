@@ -149,7 +149,7 @@ const Support = ({ hypercert }: { hypercert: FullHypercert }) => {
 											</span>
 										</div>
 									</div>
-									<span className="font-bold text-lg text-primary">
+									<span className="text-right font-bold text-lg text-primary">
 										<b>{formatDecimals(saleAmount)}</b> {currencySymbol}
 									</span>
 								</li>
