@@ -18,7 +18,7 @@ symbolToCurrencyAddressMap.forEach((value, key) => {
 });
 
 const currencyAddressToPriceFeedIdMap = new Map<string, number>([
-  [symbolToCurrencyAddressMap.get("CELO") ?? "", 5667],
+  [symbolToCurrencyAddressMap.get("CELO") ?? "", 5567],
 ]);
 
 type ApiResponse<Symbol extends string> = {
@@ -59,8 +59,6 @@ const getPriceFeed = async (currencyAddress: `0x${string}`) => {
     `https://api.coinmarketcap.com/data-api/v3/tools/price-conversion?amount=1&convert_id=2781&id=${priceFeedId}`
   );
   const data: ApiResponse<typeof symbol> = await response.json();
-  console.log(data);
-
   return { usdPrice: data?.data?.quote[0]?.price ?? null };
 };
 

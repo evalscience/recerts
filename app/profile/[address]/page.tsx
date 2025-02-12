@@ -1,4 +1,4 @@
-import type { Address } from "viem";
+import { type Address, getAddress } from "viem";
 
 import PageError from "@/app/components/shared/PageError";
 
@@ -80,12 +80,15 @@ export default async function ProfilePage({
 	params: { address: Address };
 	searchParams: { view: string | string[] | undefined };
 }) {
+	const formattedAddress = getAddress(address);
 	const view = getValueFromSearchParams(searchParams, "view", "supported", [
 		"created",
 		"supported",
 	]);
 	// const DUMMY_ADDRESS = "0x223c656ed35bfb7a8e358140ca1e2077be090b2e";
-	const [salesError, sales] = await catchError(fetchSalesByUser(address));
+	const [salesError, sales] = await catchError(
+		fetchSalesByUser(formattedAddress),
+	);
 
 	if (salesError) {
 		return (
@@ -97,7 +100,7 @@ export default async function ProfilePage({
 	}
 
 	const [hypercertsError, userHypercerts] = await catchError(
-		fetchHypercertsByUserId(address),
+		fetchHypercertsByUserId(formattedAddress),
 	);
 	if (hypercertsError) {
 		return (
@@ -138,7 +141,7 @@ export default async function ProfilePage({
 			<div className="flex w-full max-w-full flex-col gap-4 md:max-w-[300px]">
 				<ProfileCard
 					view={view}
-					address={address}
+					address={formattedAddress}
 					stats={{
 						hypercertsCreated: validHypercertsCount,
 						hypercertsSupported: combinedSales.length,
