@@ -1,3 +1,4 @@
+import { currencyMap } from "@/config/wagmi";
 import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
 import type { Address } from "viem";
@@ -96,18 +97,47 @@ export function bigintToFormattedDate(timestamp: bigint): string {
 
 // ❗❗❗ Use the `currency` param in the following function get the latest price data.
 // ❗❗❗ Using 1USD for now, because the currency is USD pegged for now.
-export const convertCurrencyPriceToUSD = (currency: string, tokens: bigint) => {
+export const convertCurrencyPriceToUSD = async (
+  currency: string,
+  tokens: bigint
+): Promise<null | number> => {
   const weiFactor = BigInt(10 ** 18);
   const precision = 4;
   const precisionMultiplier = BigInt(10 ** precision);
 
-  return (
+  const tokensInNumber =
     Number((tokens * precisionMultiplier) / weiFactor) /
-    Number(precisionMultiplier)
-  );
+    Number(precisionMultiplier);
+
+  const currencyDetails = currencyMap[currency.toLowerCase() as `0x${string}`];
+  if (currencyDetails) {
+    const pricePerToken = await currencyDetails.usdPriceFetcher();
+    return tokensInNumber * pricePerToken;
+  }
+  return null;
 };
 
 export const formatDecimals = (value: number, maxDecimals?: number) => {
   maxDecimals = maxDecimals ?? 2;
   return Math.floor(value * 10 ** maxDecimals) / 10 ** maxDecimals;
+};
+
+export const getValueFromSearchParams = <T extends string>(
+  searchParams: { [key: string]: string | string[] | undefined },
+  key: string,
+  defaultValue: T,
+  validValues: T[]
+): T => {
+  if (key in searchParams) {
+    if (typeof searchParams[key] === "string") {
+      if (validValues.includes(searchParams[key] as T))
+        return searchParams[key] as T;
+    }
+    if (Array.isArray(searchParams[key])) {
+      for (const value of searchParams[key]) {
+        if (validValues.includes(value as T)) return value as T;
+      }
+    }
+  }
+  return defaultValue;
 };

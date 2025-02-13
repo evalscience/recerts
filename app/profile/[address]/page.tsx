@@ -1,22 +1,22 @@
-import { ArrowUpRightFromSquare, Star } from "lucide-react";
-import Link from "next/link";
-import type { Address } from "viem";
+import { type Address, getAddress } from "viem";
 
 import PageError from "@/app/components/shared/PageError";
 
 import { fetchHypercertsByUserId } from "@/app/graphql-queries/user-hypercerts";
 import { catchError } from "@/app/utils";
 import { MotionWrapper } from "@/components/ui/motion-wrapper";
-import { Separator } from "@/components/ui/separator";
 
 import {
 	type SaleByUser,
 	type SaleByUserHypercert,
 	fetchSalesByUser,
 } from "@/app/graphql-queries/sales";
-import { convertCurrencyPriceToUSD } from "@/lib/utils";
+import {
+	convertCurrencyPriceToUSD,
+	getValueFromSearchParams,
+} from "@/lib/utils";
+import Content from "./components/content";
 import ProfileCard from "./components/profile-card";
-import SalesGrid from "./components/sales-grid";
 import StatCard from "./components/stat-card";
 
 export type CombinedSale = {
@@ -26,16 +26,31 @@ export type CombinedSale = {
 	id: string;
 };
 
-const combineSales = (sales: SaleByUser[]) => {
+const combineSales = async (sales: SaleByUser[]) => {
 	const saleIndexer = new Map<string, number>();
 	const combinedSales: CombinedSale[] = [];
 
+	// Create an array of promises for all currency conversions
+	const conversionPromises = sales.map(async (sale) => {
+		try {
+			const convertedPrice = await convertCurrencyPriceToUSD(
+				sale.currency,
+				sale.currencyAmount,
+			);
+			return convertedPrice;
+		} catch (e) {
+			return null;
+		}
+	});
+
+	// Await all promises in parallel
+	const amountsInUSD = await Promise.all(conversionPromises);
+
 	for (let i = 0; i < sales.length; i++) {
 		const sale = sales[i];
-		const amountInUSD = convertCurrencyPriceToUSD(
-			sale.currency,
-			sale.currencyAmount,
-		);
+		const amountInUSD = amountsInUSD[i];
+
+		if (amountInUSD === null) continue;
 
 		const hypercertId = sale.hypercert.hypercertId;
 		if (!saleIndexer.has(hypercertId)) {
@@ -60,11 +75,20 @@ const combineSales = (sales: SaleByUser[]) => {
 
 export default async function ProfilePage({
 	params: { address },
+	searchParams,
 }: {
 	params: { address: Address };
+	searchParams: { view: string | string[] | undefined };
 }) {
+	const formattedAddress = getAddress(address);
+	const view = getValueFromSearchParams(searchParams, "view", "supported", [
+		"created",
+		"supported",
+	]);
 	// const DUMMY_ADDRESS = "0x223c656ed35bfb7a8e358140ca1e2077be090b2e";
-	const [salesError, sales] = await catchError(fetchSalesByUser(address));
+	const [salesError, sales] = await catchError(
+		fetchSalesByUser(formattedAddress),
+	);
 
 	if (salesError) {
 		return (
@@ -76,7 +100,7 @@ export default async function ProfilePage({
 	}
 
 	const [hypercertsError, userHypercerts] = await catchError(
-		fetchHypercertsByUserId(address),
+		fetchHypercertsByUserId(formattedAddress),
 	);
 	if (hypercertsError) {
 		return (
@@ -87,7 +111,7 @@ export default async function ProfilePage({
 		);
 	}
 
-	const combinedSales = combineSales(sales ?? []);
+	const combinedSales = await combineSales(sales ?? []);
 	const totalSalesInUSD =
 		Math.floor(
 			combinedSales.reduce((acc, sale) => {
@@ -116,66 +140,33 @@ export default async function ProfilePage({
 		>
 			<div className="flex w-full max-w-full flex-col gap-4 md:max-w-[300px]">
 				<ProfileCard
-					address={address}
+					view={view}
+					address={formattedAddress}
 					stats={{
 						hypercertsCreated: validHypercertsCount,
+						hypercertsSupported: combinedSales.length,
 						salesMadeCount: sales.length,
 					}}
 				/>
-				{validHypercertsCount > 0 && (
-					<div className="relative w-full rounded-2xl bg-beige-muted p-4">
-						<span className="flex items-center gap-2 font-baskerville text-xl">
-							<Star size={20} className="text-beige-muted-foreground" />
-							Creator
-						</span>
-						<Separator className="my-2 bg-beige-muted-foreground/40" />
-						<span className="text-beige-muted-foreground text-sm">
-							Created {validHypercertsCount} hypercerts so far...
-						</span>
-						<ul className="mt-2 flex w-full flex-col gap-1">
-							{validHypercerts.map((hypercert) => {
-								return (
-									<Link
-										href={`/hypercert/${hypercert.hypercertId}`}
-										key={hypercert.hypercertId}
-										target="_blank"
-									>
-										<li className="flex items-center justify-between gap-2 rounded-xl bg-black/10 p-2 px-4 hover:bg-black/15">
-											<span className="max-w-[75%] truncate">
-												{hypercert.name}
-											</span>
-											<ArrowUpRightFromSquare size={16} />
-										</li>
-									</Link>
-								);
-							})}
-						</ul>
-					</div>
-				)}
+				<StatCard
+					title={"Hypercerts supported"}
+					display={combinedSales.length}
+				/>
+				<StatCard
+					title={"Total amount contributed"}
+					display={
+						<>
+							{totalSalesInUSD}
+							<span className="text-xl">&nbsp;USD</span>
+						</>
+					}
+				/>
 			</div>
-			<section className="flex flex-1 flex-col gap-8">
-				<section className="flex items-stretch gap-4">
-					<StatCard
-						title={"Hypercerts supported"}
-						display={combinedSales.length}
-					/>
-					<StatCard
-						title={"Total amount contributed"}
-						display={
-							<>
-								{totalSalesInUSD}
-								<span className="text-xl">&nbsp;USD</span>
-							</>
-						}
-					/>{" "}
-				</section>
-				<section className="flex w-full flex-col gap-4">
-					<span className="font-baskerville font-bold text-3xl">
-						Recent Support Activity
-					</span>
-					<SalesGrid combinedSales={combinedSales} />
-				</section>
-			</section>
+			<Content
+				view={view}
+				createdHypercerts={hypercerts}
+				combinedSales={combinedSales}
+			/>
 		</MotionWrapper>
 	);
 }

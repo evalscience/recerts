@@ -11,10 +11,12 @@ import {
 import { cn } from "@/lib/utils";
 import {
 	ArrowUpRight,
+	BadgePlus,
 	Home,
 	type LucideProps,
 	Menu,
 	MessageCircleQuestion,
+	Sparkle,
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -26,12 +28,12 @@ import React, {
 	SVGProps,
 	useCallback,
 } from "react";
+import { type ClientLink, MyHypercerts } from "./dynamic-links";
 
-type NavLinkConfig = {
-	href: string;
-	text: string;
+export type NavLinkConfig<T extends "static" | "dynamic"> = {
+	id: string;
+	showIconOnlyOnDesktop?: boolean;
 	openInNewTab?: boolean;
-	Icon?: FC<LucideProps>;
 	pathCheck?:
 		| {
 				equals: string;
@@ -39,26 +41,52 @@ type NavLinkConfig = {
 		| {
 				startsWith: string;
 		  };
-};
+} & (T extends "static"
+	? {
+			type: "static";
+			href: string;
+			text: string;
+			Icon: FC<LucideProps>;
+			clientNode?: never;
+	  }
+	: {
+			type: "dynamic";
+			href?: never;
+			text?: never;
+			Icon?: never;
+			clientNode: ClientLink;
+	  });
 
-const navLinks: NavLinkConfig[] = [
+const navLinks: NavLinkConfig<"dynamic" | "static">[] = [
 	{
+		type: "static",
+		id: "home",
 		href: "/",
 		text: "Home",
+		showIconOnlyOnDesktop: false,
 		Icon: Home,
 		pathCheck: {
 			equals: "/",
 		},
 	},
 	{
+		type: "dynamic",
+		id: "my-hypercerts",
+		clientNode: MyHypercerts,
+	},
+	{
+		type: "static",
+		id: "submit",
 		href: "/submit",
 		text: "Submit",
-		Icon: Home,
+		Icon: BadgePlus,
 		pathCheck: {
 			equals: "/submit",
 		},
 	},
 	{
+		type: "static",
+		id: "faqs",
 		href: "/faqs",
 		text: "FAQs",
 		Icon: MessageCircleQuestion,
@@ -68,11 +96,11 @@ const navLinks: NavLinkConfig[] = [
 	},
 ];
 
-const DesktopNavLink = ({
+export const DesktopNavLink = ({
 	link,
 	isActive,
 }: {
-	link: NavLinkConfig;
+	link: NavLinkConfig<"static">;
 	isActive: boolean;
 }) => {
 	return (
@@ -82,13 +110,18 @@ const DesktopNavLink = ({
 				buttonVariants({ variant: "ghost" }),
 				"group rounded-md font-semibold",
 				isActive ? "bg-beige" : "",
+				link.href === "#" ? "opacity-50 hover:opacity-50" : "",
 			)}
 			{...(link.openInNewTab && {
 				target: "_blank",
 				rel: "noopener noreferrer",
 			})}
 		>
-			{link.text}
+			{link.showIconOnlyOnDesktop === false ? (
+				<link.Icon size={18} />
+			) : (
+				link.text
+			)}
 			{link.openInNewTab && (
 				<ArrowUpRight
 					size={18}
@@ -100,11 +133,11 @@ const DesktopNavLink = ({
 	);
 };
 
-const PhoneNavLink = ({
+export const PhoneNavLink = ({
 	link,
 	isActive,
 }: {
-	link: NavLinkConfig;
+	link: NavLinkConfig<"static">;
 	isActive: boolean;
 }) => {
 	return (
@@ -112,8 +145,9 @@ const PhoneNavLink = ({
 			href={link.href}
 			className={cn(
 				buttonVariants({ variant: "ghost" }),
-				"group flex items-center justify-start rounded-md text-left font-medium text-lg",
+				"justify-start text-left",
 				isActive ? "bg-beige" : "",
+				link.href === "#" ? "opacity-50 hover:opacity-50" : "",
 			)}
 			{...(link.openInNewTab && {
 				target: "_blank",
@@ -139,7 +173,7 @@ const NavLinks = () => {
 	const pathname = usePathname();
 
 	const getIsActive = useCallback(
-		(link: NavLinkConfig) => {
+		(link: NavLinkConfig<"dynamic" | "static">) => {
 			if (link.pathCheck) {
 				if ("equals" in link.pathCheck) {
 					return pathname === link.pathCheck.equals;
@@ -156,9 +190,12 @@ const NavLinks = () => {
 	return (
 		<div className="relative z-10">
 			{/* On Large Devices: */}
-			<ul className="hidden gap-1 md:flex">
+			<ul className="hidden gap-0.5 md:flex">
 				{navLinks.map((link) => {
 					const isActive = getIsActive(link);
+					if (link.type === "dynamic") {
+						return <link.clientNode.Desktop key={link.id} />;
+					}
 					return (
 						<DesktopNavLink key={link.href} link={link} isActive={isActive} />
 					);
@@ -196,6 +233,9 @@ const NavLinks = () => {
 					<ul className="flex flex-col gap-1 p-4">
 						{navLinks.map((link) => {
 							const isActive = getIsActive(link);
+							if (link.type === "dynamic") {
+								return <link.clientNode.Mobile key={link.id} />;
+							}
 							return (
 								<PhoneNavLink key={link.href} link={link} isActive={isActive} />
 							);

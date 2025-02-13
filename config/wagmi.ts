@@ -1,9 +1,10 @@
 import { defaultWagmiConfig } from "@web3modal/wagmi/react/config";
+import getPriceFeed from "@/lib/pricefeed";
 
 import { cookieStorage, createStorage } from "wagmi";
-import { getEcocertainUrl } from "./endpoint";
+import { BASE_URL } from "./endpoint";
 import { sepolia, celo } from "viem/chains";
-import { symbol } from "zod";
+import { RAW_TOKENS_CONFIG, TokensConfig } from "./raw-tokens";
 
 // Get projectId at https://cloud.walletconnect.com
 export const projectId = process.env.NEXT_PUBLIC_WC_PROJECT_ID;
@@ -17,52 +18,69 @@ export const SUPPORTED_CHAINS =
     ? PROD_CHAINS
     : DEV_CHAINS;
 
-type TokensConfig = Record<number, Array<{ symbol: string; address: string }>>;
-const normalizeTokensConfig = (config: TokensConfig): TokensConfig => {
+export const getUSDPeggedValue = () => new Promise<number>((res) => res(1));
+export const getUSDByCurrencyAddress = async (
+  currencyAddress: `0x${string}`
+): Promise<number> => {
+  const { usdPrice } = await getPriceFeed(currencyAddress);
+  if (usdPrice) {
+    return usdPrice;
+  }
+  throw new Error("Failed to fetch USD price");
+};
+
+const normalizeTokensConfig = (
+  config: TokensConfig<"raw">
+): TokensConfig<"normalized"> => {
   return Object.fromEntries(
     Object.entries(config).map(([chainId, tokens]) => {
       return [
         chainId,
-        tokens.map((token) => ({
-          ...token,
-          address: token.address.toLowerCase(),
-        })),
+        tokens.map((token) => {
+          const address = token.address.toLowerCase() as `0x${string}`;
+          const isUSDPegged = token.isUSDPegged ?? true;
+          return {
+            ...token,
+            address: token.address.toLowerCase(),
+            usdPriceFetcher:
+              token.usdPriceFetcher ?? isUSDPegged
+                ? getUSDPeggedValue
+                : () => getUSDByCurrencyAddress(address),
+            isUSDPegged,
+          };
+        }),
       ];
     })
   );
 };
 
-export const TOKENS_CONFIG: TokensConfig = normalizeTokensConfig({
-  [sepolia.id]: [
-    {
-      symbol: "LINK",
-      address: "0x779877A7B0D9E8603169DdbD7836e478b4624789",
-    },
-  ],
-  [celo.id]: [
-    {
-      symbol: "CELO",
-      address: "0x471EcE3750Da237f93B8E339c536989b8978a438",
-    },
-    {
-      symbol: "cUSD",
-      address: "0x765DE816845861e75A25fCA122bb6898B8B1282a",
-    },
-    {
-      symbol: "USDT",
-      address: "0xb020D981420744F6b0FedD22bB67cd37Ce18a1d5",
-    },
-    {
-      symbol: "USDC",
-      address: "0xcebA9300f2b948710d2653dD7B07f33A8B32118C",
-    },
-  ],
-});
+export const TOKENS_CONFIG: TokensConfig<"normalized"> =
+  normalizeTokensConfig(RAW_TOKENS_CONFIG);
+
+export const currencyMap: Record<
+  `0x${string}`,
+  {
+    symbol: string;
+    chainId: number;
+    usdPriceFetcher: () => Promise<number>;
+  }
+> = {};
+
+for (const chainId in TOKENS_CONFIG) {
+  const tokens = TOKENS_CONFIG[chainId];
+  for (const token of tokens) {
+    currencyMap[token.address as `0x${string}`] = {
+      symbol: token.symbol,
+      chainId: Number(chainId),
+      usdPriceFetcher: token.usdPriceFetcher,
+    };
+  }
+}
 
 const metadata = {
   name: "Ecocertain",
   description: "Fund impactful regenerative projects",
-  url: getEcocertainUrl(), // origin must match your domain & subdomain
+  url: BASE_URL, // origin must match your domain & subdomain
   icons: ["https://avatars.githubusercontent.com/u/46801808"],
 };
 
