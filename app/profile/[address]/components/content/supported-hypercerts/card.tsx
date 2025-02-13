@@ -3,13 +3,9 @@ import { Button } from "@/components/ui/button";
 import { ArrowUpRight } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import type { CombinedSale } from "../page";
+import type { CombinedSale } from "../../../page";
 
-export default function SalesCard({
-	combinedSale,
-}: {
-	combinedSale: CombinedSale;
-}) {
+export default function Card({ combinedSale }: { combinedSale: CombinedSale }) {
 	const { totalAmountInUSD } = combinedSale;
 	const {
 		hypercertId,
