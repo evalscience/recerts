@@ -484,7 +484,7 @@ const HypercertForm = () => {
 
 			// Encode the coordinates for the URL
 			const encodedPolygon = encodeURIComponent(JSON.stringify(coordinates));
-			return `https://green-globe-dmpltd49y-gainforest.vercel.app/?shapefile=${encodedPolygon}&showUI=false`;
+			return `https://green-globe-par5898qg-gainforest.vercel.app/?shapefile=${encodedPolygon}&showUI=false`;
 		} catch (error) {
 			console.error(
 				"Something went wrong while generating geojson preview:",
