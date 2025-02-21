@@ -484,9 +484,12 @@ const HypercertForm = () => {
 
 			// Encode the coordinates for the URL
 			const encodedPolygon = encodeURIComponent(JSON.stringify(coordinates));
-			return `https://trace.gainforest.app/?polygon=${encodedPolygon}`;
+			return `https://green-globe-dmpltd49y-gainforest.vercel.app/?shapefile=${encodedPolygon}&showUI=false`;
 		} catch (error) {
-			console.error("Error generating trace preview URL:", error);
+			console.error(
+				"Something went wrong while generating geojson preview:",
+				error,
+			);
 			return null;
 		}
 	};
