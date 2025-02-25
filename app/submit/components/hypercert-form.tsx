@@ -7,6 +7,7 @@ import {
 	ArrowRight,
 	CalendarIcon,
 	Check,
+	ChevronDown,
 	Share2,
 	TriangleAlert,
 } from "lucide-react";
@@ -42,7 +43,14 @@ import {
 } from "@hypercerts-org/sdk";
 
 import { Dialog } from "@/components/ui/dialog";
+import {
+	DropdownMenu,
+	DropdownMenuContent,
+	DropdownMenuItem,
+	DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import useMintHypercert from "@/hooks/use-mint-hypercert";
+import { SUPPORTED_CURRENCIES } from "@hypercerts-org/marketplace-sdk";
 import { toPng } from "html-to-image";
 import { normalize } from "viem/ens";
 import HypercertCard from "./hypercert-card";
@@ -51,6 +59,19 @@ import { HypercertMintDialog } from "./hypercert-mint-dialog";
 const telegramHandleRegex = /^@([a-zA-Z0-9_]{4,31})$/;
 const emailRegex =
 	/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+
+const SUPPORTED_TOKENS = SUPPORTED_CURRENCIES;
+
+const AREA_ACTIVITIES = [
+	{ value: "Restoration", label: "Restoration - Bringing nature back" },
+	{
+		value: "Conservation",
+		label: "Conservation - Letting nature do its own thing",
+	},
+	{ value: "Landscape", label: "Landscape - Managing diverse activities" },
+	{ value: "Community", label: "Community - Empowering local community" },
+	{ value: "Science", label: "Science - Researching and monitoring" },
+] as const;
 
 const HypercertMintSchema = z
 	.object({
@@ -117,6 +138,13 @@ const HypercertMintSchema = z
 				required_error: "Please select what you're doing with this area",
 			},
 		),
+		price: z
+			.number()
+			.min(1, { message: "Price must be at least 1" })
+			.max(1000000, { message: "Price cannot exceed 1 million" }),
+		currency: z.enum(SUPPORTED_TOKENS, {
+			required_error: "Please select a currency",
+		}),
 	})
 	.refine(
 		(data) => {
@@ -181,6 +209,8 @@ const HypercertForm = () => {
 			geojson: "",
 			geojsonFile: undefined,
 			areaActivity: undefined,
+			price: 1,
+			currency: "ETH",
 		},
 		mode: "onChange",
 	});
@@ -208,6 +238,8 @@ const HypercertForm = () => {
 			"confirmContributorsPermission",
 			"geojson",
 			"areaActivity",
+			"price",
+			"currency",
 		];
 
 		for (const key of formFields) {
@@ -242,6 +274,23 @@ const HypercertForm = () => {
 							].includes(value)
 						) {
 							form.setValue(key, value as MintingFormValues["areaActivity"]);
+						}
+						break;
+					}
+					case "price": {
+						const numValue = Number.parseFloat(value);
+						if (!Number.isNaN(numValue)) {
+							form.setValue(key, numValue);
+						}
+						break;
+					}
+					case "currency": {
+						if (
+							SUPPORTED_TOKENS.includes(
+								value as (typeof SUPPORTED_TOKENS)[number],
+							)
+						) {
+							form.setValue(key, value as (typeof SUPPORTED_TOKENS)[number]);
 						}
 						break;
 					}
@@ -653,30 +702,35 @@ const HypercertForm = () => {
 														What are you doing with this area?
 													</FormLabel>
 													<FormControl>
-														<select
-															className="w-full rounded-md border border-input bg-background px-3 py-2"
-															{...field}
-															value={field.value || ""}
-														>
-															<option value="" disabled>
-																Select an activity...
-															</option>
-															<option value="Restoration">
-																Restoration - Bringing nature back
-															</option>
-															<option value="Conservation">
-																Conservation - Letting nature do its own thing
-															</option>
-															<option value="Landscape">
-																Landscape - Managing diverse activities
-															</option>
-															<option value="Community">
-																Community - Empowering local community
-															</option>
-															<option value="Science">
-																Science - Researching and monitoring
-															</option>
-														</select>
+														<DropdownMenu>
+															<DropdownMenuTrigger asChild>
+																<Button
+																	variant="outline"
+																	className="w-full justify-between font-normal"
+																>
+																	{field.value
+																		? AREA_ACTIVITIES.find(
+																				(activity) =>
+																					activity.value === field.value,
+																		  )?.label
+																		: "Select an activity..."}
+																	<ChevronDown className="ml-2 h-4 w-4 opacity-50" />
+																</Button>
+															</DropdownMenuTrigger>
+															<DropdownMenuContent className="w-[400px]">
+																{AREA_ACTIVITIES.map((activity) => (
+																	<DropdownMenuItem
+																		key={activity.value}
+																		onClick={() =>
+																			field.onChange(activity.value)
+																		}
+																		className="cursor-pointer"
+																	>
+																		{activity.label}
+																	</DropdownMenuItem>
+																))}
+															</DropdownMenuContent>
+														</DropdownMenu>
 													</FormControl>
 													<FormMessage />
 												</FormItem>
@@ -829,6 +883,69 @@ const HypercertForm = () => {
 												</FormItem>
 											)}
 										/>
+
+										<div className="flex gap-4">
+											<FormField
+												control={form.control}
+												name="price"
+												render={({ field }) => (
+													<FormItem className="flex-1">
+														<FormLabel>Price</FormLabel>
+														<FormControl>
+															<Input
+																type="number"
+																min={1}
+																max={1000000}
+																step="any"
+																placeholder="Enter price"
+																{...field}
+																onChange={(e) =>
+																	field.onChange(
+																		Number.parseFloat(e.target.value),
+																	)
+																}
+															/>
+														</FormControl>
+														<FormMessage />
+													</FormItem>
+												)}
+											/>
+
+											<FormField
+												control={form.control}
+												name="currency"
+												render={({ field }) => (
+													<FormItem className="w-[140px]">
+														<FormLabel>Currency</FormLabel>
+														<FormControl>
+															<DropdownMenu>
+																<DropdownMenuTrigger asChild>
+																	<Button
+																		variant="outline"
+																		className="w-full justify-between font-normal"
+																	>
+																		{field.value}
+																		<ChevronDown className="ml-2 h-4 w-4 opacity-50" />
+																	</Button>
+																</DropdownMenuTrigger>
+																<DropdownMenuContent className="w-[140px]">
+																	{SUPPORTED_TOKENS.map((token) => (
+																		<DropdownMenuItem
+																			key={token}
+																			onClick={() => field.onChange(token)}
+																			className="cursor-pointer"
+																		>
+																			{token}
+																		</DropdownMenuItem>
+																	))}
+																</DropdownMenuContent>
+															</DropdownMenu>
+														</FormControl>
+														<FormMessage />
+													</FormItem>
+												)}
+											/>
+										</div>
 									</div>
 								</section>
 								<section className="flex flex-col gap-2">
@@ -917,9 +1034,6 @@ const HypercertForm = () => {
 									</div>
 								</div>
 								<div className="flex w-full items-center justify-end gap-2">
-									<Button type="submit" className="gap-2">
-										Submit <ArrowRight size={16} />
-									</Button>
 									<Button
 										type="button"
 										onClick={copyCurrentUrl}
@@ -933,9 +1047,13 @@ const HypercertForm = () => {
 											</>
 										) : (
 											<>
-												Share Form <Share2 size={16} />
+												<Share2 size={16} />
+												Share Form
 											</>
 										)}
+									</Button>
+									<Button type="submit" className="gap-2">
+										Submit <ArrowRight size={16} />
 									</Button>
 								</div>
 							</CardContent>
