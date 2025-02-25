@@ -147,7 +147,7 @@ const MintingProgress = ({
 }) => {
 	const [configKey, setConfigKey] =
 		useState<MintingProgressConfigKey>("INITIALIZING");
-	const [error, setError] = useState(true);
+	const [error, setError] = useState(false);
 	const [mintedHypercertId, setMintedHypercertId] = useState<string>();
 
 	const { isConnected, address } = useAccount();
@@ -156,7 +156,6 @@ const MintingProgress = ({
 
 	const startTransaction = async () => {
 		setError(false);
-
 		setConfigKey("INITIALIZING");
 		const values = mintingFormValues;
 		if (!client || !publicClient || !isConnected) {
@@ -263,7 +262,10 @@ const MintingProgress = ({
 			),
 		);
 		if (mintingError) {
-			console.log(client, mintingError);
+			console.error("Minting Error\nHere are the clients for debugging:", {
+				hypercertClient: client,
+				publicClient,
+			});
 			setError(true);
 			return;
 		}
@@ -276,7 +278,6 @@ const MintingProgress = ({
 			return receipt;
 		});
 		if (mintReceiptError || mintReceipt.status === "reverted") {
-			console.log("receipt error", mintReceiptError, mintReceipt?.status);
 			setError(true);
 			return;
 		}
@@ -303,12 +304,17 @@ const MintingProgress = ({
 
 	// biome-ignore lint/correctness/useExhaustiveDependencies(startTransaction): startTransaction is not something we want to listen for changes here
 	useEffect(() => {
-		if (!visible) {
+		if (!visible || !client || !publicClient) {
 			setConfigKey("INITIALIZING");
-			return;
+			const showInitializationError = setTimeout(() => {
+				setError(true);
+			}, 5000);
+			return () => {
+				clearTimeout(showInitializationError);
+			};
 		}
 		startTransaction();
-	}, [visible]);
+	}, [visible, client, publicClient]);
 
 	/* Use the following code for simulation of the progress, and comment the calling of startTransaction() */
 
