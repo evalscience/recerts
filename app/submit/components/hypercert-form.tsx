@@ -134,8 +134,11 @@ const HypercertMintSchema = z
 			},
 		),
 		price: z
-			.number()
-			.min(1, { message: "Price must be at least 1" })
+			.number({
+				invalid_type_error: "Please enter a valid price",
+				required_error: "Price is required",
+			})
+			.positive({ message: "Price must be greater than 0" })
 			.max(1000000, { message: "Price cannot exceed 1 million" }),
 		currency: z.enum(SUPPORTED_TOKENS, {
 			required_error: "Please select a currency",
@@ -794,20 +797,21 @@ const HypercertForm = () => {
 												name="price"
 												render={({ field }) => (
 													<FormItem className="flex-1">
-														<FormLabel>Price</FormLabel>
+														<FormLabel>Total Desired Price</FormLabel>
 														<FormControl>
 															<Input
 																type="number"
-																min={1}
+																min={0.000000000000000001}
 																max={1000000}
 																step="any"
 																placeholder="Enter price"
 																{...field}
-																onChange={(e) =>
+																onChange={(e) => {
+																	const value = e.target.value;
 																	field.onChange(
-																		Number.parseFloat(e.target.value),
-																	)
-																}
+																		value === "" ? 0 : Number.parseFloat(value),
+																	);
+																}}
 															/>
 														</FormControl>
 														<FormMessage />
