@@ -86,6 +86,13 @@ export default async function ProfilePage({
 		"supported",
 	]);
 	// const DUMMY_ADDRESS = "0x223c656ed35bfb7a8e358140ca1e2077be090b2e";
+
+	//JUST FOR DEBUGGING
+	try {
+		catchError(fetchSalesByUser(formattedAddress));
+	} catch (error) {
+		return <>{JSON.stringify(error)}</>;
+	}
 	const [salesError, sales] = await catchError(
 		fetchSalesByUser(formattedAddress),
 	);
