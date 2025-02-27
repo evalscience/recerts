@@ -15,7 +15,10 @@ export async function HypercertsGridWrapper() {
 		fetchHypercerts(),
 	);
 
-	if (error) return <PageError title="We couldn't load hypercerts." />;
+	if (error) {
+		console.error("Unable to fetch ecocerts", error);
+		return <PageError title="We couldn't load ecocerts." />;
+	}
 
 	return <GridView hypercerts={hypercerts} />;
 }

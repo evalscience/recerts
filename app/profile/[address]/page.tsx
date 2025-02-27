@@ -91,6 +91,7 @@ export default async function ProfilePage({
 	);
 
 	if (salesError) {
+		console.error("Unable to fetch sales", salesError);
 		return (
 			<PageError
 				title="We couldn't load the user data."
@@ -103,6 +104,7 @@ export default async function ProfilePage({
 		fetchHypercertsByUserId(formattedAddress),
 	);
 	if (hypercertsError) {
+		console.error("Unable to fetch user hypercerts", hypercertsError);
 		return (
 			<PageError
 				title="We couldn't load the user data."

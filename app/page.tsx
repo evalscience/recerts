@@ -1,9 +1,11 @@
 import { MotionWrapper } from "@/components/ui/motion-wrapper";
 import { Loader2 } from "lucide-react";
 import { Suspense } from "react";
+import { ErrorBoundary } from "react-error-boundary";
 import HeroSection from "./components/hero-section";
 import HeroTitle from "./components/hero-title";
 import { HypercertsGridWrapper } from "./components/hypercerts-grid-view";
+import PageError from "./components/shared/PageError";
 
 export default async function Home() {
 	return (
@@ -21,18 +23,22 @@ export default async function Home() {
 				animate={{ opacity: 1, y: 0 }}
 				transition={{ duration: 0.5, delay: 0.5 }}
 			>
-				<Suspense
-					fallback={
-						<section className="flex w-full flex-col items-center gap-4 pt-6 pb-24 md:pb-6">
-							<Loader2 className="animate-spin text-primary" size={40} />
-							<span className="text-muted-foreground">
-								Please wait while we load our favorite ecocerts...
-							</span>
-						</section>
-					}
+				<ErrorBoundary
+					fallback={<PageError title="We couldn't load ecocerts." />}
 				>
-					<HypercertsGridWrapper />
-				</Suspense>
+					<Suspense
+						fallback={
+							<section className="flex w-full flex-col items-center gap-4 pt-6 pb-24 md:pb-6">
+								<Loader2 className="animate-spin text-primary" size={40} />
+								<span className="text-muted-foreground">
+									Please wait while we load our favorite ecocerts...
+								</span>
+							</section>
+						}
+					>
+						<HypercertsGridWrapper />
+					</Suspense>
+				</ErrorBoundary>
 			</MotionWrapper>
 		</main>
 	);

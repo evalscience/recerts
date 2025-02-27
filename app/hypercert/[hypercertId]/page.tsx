@@ -39,6 +39,7 @@ const Page = async ({ params }: PageProps) => {
 	);
 
 	if (error) {
+		console.error("Unable to fetch hypercert data", error);
 		return (
 			<PageError
 				title="We couldn't load the hypercert data."
