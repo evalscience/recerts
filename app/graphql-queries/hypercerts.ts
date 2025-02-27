@@ -71,7 +71,6 @@ export type Hypercert = {
 	chainId?: string;
 	name?: string;
 	description?: string;
-	image?: string;
 	totalUnits: bigint;
 	unitsForSale?: bigint;
 	pricePerPercentInUSD?: number;
@@ -116,7 +115,6 @@ const fetchHypercertById = async (hypercertId: string): Promise<Hypercert> => {
 		chainId: (hypercert.contract?.chain_id as string) ?? undefined,
 		name: hypercert.metadata?.name ?? undefined,
 		description: hypercert.metadata?.description ?? undefined,
-		image: hypercert.metadata?.image ?? undefined,
 		totalUnits: typeCastApiResponseToBigInt(hypercert.units) ?? 0n,
 		unitsForSale: typeCastApiResponseToBigInt(
 			hypercert.orders?.totalUnitsForSale,
@@ -157,7 +155,6 @@ const fullHypercertByHypercertIdQuery = graphql(`
           chain_id
         }
         metadata {
-          image
           name
           description
           work_scope
@@ -220,7 +217,6 @@ export type FullHypercert = {
 	chainId?: string;
 
 	metadata: {
-		image?: string;
 		name?: string;
 		description?: string;
 		work: {
@@ -365,7 +361,6 @@ export const fetchFullHypercertById = async (
 		chainId:
 			(hypercert.contract?.chain_id as string).toLowerCase() ?? undefined,
 		metadata: {
-			image: metadata?.image ?? undefined,
 			name: metadata?.name ?? undefined,
 			description: metadata?.description ?? undefined,
 			work: {
