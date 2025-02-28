@@ -11,6 +11,7 @@ import { Separator } from "@/components/ui/separator";
 import type { ApiError } from "@/types/api";
 import { ArrowUpRight, ChevronLeft } from "lucide-react";
 import Link from "next/link";
+import { notFound } from "next/navigation";
 import React from "react";
 import FundingView from "./components/FundingView";
 import CopyButton from "./components/copy-button";

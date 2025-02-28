@@ -86,30 +86,10 @@ export default async function ProfilePage({
 		"supported",
 	]);
 	// const DUMMY_ADDRESS = "0x223c656ed35bfb7a8e358140ca1e2077be090b2e";
-	const [salesError, sales] = await catchError(
-		fetchSalesByUser(formattedAddress),
-	);
 
-	if (salesError) {
-		return (
-			<PageError
-				title="We couldn't load the user data."
-				body="Please try refreshing the page or check the URL."
-			/>
-		);
-	}
-
-	const [hypercertsError, userHypercerts] = await catchError(
-		fetchHypercertsByUserId(formattedAddress),
-	);
-	if (hypercertsError) {
-		return (
-			<PageError
-				title="We couldn't load the user data."
-				body="Please try refreshing the page or check the URL."
-			/>
-		);
-	}
+	// Remove the catchError wrapper and let errors propagate
+	const sales = await fetchSalesByUser(formattedAddress);
+	const userHypercerts = await fetchHypercertsByUserId(formattedAddress);
 
 	const combinedSales = await combineSales(sales ?? []);
 	const totalSalesInUSD =
