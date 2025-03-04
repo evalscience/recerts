@@ -1,11 +1,14 @@
+import CreateListingDialog from "@/app/components/create-listing-dialog";
 import type { Hypercert } from "@/app/graphql-queries/hypercerts";
 import { Button } from "@/components/ui/button";
-import { ArrowUpRight } from "lucide-react";
+import { ArrowRight, ArrowUpRight } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
 export default function Card({ hypercert }: { hypercert: Hypercert }) {
 	const { hypercertId, name, description, image } = hypercert;
+	const hasOrderListings =
+		hypercert.unitsForSale !== undefined && hypercert.unitsForSale !== 0n;
 
 	return (
 		<article className="group relative flex flex-col overflow-hidden rounded-2xl border border-border">
@@ -59,6 +62,20 @@ export default function Card({ hypercert }: { hypercert: Hypercert }) {
 				>
 					{description ?? "..."}
 				</p>
+				{hasOrderListings ? (
+					<Button variant={"secondary"} className="w-full gap-2" disabled>
+						Already Listed
+					</Button>
+				) : (
+					<CreateListingDialog
+						hypercertId={hypercertId}
+						trigger={
+							<Button className="w-full gap-2">
+								List for sale <ArrowRight size={16} />
+							</Button>
+						}
+					/>
+				)}
 			</section>
 		</article>
 	);

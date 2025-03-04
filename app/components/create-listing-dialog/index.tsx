@@ -80,7 +80,7 @@ const CreateListingDialog = ({
 						List your ecocert for sale on the marketplace and get donations.
 					</DialogDescription>
 				</DialogHeader>
-				<div className="flex w-full flex-1 flex-col">
+				<div className="flex min-h-80 w-full flex-1 flex-col">
 					{hypercertFetchError ? (
 						<div className="flex flex-col items-center justify-center">
 							<CircleAlert size={36} className="text-destructive opacity-50" />
@@ -138,7 +138,13 @@ const CreateListingDialog = ({
 					)}
 				</div>
 				<DialogFooter>
-					<DialogCancel>Cancel</DialogCancel>
+					<DialogCancel
+						onClick={() => {
+							setIsProgressVisible(false);
+						}}
+					>
+						Cancel
+					</DialogCancel>
 					{shouldDisplayForm ? (
 						<Button
 							disabled={priceValidityError !== null}
