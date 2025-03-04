@@ -15,9 +15,7 @@ export const useHypercertExchangeClient = () => {
 
   const client = useMemo(() => {
     if (
-      !SUPPORTED_CHAINS.find((chain) => chain.id === walletClient?.chain.id) ||
-      chainId === 314 ||
-      chainId === 314159
+      !SUPPORTED_CHAINS.find((chain) => chain.id === walletClient?.chain.id)
     ) {
       return null;
     }
