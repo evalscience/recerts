@@ -1,10 +1,10 @@
 "use client";
+import useFullHypercert from "@/app/contexts/full-hypercert";
 import { verifiedAttestors } from "@/config/gainforest";
 import { cn } from "@/lib/utils";
 import { ArrowRight, ShieldAlert, ShieldCheck } from "lucide-react";
 import React from "react";
 import { useAccount } from "wagmi";
-import useFullHypercert from "../contexts/full-hypercert";
 
 const VerificationIndicator = () => {
 	const { address } = useAccount();

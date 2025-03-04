@@ -2,6 +2,7 @@
 
 import CreateListingDialog from "@/app/components/create-listing-dialog";
 import Progress from "@/app/components/shared/progress";
+import useFullHypercert from "@/app/contexts/full-hypercert";
 import type { FullHypercert } from "@/app/graphql-queries/hypercerts";
 import { Button } from "@/components/ui/button";
 import { calculateBigIntPercentage } from "@/lib/calculateBigIntPercentage";
@@ -9,7 +10,6 @@ import { formatDecimals } from "@/lib/utils";
 import { ArrowRight, BadgeDollarSign, CircleAlert, Clock } from "lucide-react";
 import React from "react";
 import { useAccount } from "wagmi";
-import useFullHypercert from "../contexts/full-hypercert";
 import PaymentFlow from "./PaymentFlow";
 const OpenVariant = ({ reached, goal }: { reached: number; goal: number }) => {
 	return (
