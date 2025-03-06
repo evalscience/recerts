@@ -8,7 +8,7 @@ import { useAccount } from "wagmi";
 const CardOptions = () => {
 	const hypercert = useHypercert();
 	const { address } = useAccount();
-	console.log(hypercert.name, hypercert.unitsForSale);
+
 	const hasOrderListings =
 		hypercert.unitsForSale !== undefined && hypercert.unitsForSale !== 0n;
 	const isCreator =

@@ -5,9 +5,11 @@ import { useHypercertClient } from "@/hooks/use-hypercerts-client";
 import { sendEmailAndUpdateGoogle } from "@/lib/sendEmailAndUpdateGoogle";
 import { cn } from "@/lib/utils";
 import { constructHypercertIdFromReceipt } from "@/utils/constructHypercertIdFromReceipt";
-import type {
-	HypercertExchangeClient,
-	SUPPORTED_CURRENCIES,
+import {
+	type ChainId,
+	type HypercertExchangeClient,
+	type SUPPORTED_CURRENCIES,
+	currenciesByNetwork,
 } from "@hypercerts-org/marketplace-sdk";
 import {
 	type HypercertMetadata,
@@ -165,7 +167,7 @@ const ListingProgress = ({
 		useState<ListingProgressConfigKey>("INITIALIZING");
 	const [error, setError] = useState(false);
 
-	const { isConnected, address } = useAccount();
+	const { isConnected, address, chainId } = useAccount();
 	const { client } = useHypercertClient();
 	const publicClient = usePublicClient();
 
@@ -176,6 +178,12 @@ const ListingProgress = ({
 			setError(true);
 			return;
 		}
+		console.log("currency", currenciesByNetwork[chainId as ChainId]);
+		const currency = currenciesByNetwork[chainId as ChainId][values.currency];
+		if (!currency) {
+			setError(true);
+			return;
+		}
 
 		setConfigKey("CREATING_LISTING");
 		const [createMakerAskOutput, createMakerAskError] = await catchError(
@@ -183,16 +191,17 @@ const ListingProgress = ({
 				const { id: fractionId } = parseClaimOrFractionId(
 					hypercert.hypercertId,
 				);
+
 				return await hypercertExchangeClient.createFractionalSaleMakerAsk({
 					startTime: Math.floor(new Date().getTime() / 1000), // Order start time (in seconds)
 					endTime: Math.floor(new Date().getTime() / 1000) + 60 * 60 * 24 * 365, // [1 Year] Order end time (in seconds)
-					price: BigInt(values.price * 10 ** 18), // price multiplied by decimals
+					price: BigInt(values.price * 10 ** currency.decimals), // price multiplied by decimals
 					itemIds: [fractionId + 1n], // fraction id being sold
 					minUnitAmount: 1n, // minimum amount of units to sell per sale
 					maxUnitAmount: 1_000_000n, // Maximum amount of units to sell per sale
 					minUnitsToKeep: 0n, // Minimum amount of units to keep after the sale
 					sellLeftoverFraction: true, // If you want to sell the leftover fraction
-					currency: values.currency, // Currency address (0x0 for ETH)
+					currency: currency.address,
 				});
 			},
 		);
@@ -326,6 +335,9 @@ const ListingProgress = ({
 		);
 	}, [configKey, error]);
 
+	useEffect(() => {
+		console.log("re-render");
+	});
 	return (
 		<div
 			className="relative w-full overflow-hidden"
