@@ -4,6 +4,7 @@ import { Suspense } from "react";
 import HeroSection from "./components/hero-section";
 import HeroTitle from "./components/hero-title";
 import { HypercertsGridWrapper } from "./components/hypercerts-grid-view";
+import PageError from "./components/shared/PageError";
 
 export default async function Home() {
 	return (

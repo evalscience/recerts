@@ -11,6 +11,7 @@ import { Separator } from "@/components/ui/separator";
 import type { ApiError } from "@/types/api";
 import { ArrowUpRight, ChevronLeft } from "lucide-react";
 import Link from "next/link";
+import { notFound } from "next/navigation";
 import React from "react";
 import FundingView from "./components/FundingView";
 import CopyButton from "./components/copy-button";
@@ -32,20 +33,13 @@ type PageProps = {
 // 	},
 // );
 
-const Page = async ({ params }: PageProps) => {
-	const { hypercertId } = params;
-	const [error, hypercert] = await catchError<FullHypercert, ApiError>(
-		fetchFullHypercertById(hypercertId),
-	);
-
-	if (error) {
-		return (
-			<PageError
-				title="We couldn't load the hypercert data."
-				body="Please try refreshing the page or check the URL."
-			/>
-		);
-	}
+export default async function HypercertPage({
+	params: { hypercertId },
+}: {
+	params: { hypercertId: string };
+}) {
+	// Remove the error catching and let errors propagate up to the error boundary
+	const hypercert = await fetchFullHypercertById(hypercertId);
 
 	return (
 		<FullHypercertProvider value={hypercert}>
@@ -103,6 +97,4 @@ const Page = async ({ params }: PageProps) => {
 			</MotionWrapper>
 		</FullHypercertProvider>
 	);
-};
-
-export default Page;
+}

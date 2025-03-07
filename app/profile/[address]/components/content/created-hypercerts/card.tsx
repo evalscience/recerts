@@ -5,14 +5,14 @@ import Image from "next/image";
 import Link from "next/link";
 
 export default function Card({ hypercert }: { hypercert: Hypercert }) {
-	const { hypercertId, name, description, image } = hypercert;
+	const { hypercertId, name, description } = hypercert;
 
 	return (
 		<article className="group relative flex flex-col overflow-hidden rounded-2xl border border-border">
 			<div className="relative flex h-[200px] w-full items-start justify-center overflow-hidden rounded-t-2xl bg-muted p-4">
 				<Image
 					// src={`/api/hypercert/${hypercert_id}/image`}
-					src={image ?? ""}
+					src={`/api/hypercert-image/${hypercertId}`}
 					alt={name ?? "Untitled"}
 					height={200}
 					width={200}
