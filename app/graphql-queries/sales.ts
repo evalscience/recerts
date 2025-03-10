@@ -17,7 +17,6 @@ const getSalesByUserQuery = graphql(`
           hypercert_id
           metadata {
             work_scope
-            image
             description
             name
           }
@@ -31,7 +30,6 @@ export type SaleByUserHypercert = {
 	hypercertId: string;
 	metadata: {
 		workScope?: string[];
-		image?: string;
 		description?: string;
 		name?: string;
 	};
@@ -60,7 +58,7 @@ export const fetchSalesByUser = async (userAddress: `0x${string}`) => {
 		const hypercert = sale.hypercert;
 		if (!hypercert || !hypercert.hypercert_id) return null;
 
-		const { work_scope, image, description, name } = hypercert.metadata ?? {};
+		const { work_scope, description, name } = hypercert.metadata ?? {};
 
 		return {
 			currency: sale.currency,
@@ -75,7 +73,6 @@ export const fetchSalesByUser = async (userAddress: `0x${string}`) => {
 				hypercertId: hypercert.hypercert_id,
 				metadata: {
 					workScope: work_scope ?? undefined,
-					image: image ?? undefined,
 					description: description ?? undefined,
 					name: name ?? undefined,
 				},

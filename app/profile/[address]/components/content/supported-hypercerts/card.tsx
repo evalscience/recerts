@@ -9,7 +9,7 @@ export default function Card({ combinedSale }: { combinedSale: CombinedSale }) {
 	const { totalAmountInUSD } = combinedSale;
 	const {
 		hypercertId,
-		metadata: { name, description, image, workScope },
+		metadata: { name, description, workScope },
 	} = combinedSale.hypercert;
 
 	return (
@@ -24,8 +24,7 @@ export default function Card({ combinedSale }: { combinedSale: CombinedSale }) {
 
 			<div className="relative flex h-[200px] w-full items-start justify-center overflow-hidden rounded-t-2xl bg-muted p-4">
 				<Image
-					// src={`/api/hypercert/${hypercert_id}/image`}
-					src={image ?? ""}
+					src={`/api/hypercert/${hypercertId}`}
 					alt={name ?? "Untitled"}
 					height={200}
 					width={200}
