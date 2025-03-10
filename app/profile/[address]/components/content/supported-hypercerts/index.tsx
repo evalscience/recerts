@@ -21,9 +21,12 @@ const SupportedHypercerts = ({
 	combinedSales: CombinedSale[];
 }) => {
 	if (combinedSales.length === 0) return <NoSupportedHypercerts />;
+	const newestSortedCombinedSales = combinedSales.sort((a, b) =>
+		Number(b.lastSaleTimestamp - a.lastSaleTimestamp),
+	);
 	return (
 		<div className="grid w-full grid-cols-1 gap-4 lg:grid-cols-2">
-			{combinedSales.map((sale) => {
+			{newestSortedCombinedSales.map((sale) => {
 				return <Card key={sale.id} combinedSale={sale} />;
 			})}
 		</div>

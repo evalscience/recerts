@@ -24,7 +24,7 @@ export default function Card({ combinedSale }: { combinedSale: CombinedSale }) {
 
 			<div className="relative flex h-[200px] w-full items-start justify-center overflow-hidden rounded-t-2xl bg-muted p-4">
 				<Image
-					src={`/api/hypercert/${hypercertId}`}
+					src={`/api/hypercert-image/${hypercertId}`}
 					alt={name ?? "Untitled"}
 					height={200}
 					width={200}
