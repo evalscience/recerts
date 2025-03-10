@@ -34,25 +34,13 @@ export const changelogButtons: ChangelogButton[] = [
 	},
 ];
 
-type NormalBlock = {
-	type: "normal";
-	title: string;
-	description: string;
+export type ChangelogBlock = {
 	date: string;
-	linkToPullRequest?: string;
-};
-
-type GithubReleaseBlock = {
-	type: "github-release";
 	title: string;
-	description: string;
-	date: string;
-	linkToRelease: string;
+	githubURL?: string;
+	versionMetadata?: {
+		version: string;
+		isMajorRelease?: boolean;
+	};
+	contentSource: string;
 };
-
-export type ChangeLogBlockCatalog = {
-	normal: NormalBlock;
-	githubRelease: GithubReleaseBlock;
-};
-
-export type ChangeLogBlock = ChangeLogBlockCatalog[keyof ChangeLogBlockCatalog];

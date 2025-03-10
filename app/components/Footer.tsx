@@ -10,7 +10,6 @@ import Image from "next/image";
 const Footer = () => {
 	return (
 		<>
-			<div className="h-24 w-full" />
 			<footer className="relative flex items-center justify-center overflow-hidden bg-background">
 				<MotionWrapper
 					type="div"
