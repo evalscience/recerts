@@ -72,6 +72,8 @@ export const fetchHypercertsByUserId = async (
 			),
 			pricePerPercentInUSD: pricePerPercentInUSDNumber,
 			buyerCount: uniqueBuyers.size,
+			creationBlockTimestamp:
+				typeCastApiResponseToBigInt(hypercert.creation_block_timestamp) ?? 0n,
 		} satisfies Hypercert;
 	});
 

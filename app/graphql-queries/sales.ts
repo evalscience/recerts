@@ -17,7 +17,6 @@ const getSalesByUserQuery = graphql(`
           hypercert_id
           metadata {
             work_scope
-            image
             description
             name
           }
@@ -31,7 +30,6 @@ export type SaleByUserHypercert = {
 	hypercertId: string;
 	metadata: {
 		workScope?: string[];
-		image?: string;
 		description?: string;
 		name?: string;
 	};
@@ -41,7 +39,7 @@ export type SaleByUser = {
 	currency: string;
 	currencyAmount: bigint;
 	unitsBought: bigint;
-	creationBlockTimestamp: bigint;
+	saleTimestamp: bigint;
 	transactionHash: string;
 	id: string;
 	hypercert: SaleByUserHypercert;
@@ -60,14 +58,14 @@ export const fetchSalesByUser = async (userAddress: `0x${string}`) => {
 		const hypercert = sale.hypercert;
 		if (!hypercert || !hypercert.hypercert_id) return null;
 
-		const { work_scope, image, description, name } = hypercert.metadata ?? {};
+		const { work_scope, description, name } = hypercert.metadata ?? {};
 
 		return {
 			currency: sale.currency,
 			currencyAmount:
 				typeCastApiResponseToBigInt(sale.currency_amount ?? 0) ?? 0n,
 			unitsBought: typeCastApiResponseToBigInt(sale.amounts?.[0] ?? 0) ?? 0n,
-			creationBlockTimestamp:
+			saleTimestamp:
 				typeCastApiResponseToBigInt(sale.creation_block_timestamp) ?? 0n,
 			transactionHash: sale.transaction_hash,
 			id: sale.id,
@@ -75,7 +73,6 @@ export const fetchSalesByUser = async (userAddress: `0x${string}`) => {
 				hypercertId: hypercert.hypercert_id,
 				metadata: {
 					workScope: work_scope ?? undefined,
-					image: image ?? undefined,
 					description: description ?? undefined,
 					name: name ?? undefined,
 				},
@@ -106,7 +103,7 @@ export type SaleByHypercert = {
 	currency: string;
 	currencyAmount: bigint;
 	unitsBought: bigint;
-	creationBlockTimestamp: bigint;
+	saleTimestamp: bigint;
 	transactionHash: string;
 	id: string;
 	buyer: string;
@@ -127,7 +124,7 @@ export const fetchSalesByHypercert = async (hypercertId: string) => {
 			currencyAmount:
 				typeCastApiResponseToBigInt(sale.currency_amount ?? 0) ?? 0n,
 			unitsBought: typeCastApiResponseToBigInt(sale.amounts?.[0] ?? 0) ?? 0n,
-			creationBlockTimestamp:
+			saleTimestamp:
 				typeCastApiResponseToBigInt(sale.creation_block_timestamp) ?? 0n,
 			transactionHash: sale.transaction_hash,
 			id: sale.id,

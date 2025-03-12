@@ -1,5 +1,6 @@
 export const hypercert = `
     data {
+        creation_block_timestamp
         units
         contract {
           chain_id

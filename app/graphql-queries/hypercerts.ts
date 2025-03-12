@@ -75,6 +75,7 @@ export type Hypercert = {
 	unitsForSale?: bigint;
 	pricePerPercentInUSD?: number;
 	buyerCount: number;
+	creationBlockTimestamp: bigint;
 };
 
 const fetchHypercertById = async (hypercertId: string): Promise<Hypercert> => {
@@ -121,6 +122,8 @@ const fetchHypercertById = async (hypercertId: string): Promise<Hypercert> => {
 		),
 		pricePerPercentInUSD: pricePerPercentInUSDNumber,
 		buyerCount: uniqueBuyers.size,
+		creationBlockTimestamp:
+			typeCastApiResponseToBigInt(hypercert.creation_block_timestamp) ?? 0n,
 	};
 };
 
