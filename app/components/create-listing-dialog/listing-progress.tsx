@@ -431,7 +431,7 @@ const ListingProgress = ({
 										</Link>
 										<span className="flex items-center gap-1 text-muted-foreground text-xs">
 											<Info size={16} />
-											It might take a few seconds to show up.
+											It might take a few minutes to show up.
 										</span>
 									</div>
 								)}

@@ -25,7 +25,7 @@ const GetVerifiedDialog = ({
 				<DialogHeader>
 					<DialogTitle>Get Verified</DialogTitle>
 					<DialogDescription>
-						Apply for verification to access the verified badge.
+						Apply for verification to display your hypercert in the homepage.
 					</DialogDescription>
 				</DialogHeader>
 				<div className="flex flex-1 flex-col items-center justify-center gap-2 rounded-lg bg-muted p-4 text-center">
