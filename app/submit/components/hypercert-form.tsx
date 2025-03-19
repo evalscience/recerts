@@ -16,6 +16,7 @@ import {
 	Settings,
 	Share2,
 	Sparkles,
+	Trash2,
 	TriangleAlert,
 } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -203,6 +204,7 @@ const HypercertForm = () => {
 	const imageRef = useRef<HTMLDivElement | null>(null);
 	const [badges, setBadges] = useState<string[]>([]);
 	const [geoJSONFile, setGeoJSONFile] = useState<File | null>(null);
+	const [geoJSONArea, setGeoJSONArea] = useState<number | null>(null);
 	const [logoFile, setLogoFile] = useState<File | null>(null);
 	const [bannerFile, setBannerFile] = useState<File | null>(null);
 	const [logoPreviewUrl, setLogoPreviewUrl] = useState<string | null>(null);
@@ -214,6 +216,11 @@ const HypercertForm = () => {
 	const [mintingFormValues, setMintingFormValues] =
 		useState<MintingFormValues>();
 	const [isMobileInfoExpanded, setIsMobileInfoExpanded] = useState(false);
+
+	// Add refs for file inputs
+	const logoFileInputRef = useRef<HTMLInputElement>(null);
+	const bannerFileInputRef = useRef<HTMLInputElement>(null);
+	const geoJSONFileInputRef = useRef<HTMLInputElement>(null);
 
 	const form = useForm<MintingFormValues>({
 		resolver: zodResolver(HypercertMintSchema),
@@ -350,7 +357,6 @@ const HypercertForm = () => {
 		window.history.replaceState({}, "", newUrl);
 	}, [formValues, isInitialized, geoJSONFile]); // Removed form from dependencies
 
-	// biome-ignore lint/correctness/useExhaustiveDependencies(form.setValue): This callback should not be called on every change in form.setValue
 	useEffect(() => {
 		const calculateArea = async () => {
 			let geoJSONData = null;
@@ -369,16 +375,13 @@ const HypercertForm = () => {
 					const area = turf.area(geoJSONData);
 					const hectares = Math.round(area / 10000);
 					console.log("Calculated area:", area, "Hectares:", hectares);
-					form.setValue("geojson", geojsonValue);
-					form.setValue("geojsonFile", geoJSONFile);
+					setGeoJSONArea(hectares);
 				} else {
-					form.setValue("geojson", "");
-					form.setValue("geojsonFile", null);
+					setGeoJSONArea(null);
 				}
 			} catch (error) {
 				console.error("Error calculating area:", error);
-				form.setValue("geojson", "");
-				form.setValue("geojsonFile", null);
+				setGeoJSONArea(null);
 			}
 		};
 
@@ -388,8 +391,8 @@ const HypercertForm = () => {
 	useEffect(() => {
 		// Add area badges if available
 		const areaBadges = [];
-		if (geoJSONFile) {
-			areaBadges.push(`⭔ ${geoJSONFile.size} bytes`);
+		if (geoJSONArea) {
+			areaBadges.push(`⭔ ${geoJSONArea} ha`);
 		}
 		if (areaActivity) {
 			areaBadges.push(`${areaActivity}`);
@@ -404,16 +407,9 @@ const HypercertForm = () => {
 
 			setBadges([...areaBadges, ...baseBadges]);
 		} else {
-			const areaBadges = [];
-			if (geoJSONFile) {
-				areaBadges.push(`⭔ ${geoJSONFile.size} bytes`);
-			}
-			if (areaActivity) {
-				areaBadges.push(`${areaActivity}`);
-			}
 			setBadges(areaBadges);
 		}
-	}, [tags, geoJSONFile, areaActivity]);
+	}, [tags, geoJSONArea, areaActivity]);
 
 	const generateImage = async () => {
 		if (imageRef.current === null) {
@@ -468,6 +464,9 @@ const HypercertForm = () => {
 			setGeoJSONFile(file);
 			form.setValue("geojsonFile", file);
 			form.setValue("geojson", "");
+		} else if (geoJSONFile && !file) {
+			// User canceled file selection dialog
+			clearGeoJSONFile();
 		}
 	};
 
@@ -533,6 +532,9 @@ const HypercertForm = () => {
 		if (file) {
 			setLogoFile(file);
 			form.setValue("logoFile", file);
+		} else if (logoFile && !file) {
+			// User canceled file selection dialog
+			clearLogoFile();
 		}
 	};
 
@@ -541,6 +543,9 @@ const HypercertForm = () => {
 		if (file) {
 			setBannerFile(file);
 			form.setValue("bannerFile", file);
+		} else if (bannerFile && !file) {
+			// User canceled file selection dialog
+			clearBannerFile();
 		}
 	};
 
@@ -552,6 +557,39 @@ const HypercertForm = () => {
 	const handleBannerUrlChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		const url = e.target.value;
 		form.setValue("banner", url);
+	};
+
+	// Update clear functions to reset the file input element
+	const clearLogoFile = () => {
+		setLogoFile(null);
+		setLogoPreviewUrl(null);
+		form.setValue("logoFile", undefined);
+
+		// Reset the file input element
+		if (logoFileInputRef.current) {
+			logoFileInputRef.current.value = "";
+		}
+	};
+
+	const clearBannerFile = () => {
+		setBannerFile(null);
+		setBannerPreviewUrl(null);
+		form.setValue("bannerFile", undefined);
+
+		// Reset the file input element
+		if (bannerFileInputRef.current) {
+			bannerFileInputRef.current.value = "";
+		}
+	};
+
+	const clearGeoJSONFile = () => {
+		setGeoJSONFile(null);
+		form.setValue("geojsonFile", undefined);
+
+		// Reset the file input element
+		if (geoJSONFileInputRef.current) {
+			geoJSONFileInputRef.current.value = "";
+		}
 	};
 
 	return (
@@ -609,11 +647,26 @@ const HypercertForm = () => {
 																{...field}
 																onChange={handleLogoUrlChange}
 															/>
-															<Input
-																type="file"
-																accept="image/*"
-																onChange={handleLogoFileChange}
-															/>
+															<div className="relative flex-shrink-0">
+																<Input
+																	ref={logoFileInputRef}
+																	type="file"
+																	accept="image/*"
+																	onChange={handleLogoFileChange}
+																	className={logoFile ? "pr-8" : ""}
+																/>
+																{logoFile && (
+																	<Button
+																		type="button"
+																		variant="ghost"
+																		size="icon"
+																		className="-translate-y-1/2 absolute top-1/2 right-1 h-6 w-6"
+																		onClick={clearLogoFile}
+																	>
+																		<Trash2 className="h-4 w-4 text-destructive" />
+																	</Button>
+																)}
+															</div>
 														</div>
 													</FormControl>
 													<FormMessage />
@@ -635,11 +688,26 @@ const HypercertForm = () => {
 																{...field}
 																onChange={handleBannerUrlChange}
 															/>
-															<Input
-																type="file"
-																accept="image/*"
-																onChange={handleBannerFileChange}
-															/>
+															<div className="relative flex-shrink-0">
+																<Input
+																	ref={bannerFileInputRef}
+																	type="file"
+																	accept="image/*"
+																	onChange={handleBannerFileChange}
+																	className={bannerFile ? "pr-8" : ""}
+																/>
+																{bannerFile && (
+																	<Button
+																		type="button"
+																		variant="ghost"
+																		size="icon"
+																		className="-translate-y-1/2 absolute top-1/2 right-1 h-6 w-6"
+																		onClick={clearBannerFile}
+																	>
+																		<Trash2 className="h-4 w-4 text-destructive" />
+																	</Button>
+																)}
+															</div>
 														</div>
 													</FormControl>
 													<FormMessage />
@@ -852,11 +920,26 @@ const HypercertForm = () => {
 																{...field}
 																onChange={handleUrlChange}
 															/>
-															<Input
-																type="file"
-																accept=".geojson,.json,.txt,application/geo+json,application/json,text/plain"
-																onChange={handleFileChange}
-															/>
+															<div className="relative flex-shrink-0">
+																<Input
+																	ref={geoJSONFileInputRef}
+																	type="file"
+																	accept=".geojson,.json,.txt,application/geo+json,application/json,text/plain"
+																	onChange={handleFileChange}
+																	className={geoJSONFile ? "pr-8" : ""}
+																/>
+																{geoJSONFile && (
+																	<Button
+																		type="button"
+																		variant="ghost"
+																		size="icon"
+																		className="-translate-y-1/2 absolute top-1/2 right-1 h-6 w-6"
+																		onClick={clearGeoJSONFile}
+																	>
+																		<Trash2 className="h-4 w-4 text-destructive" />
+																	</Button>
+																)}
+															</div>
 														</div>
 													</FormControl>
 													<FormMessage />
