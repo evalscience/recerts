@@ -98,17 +98,6 @@ const LeftContent = ({ hypercert }: { hypercert: FullHypercert }) => {
 					</section>
 				</div>
 			</div>
-			<section className="mt-2 flex w-full flex-col gap-2 rounded-xl bg-background p-3 shadow-[0px_-10px_20px_rgba(0,0,0,0.1)]">
-				<Metadata hypercert={hypercert} />
-				<div className="flex flex-col gap-2 p-0 md:p-2">
-					<h2 className="font-baskerville font-bold text-muted-foreground text-xl">
-						Description
-					</h2>
-					<p className="text-justify leading-tight">
-						{hypercert.metadata.description}
-					</p>
-				</div>
-			</section>
 
 			<Support hypercert={hypercert} />
 		</div>
