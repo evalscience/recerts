@@ -896,7 +896,7 @@ const HypercertForm = () => {
 													<FormControl>
 														<Textarea
 															className="bg-inherit"
-															placeholder="0xWalletAddress1, 0xWalletAddress2, ..."
+															placeholder="Add contributor addresses, names or pseudonyms, whose work is represented by the hypercert. All information is public."
 															{...field}
 														/>
 													</FormControl>
