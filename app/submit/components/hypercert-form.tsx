@@ -3,11 +3,20 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as turf from "@turf/turf";
 import { format } from "date-fns";
+import { AnimatePresence, motion } from "framer-motion";
 import {
 	ArrowRight,
 	CalendarIcon,
 	Check,
+	ChevronDown,
+	Eye,
+	EyeOff,
+	FileText,
+	Info,
+	Settings,
 	Share2,
+	Sparkles,
+	Trash2,
 	TriangleAlert,
 } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -37,13 +46,37 @@ import {
 } from "@/components/ui/popover";
 import { Textarea } from "@/components/ui/textarea";
 
+import { Dialog } from "@/components/ui/dialog";
+import {
+	DropdownMenu,
+	DropdownMenuContent,
+	DropdownMenuItem,
+	DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { BASE_URL } from "@/config/endpoint";
+import useMintHypercert from "@/hooks/use-mint-hypercert";
 import { toPng } from "html-to-image";
+import { CollapsibleDeploymentInfo } from "./collapsible-deployment-info";
+import { DeploymentInfoBox } from "./deployment-info-box";
 import HypercertCard from "./hypercert-card";
 import MintingProgressDialog from "./minting-progress-dialog";
 
+const INITIAL_BANNER_URL = `${BASE_URL}/ecocert-card/banner.webp`;
+const INITIAL_LOGO_URL = `${BASE_URL}/ecocert-card/logo.webp`;
 const telegramHandleRegex = /^@([a-zA-Z0-9_]{4,31})$/;
 const emailRegex =
 	/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+
+const AREA_ACTIVITIES = [
+	{ value: "Restoration", label: "Restoration - Bringing nature back" },
+	{
+		value: "Conservation",
+		label: "Conservation - Letting nature do its own thing",
+	},
+	{ value: "Landscape", label: "Landscape - Managing diverse activities" },
+	{ value: "Community", label: "Community - Empowering local community" },
+	{ value: "Science", label: "Science - Researching and monitoring" },
+] as const;
 
 const HypercertMintSchema = z
 	.object({
@@ -64,9 +97,11 @@ const HypercertMintSchema = z
 			z.string().url().optional(),
 		),
 		logo: z.string().url({ message: "Logo Image must be a valid URL" }),
+		logoFile: z.any().optional(),
 		banner: z
 			.string()
 			.url({ message: "Background Banner Image must be a valid URL" }),
+		bannerFile: z.any().optional(),
 		tags: z
 			.string()
 			.refine((val) => val.split(",").every((tag) => tag.trim() !== ""), {
@@ -113,6 +148,36 @@ const HypercertMintSchema = z
 	})
 	.refine(
 		(data) => {
+			const hasLogoUrl = !!data.logo;
+			const hasLogoFile = !!data.logoFile;
+			return (
+				(hasLogoUrl && !hasLogoFile) ||
+				(!hasLogoUrl && hasLogoFile) ||
+				(hasLogoUrl && hasLogoFile)
+			);
+		},
+		{
+			message: "Please provide a Logo image",
+			path: ["logo"],
+		},
+	)
+	.refine(
+		(data) => {
+			const hasBannerUrl = !!data.banner;
+			const hasBannerFile = !!data.bannerFile;
+			return (
+				(hasBannerUrl && !hasBannerFile) ||
+				(!hasBannerUrl && hasBannerFile) ||
+				(hasBannerUrl && hasBannerFile)
+			);
+		},
+		{
+			message: "Please provide a Banner image",
+			path: ["banner"],
+		},
+	)
+	.refine(
+		(data) => {
 			const hasUrl = !!data.geojson;
 			const hasFile = !!data.geojsonFile;
 			return (hasUrl && !hasFile) || (!hasUrl && hasFile);
@@ -140,21 +205,30 @@ const HypercertForm = () => {
 	const [badges, setBadges] = useState<string[]>([]);
 	const [geoJSONFile, setGeoJSONFile] = useState<File | null>(null);
 	const [geoJSONArea, setGeoJSONArea] = useState<number | null>(null);
+	const [logoFile, setLogoFile] = useState<File | null>(null);
+	const [bannerFile, setBannerFile] = useState<File | null>(null);
+	const [logoPreviewUrl, setLogoPreviewUrl] = useState<string | null>(null);
+	const [bannerPreviewUrl, setBannerPreviewUrl] = useState<string | null>(null);
 	const [showCopied, setShowCopied] = useState(false);
 	const [isInitialized, setIsInitialized] = useState(false);
 	const [isMintingProgressDialogVisible, setIsMintingProgressDialogVisible] =
 		useState(false);
 	const [mintingFormValues, setMintingFormValues] =
 		useState<MintingFormValues>();
+	const [isMobileInfoExpanded, setIsMobileInfoExpanded] = useState(false);
+
+	// Add refs for file inputs
+	const logoFileInputRef = useRef<HTMLInputElement>(null);
+	const bannerFileInputRef = useRef<HTMLInputElement>(null);
+	const geoJSONFileInputRef = useRef<HTMLInputElement>(null);
 
 	const form = useForm<MintingFormValues>({
 		resolver: zodResolver(HypercertMintSchema),
 		defaultValues: {
 			title: "",
-			banner:
-				"https://pub-c2c1d9230f0b4abb9b0d2d95e06fd4ef.r2.dev/sites/93/2019/05/My-Post-9-1600x900.png",
+			banner: INITIAL_BANNER_URL,
 			description: "",
-			logo: "https://pbs.twimg.com/profile_images/1674865118914437130/9HjAHrYf_400x400.jpg",
+			logo: INITIAL_LOGO_URL,
 			link: "",
 			tags: "",
 			projectDates: [undefined, undefined],
@@ -163,6 +237,8 @@ const HypercertForm = () => {
 			confirmContributorsPermission: false,
 			geojson: "",
 			geojsonFile: undefined,
+			logoFile: undefined,
+			bannerFile: undefined,
 			areaActivity: undefined,
 		},
 		mode: "onChange",
@@ -181,8 +257,6 @@ const HypercertForm = () => {
 			"title",
 			"description",
 			"link",
-			"logo",
-			"banner",
 			"tags",
 			"projectDates",
 			"contributors",
@@ -237,7 +311,7 @@ const HypercertForm = () => {
 		}
 
 		setIsInitialized(true);
-	}, [form.setValue]); // Include form.setValue in dependencies
+	}, [form.setValue]);
 
 	// Use the memoized function in useEffect
 	useEffect(() => {
@@ -257,6 +331,15 @@ const HypercertForm = () => {
 		for (const [key, value] of Object.entries(formValues)) {
 			if (value === undefined || value === null || value === "") continue;
 
+			// Skip logo and banner fields
+			if (
+				key === "logo" ||
+				key === "banner" ||
+				key === "logoFile" ||
+				key === "bannerFile"
+			)
+				continue;
+
 			if (key === "projectDates" && Array.isArray(value)) {
 				const dates = value.map((date) => date?.toISOString()).filter(Boolean);
 				if (dates.length) {
@@ -270,7 +353,7 @@ const HypercertForm = () => {
 			} else if (key === "geojson" && !geoJSONFile) {
 				// Only set geojson URL if not using file input
 				params.set(key, String(value));
-			} else if (key !== "geojson") {
+			} else if (key !== "geojson" && key !== "geojsonFile") {
 				params.set(key, String(value));
 			}
 		}
@@ -279,7 +362,7 @@ const HypercertForm = () => {
 			params.toString() ? `?${params.toString()}` : ""
 		}`;
 		window.history.replaceState({}, "", newUrl);
-	}, [formValues, isInitialized, geoJSONFile]); // Removed form from dependencies
+	}, [formValues, isInitialized, geoJSONFile]);
 
 	useEffect(() => {
 		const calculateArea = async () => {
@@ -331,13 +414,6 @@ const HypercertForm = () => {
 
 			setBadges([...areaBadges, ...baseBadges]);
 		} else {
-			const areaBadges = [];
-			if (geoJSONArea) {
-				areaBadges.push(`⭔ ${geoJSONArea} ha`);
-			}
-			if (areaActivity) {
-				areaBadges.push(`${areaActivity}`);
-			}
 			setBadges(areaBadges);
 		}
 	}, [tags, geoJSONArea, areaActivity]);
@@ -395,6 +471,9 @@ const HypercertForm = () => {
 			setGeoJSONFile(file);
 			form.setValue("geojsonFile", file);
 			form.setValue("geojson", "");
+		} else if (geoJSONFile && !file) {
+			// User canceled file selection dialog
+			clearGeoJSONFile();
 		}
 	};
 
@@ -431,6 +510,92 @@ const HypercertForm = () => {
 					message: "Invalid URL or unable to parse GeoJSON",
 				});
 			}
+		}
+	};
+
+	// Create object URLs for uploaded files
+	useEffect(() => {
+		if (logoFile) {
+			const objectUrl = URL.createObjectURL(logoFile);
+			setLogoPreviewUrl(objectUrl);
+
+			// Cleanup function to revoke the URL when component unmounts
+			return () => URL.revokeObjectURL(objectUrl);
+		}
+	}, [logoFile]);
+
+	useEffect(() => {
+		if (bannerFile) {
+			const objectUrl = URL.createObjectURL(bannerFile);
+			setBannerPreviewUrl(objectUrl);
+
+			// Cleanup function to revoke the URL when component unmounts
+			return () => URL.revokeObjectURL(objectUrl);
+		}
+	}, [bannerFile]);
+
+	const handleLogoFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+		const file = e.target.files?.[0];
+		if (file) {
+			setLogoFile(file);
+			form.setValue("logoFile", file);
+		} else if (logoFile && !file) {
+			// User canceled file selection dialog
+			clearLogoFile();
+		}
+	};
+
+	const handleBannerFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+		const file = e.target.files?.[0];
+		if (file) {
+			setBannerFile(file);
+			form.setValue("bannerFile", file);
+		} else if (bannerFile && !file) {
+			// User canceled file selection dialog
+			clearBannerFile();
+		}
+	};
+
+	const handleLogoUrlChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+		const url = e.target.value;
+		form.setValue("logo", url);
+	};
+
+	const handleBannerUrlChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+		const url = e.target.value;
+		form.setValue("banner", url);
+	};
+
+	// Update clear functions to reset the file input element
+	const clearLogoFile = () => {
+		setLogoFile(null);
+		setLogoPreviewUrl(null);
+		form.setValue("logoFile", undefined);
+
+		// Reset the file input element
+		if (logoFileInputRef.current) {
+			logoFileInputRef.current.value = "";
+		}
+	};
+
+	const clearBannerFile = () => {
+		setBannerFile(null);
+		setBannerPreviewUrl(null);
+		form.setValue("bannerFile", undefined);
+
+		// Reset the file input element
+		if (bannerFileInputRef.current) {
+			bannerFileInputRef.current.value = "";
+		}
+	};
+
+	const clearGeoJSONFile = () => {
+		setGeoJSONFile(null);
+		form.setValue("geojsonFile", undefined);
+
+		// Reset the file input element
+		if (geoJSONFileInputRef.current) {
+			geoJSONFileInputRef.current.value = "";
 		}
 	};
 
@@ -483,11 +648,31 @@ const HypercertForm = () => {
 												<FormItem>
 													<FormLabel>Logo Image</FormLabel>
 													<FormControl>
-														<Input
-															placeholder="https://i.imgur.com/hypercert-logo.png"
-															{...field}
-														/>
+														<div className="relative">
+															<Input
+																ref={logoFileInputRef}
+																type="file"
+																accept="image/*"
+																onChange={handleLogoFileChange}
+																className={logoFile ? "pr-8" : ""}
+																style={{ cursor: "pointer" }}
+															/>
+															{logoFile && (
+																<Button
+																	type="button"
+																	variant="ghost"
+																	size="icon"
+																	className="-translate-y-1/2 absolute top-1/2 right-1 h-6 w-6"
+																	onClick={clearLogoFile}
+																>
+																	<Trash2 className="h-4 w-4 text-destructive" />
+																</Button>
+															)}
+														</div>
 													</FormControl>
+													<div className="mt-1 text-muted-foreground text-xs">
+														Or use default URL: {INITIAL_LOGO_URL}
+													</div>
 													<FormMessage />
 												</FormItem>
 											)}
@@ -499,11 +684,31 @@ const HypercertForm = () => {
 												<FormItem>
 													<FormLabel>Background Banner Image</FormLabel>
 													<FormControl>
-														<Input
-															placeholder="https://i.imgur.com/hypercert-banner.png"
-															{...field}
-														/>
+														<div className="relative">
+															<Input
+																ref={bannerFileInputRef}
+																type="file"
+																accept="image/*"
+																onChange={handleBannerFileChange}
+																className={bannerFile ? "pr-8" : ""}
+																style={{ cursor: "pointer" }}
+															/>
+															{bannerFile && (
+																<Button
+																	type="button"
+																	variant="ghost"
+																	size="icon"
+																	className="-translate-y-1/2 absolute top-1/2 right-1 h-6 w-6"
+																	onClick={clearBannerFile}
+																>
+																	<Trash2 className="h-4 w-4 text-destructive" />
+																</Button>
+															)}
+														</div>
 													</FormControl>
+													<div className="mt-1 text-muted-foreground text-xs">
+														Or use default URL: {INITIAL_BANNER_URL}
+													</div>
 													<FormMessage />
 												</FormItem>
 											)}
@@ -558,30 +763,35 @@ const HypercertForm = () => {
 														What are you doing with this area?
 													</FormLabel>
 													<FormControl>
-														<select
-															className="w-full rounded-md border border-input bg-background px-3 py-2"
-															{...field}
-															value={field.value || ""}
-														>
-															<option value="" disabled>
-																Select an activity...
-															</option>
-															<option value="Restoration">
-																Restoration - Bringing nature back
-															</option>
-															<option value="Conservation">
-																Conservation - Letting nature do its own thing
-															</option>
-															<option value="Landscape">
-																Landscape - Managing diverse activities
-															</option>
-															<option value="Community">
-																Community - Empowering local community
-															</option>
-															<option value="Science">
-																Science - Researching and monitoring
-															</option>
-														</select>
+														<DropdownMenu>
+															<DropdownMenuTrigger asChild>
+																<Button
+																	variant="outline"
+																	className="w-full justify-between font-normal"
+																>
+																	{field.value
+																		? AREA_ACTIVITIES.find(
+																				(activity) =>
+																					activity.value === field.value,
+																		  )?.label
+																		: "Select an activity..."}
+																	<ChevronDown className="ml-2 h-4 w-4 opacity-50" />
+																</Button>
+															</DropdownMenuTrigger>
+															<DropdownMenuContent className="w-[400px]">
+																{AREA_ACTIVITIES.map((activity) => (
+																	<DropdownMenuItem
+																		key={activity.value}
+																		onClick={() =>
+																			field.onChange(activity.value)
+																		}
+																		className="cursor-pointer"
+																	>
+																		{activity.label}
+																	</DropdownMenuItem>
+																))}
+															</DropdownMenuContent>
+														</DropdownMenu>
 													</FormControl>
 													<FormMessage />
 												</FormItem>
@@ -709,20 +919,35 @@ const HypercertForm = () => {
 																{...field}
 																onChange={handleUrlChange}
 															/>
-															<Input
-																type="file"
-																accept=".geojson,.json,.txt,application/geo+json,application/json,text/plain"
-																onChange={handleFileChange}
-															/>
+															<div className="relative flex-shrink-0">
+																<Input
+																	ref={geoJSONFileInputRef}
+																	type="file"
+																	accept=".geojson,.json,.txt,application/geo+json,application/json,text/plain"
+																	onChange={handleFileChange}
+																	className={geoJSONFile ? "pr-8" : ""}
+																/>
+																{geoJSONFile && (
+																	<Button
+																		type="button"
+																		variant="ghost"
+																		size="icon"
+																		className="-translate-y-1/2 absolute top-1/2 right-1 h-6 w-6"
+																		onClick={clearGeoJSONFile}
+																	>
+																		<Trash2 className="h-4 w-4 text-destructive" />
+																	</Button>
+																)}
+															</div>
 														</div>
 													</FormControl>
 													<FormMessage />
 													{field.value && (
 														<div className="mt-4 aspect-video w-full rounded-lg border border-border">
 															<iframe
-																src={`https://trace.gainforest.app/?geojsonUrl=${encodeURIComponent(
+																src={`https://gainforest.app/?shapefile=${encodeURIComponent(
 																	field.value,
-																)}`}
+																)}&showUI=false`}
 																className="h-full w-full rounded-lg"
 																title="GeoJSON Preview"
 															/>
@@ -803,7 +1028,7 @@ const HypercertForm = () => {
 								<div className="flex items-center justify-center">
 									<div className="relative mt-2 inline-flex flex-col items-center gap-2 self-start rounded-lg border border-orange-500/50 bg-orange-100/50 px-4 py-2 md:flex-row dark:bg-orange-950/50">
 										<TriangleAlert
-											className="mr-2 hidden text-orange-600 md:block dark:text-orange-300"
+											className="mr-2 hidden shrink-0 text-orange-600 md:block dark:text-orange-300"
 											size={16}
 										/>
 										<div className="-top-2 -right-2 absolute flex h-8 w-8 items-center justify-center rounded-full border border-border bg-background md:hidden">
@@ -819,9 +1044,6 @@ const HypercertForm = () => {
 									</div>
 								</div>
 								<div className="flex w-full items-center justify-end gap-2">
-									<Button type="submit" className="gap-2">
-										Submit <ArrowRight size={16} />
-									</Button>
 									<Button
 										type="button"
 										onClick={copyCurrentUrl}
@@ -835,27 +1057,50 @@ const HypercertForm = () => {
 											</>
 										) : (
 											<>
-												Share Form <Share2 size={16} />
+												<Share2 size={16} />
+												Share Form
 											</>
 										)}
+									</Button>
+									<Button type="submit" className="gap-2">
+										Submit <ArrowRight size={16} />
 									</Button>
 								</div>
 							</CardContent>
 						</Card>
-						<div className="flex w-full justify-center rounded-3xl bg-beige-muted p-8 md:block md:w-auto md:justify-start md:bg-transparent md:p-0">
-							<HypercertCard
-								title={form.watch("title") || undefined}
-								banner={form.watch("banner") || undefined}
-								logo={form.watch("logo") || undefined}
-								workStartDate={form.watch("projectDates.0")}
-								workEndDate={form.watch("projectDates.1")}
-								badges={badges}
-								displayOnly={true}
-								contributors={
-									form.watch("contributors")?.split(", ").filter(Boolean) || []
-								}
-								ref={imageRef}
+						<div className="flex w-full flex-col justify-center md:sticky md:top-24 md:h-fit md:w-[336px]">
+							<div className="rounded-3xl rounded-b-none bg-beige-muted p-8 md:block md:bg-transparent md:p-0">
+								<div className="flex w-full items-center justify-center">
+									<HypercertCard
+										title={form.watch("title") || undefined}
+										banner={
+											bannerPreviewUrl || form.watch("banner") || undefined
+										}
+										logo={logoPreviewUrl || form.watch("logo") || undefined}
+										workStartDate={form.watch("projectDates.0")}
+										workEndDate={form.watch("projectDates.1")}
+										badges={badges}
+										displayOnly={true}
+										contributors={
+											form.watch("contributors")?.split(", ").filter(Boolean) ||
+											[]
+										}
+										ref={imageRef}
+									/>
+								</div>
+							</div>
+
+							{/* Mobile Collapsible Info Box */}
+							<CollapsibleDeploymentInfo
+								isExpanded={isMobileInfoExpanded}
+								onToggle={() => setIsMobileInfoExpanded(!isMobileInfoExpanded)}
+								className="md:hidden"
 							/>
+
+							{/* Desktop Info Box */}
+							<div className="hidden md:mt-6 md:block">
+								<DeploymentInfoBox className="w-full" />
+							</div>
 						</div>
 					</div>
 				</form>

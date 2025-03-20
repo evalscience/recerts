@@ -1,6 +1,6 @@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { ArrowUpRight } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import type { CombinedSale } from "../../../page";
@@ -9,7 +9,7 @@ export default function Card({ combinedSale }: { combinedSale: CombinedSale }) {
 	const { totalAmountInUSD } = combinedSale;
 	const {
 		hypercertId,
-		metadata: { name, description, image, workScope },
+		metadata: { name, description, workScope },
 	} = combinedSale.hypercert;
 
 	return (
@@ -24,8 +24,7 @@ export default function Card({ combinedSale }: { combinedSale: CombinedSale }) {
 
 			<div className="relative flex h-[200px] w-full items-start justify-center overflow-hidden rounded-t-2xl bg-muted p-4">
 				<Image
-					// src={`/api/hypercert/${hypercert_id}/image`}
-					src={image ?? ""}
+					src={`/api/hypercert-image/${hypercertId}`}
 					alt={name ?? "Untitled"}
 					height={200}
 					width={200}
@@ -33,9 +32,9 @@ export default function Card({ combinedSale }: { combinedSale: CombinedSale }) {
 				/>
 				{hypercertId !== undefined && (
 					<div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100">
-						<Link href={`/hypercert/${hypercertId}`} target="_blank" passHref>
+						<Link href={`/hypercert/${hypercertId}`}>
 							<Button variant={"secondary"} className="gap-2">
-								View Hypercert <ArrowUpRight size={20} />
+								View Hypercert <ArrowRight size={20} />
 							</Button>
 						</Link>
 					</div>

@@ -68,6 +68,7 @@ type HypercertByHypercertIdQueryResponse = ResultOf<
 
 export type Hypercert = {
 	hypercertId: string;
+	creatorAddress: string;
 	chainId?: string;
 	name?: string;
 	description?: string;
@@ -75,6 +76,7 @@ export type Hypercert = {
 	unitsForSale?: bigint;
 	pricePerPercentInUSD?: number;
 	buyerCount: number;
+	creationBlockTimestamp: bigint;
 };
 
 const fetchHypercertById = async (hypercertId: string): Promise<Hypercert> => {
@@ -112,6 +114,7 @@ const fetchHypercertById = async (hypercertId: string): Promise<Hypercert> => {
 
 	return {
 		hypercertId,
+		creatorAddress: hypercert.creator_address as string,
 		chainId: (hypercert.contract?.chain_id as string) ?? undefined,
 		name: hypercert.metadata?.name ?? undefined,
 		description: hypercert.metadata?.description ?? undefined,
@@ -121,6 +124,8 @@ const fetchHypercertById = async (hypercertId: string): Promise<Hypercert> => {
 		),
 		pricePerPercentInUSD: pricePerPercentInUSDNumber,
 		buyerCount: uniqueBuyers.size,
+		creationBlockTimestamp:
+			typeCastApiResponseToBigInt(hypercert.creation_block_timestamp) ?? 0n,
 	};
 };
 
