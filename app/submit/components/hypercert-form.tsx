@@ -655,6 +655,7 @@ const HypercertForm = () => {
 																accept="image/*"
 																onChange={handleLogoFileChange}
 																className={logoFile ? "pr-8" : ""}
+																style={{ cursor: "pointer" }}
 															/>
 															{logoFile && (
 																<Button
@@ -690,6 +691,7 @@ const HypercertForm = () => {
 																accept="image/*"
 																onChange={handleBannerFileChange}
 																className={bannerFile ? "pr-8" : ""}
+																style={{ cursor: "pointer" }}
 															/>
 															{bannerFile && (
 																<Button
