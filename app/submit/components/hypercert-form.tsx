@@ -157,7 +157,7 @@ const HypercertMintSchema = z
 			);
 		},
 		{
-			message: "Please provide either a Logo URL or file",
+			message: "Please provide a Logo image",
 			path: ["logo"],
 		},
 	)
@@ -172,7 +172,7 @@ const HypercertMintSchema = z
 			);
 		},
 		{
-			message: "Please provide either a Banner URL or file",
+			message: "Please provide a Banner image",
 			path: ["banner"],
 		},
 	)
@@ -257,8 +257,6 @@ const HypercertForm = () => {
 			"title",
 			"description",
 			"link",
-			"logo",
-			"banner",
 			"tags",
 			"projectDates",
 			"contributors",
@@ -313,7 +311,7 @@ const HypercertForm = () => {
 		}
 
 		setIsInitialized(true);
-	}, [form.setValue]); // Include form.setValue in dependencies
+	}, [form.setValue]);
 
 	// Use the memoized function in useEffect
 	useEffect(() => {
@@ -333,6 +331,15 @@ const HypercertForm = () => {
 		for (const [key, value] of Object.entries(formValues)) {
 			if (value === undefined || value === null || value === "") continue;
 
+			// Skip logo and banner fields
+			if (
+				key === "logo" ||
+				key === "banner" ||
+				key === "logoFile" ||
+				key === "bannerFile"
+			)
+				continue;
+
 			if (key === "projectDates" && Array.isArray(value)) {
 				const dates = value.map((date) => date?.toISOString()).filter(Boolean);
 				if (dates.length) {
@@ -346,7 +353,7 @@ const HypercertForm = () => {
 			} else if (key === "geojson" && !geoJSONFile) {
 				// Only set geojson URL if not using file input
 				params.set(key, String(value));
-			} else if (key !== "geojson") {
+			} else if (key !== "geojson" && key !== "geojsonFile") {
 				params.set(key, String(value));
 			}
 		}
@@ -355,7 +362,7 @@ const HypercertForm = () => {
 			params.toString() ? `?${params.toString()}` : ""
 		}`;
 		window.history.replaceState({}, "", newUrl);
-	}, [formValues, isInitialized, geoJSONFile]); // Removed form from dependencies
+	}, [formValues, isInitialized, geoJSONFile]);
 
 	useEffect(() => {
 		const calculateArea = async () => {
@@ -639,36 +646,32 @@ const HypercertForm = () => {
 											name="logo"
 											render={({ field }) => (
 												<FormItem>
-													<FormLabel>Logo Image (URL or File)</FormLabel>
+													<FormLabel>Logo Image</FormLabel>
 													<FormControl>
-														<div className="flex gap-2">
+														<div className="relative">
 															<Input
-																placeholder={INITIAL_LOGO_URL}
-																{...field}
-																onChange={handleLogoUrlChange}
+																ref={logoFileInputRef}
+																type="file"
+																accept="image/*"
+																onChange={handleLogoFileChange}
+																className={logoFile ? "pr-8" : ""}
 															/>
-															<div className="relative flex-shrink-0">
-																<Input
-																	ref={logoFileInputRef}
-																	type="file"
-																	accept="image/*"
-																	onChange={handleLogoFileChange}
-																	className={logoFile ? "pr-8" : ""}
-																/>
-																{logoFile && (
-																	<Button
-																		type="button"
-																		variant="ghost"
-																		size="icon"
-																		className="-translate-y-1/2 absolute top-1/2 right-1 h-6 w-6"
-																		onClick={clearLogoFile}
-																	>
-																		<Trash2 className="h-4 w-4 text-destructive" />
-																	</Button>
-																)}
-															</div>
+															{logoFile && (
+																<Button
+																	type="button"
+																	variant="ghost"
+																	size="icon"
+																	className="-translate-y-1/2 absolute top-1/2 right-1 h-6 w-6"
+																	onClick={clearLogoFile}
+																>
+																	<Trash2 className="h-4 w-4 text-destructive" />
+																</Button>
+															)}
 														</div>
 													</FormControl>
+													<div className="mt-1 text-muted-foreground text-xs">
+														Or use default URL: {INITIAL_LOGO_URL}
+													</div>
 													<FormMessage />
 												</FormItem>
 											)}
@@ -678,38 +681,32 @@ const HypercertForm = () => {
 											name="banner"
 											render={({ field }) => (
 												<FormItem>
-													<FormLabel>
-														Background Banner Image (URL or File)
-													</FormLabel>
+													<FormLabel>Background Banner Image</FormLabel>
 													<FormControl>
-														<div className="flex gap-2">
+														<div className="relative">
 															<Input
-																placeholder={INITIAL_BANNER_URL}
-																{...field}
-																onChange={handleBannerUrlChange}
+																ref={bannerFileInputRef}
+																type="file"
+																accept="image/*"
+																onChange={handleBannerFileChange}
+																className={bannerFile ? "pr-8" : ""}
 															/>
-															<div className="relative flex-shrink-0">
-																<Input
-																	ref={bannerFileInputRef}
-																	type="file"
-																	accept="image/*"
-																	onChange={handleBannerFileChange}
-																	className={bannerFile ? "pr-8" : ""}
-																/>
-																{bannerFile && (
-																	<Button
-																		type="button"
-																		variant="ghost"
-																		size="icon"
-																		className="-translate-y-1/2 absolute top-1/2 right-1 h-6 w-6"
-																		onClick={clearBannerFile}
-																	>
-																		<Trash2 className="h-4 w-4 text-destructive" />
-																	</Button>
-																)}
-															</div>
+															{bannerFile && (
+																<Button
+																	type="button"
+																	variant="ghost"
+																	size="icon"
+																	className="-translate-y-1/2 absolute top-1/2 right-1 h-6 w-6"
+																	onClick={clearBannerFile}
+																>
+																	<Trash2 className="h-4 w-4 text-destructive" />
+																</Button>
+															)}
 														</div>
 													</FormControl>
+													<div className="mt-1 text-muted-foreground text-xs">
+														Or use default URL: {INITIAL_BANNER_URL}
+													</div>
 													<FormMessage />
 												</FormItem>
 											)}
@@ -946,9 +943,9 @@ const HypercertForm = () => {
 													{field.value && (
 														<div className="mt-4 aspect-video w-full rounded-lg border border-border">
 															<iframe
-																src={`https://trace.gainforest.app/?geojsonUrl=${encodeURIComponent(
+																src={`https://gainforest.app/?shapefile=${encodeURIComponent(
 																	field.value,
-																)}`}
+																)}&showUI=false`}
 																className="h-full w-full rounded-lg"
 																title="GeoJSON Preview"
 															/>
