@@ -113,16 +113,7 @@ const HypercertMintSchema = z
 			.refine((data) => {
 				return Boolean(data[0] || data[1]);
 			}, "Work date range is required"),
-		contributors: z.string().refine(
-			(value) => {
-				const addresses = value.split(", ").map((addr) => addr.trim());
-				return addresses.every((address) => isValidEthereumAddress(address));
-			},
-			{
-				message:
-					"Each value must be a valid Ethereum address separated by a comma and a space.",
-			},
-		),
+		contributors: z.string(),
 		contact: z
 			.string()
 			.refine(
@@ -896,7 +887,7 @@ const HypercertForm = () => {
 													<FormControl>
 														<Textarea
 															className="bg-inherit"
-															placeholder="Add contributor addresses, names or pseudonyms, whose work is represented by the hypercert. All information is public."
+															placeholder="Add contributor addresses, names or pseudonyms, whose work is represented by the hypercert. Entries should be separated by a comma."
 															{...field}
 														/>
 													</FormControl>
