@@ -78,7 +78,7 @@ const Metadata = ({ hypercert }: { hypercert: FullHypercert }) => {
 
 const LeftContent = ({ hypercert }: { hypercert: FullHypercert }) => {
 	return (
-		<div className="flex w-full flex-initial flex-col gap-6 md:w-auto md:flex-[3]">
+		<div className="flex w-full flex-initial flex-col gap-6 lg:w-auto lg:flex-[3]">
 			<div className="overflow-hidden rounded-2xl border border-border bg-beige-muted/80">
 				<VerificationIndicator />
 				<div className="flex w-full flex-col items-center justify-center p-2">

@@ -55,7 +55,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { BASE_URL } from "@/config/endpoint";
 import useMintHypercert from "@/hooks/use-mint-hypercert";
-import { toPng } from "html-to-image";
+import { domToPng } from "modern-screenshot";
 import { CollapsibleDeploymentInfo } from "./collapsible-deployment-info";
 import { DeploymentInfoBox } from "./deployment-info-box";
 import HypercertCard from "./hypercert-card";
@@ -413,10 +413,7 @@ const HypercertForm = () => {
 		if (imageRef.current === null) {
 			return;
 		}
-		const dataUrl = await toPng(imageRef.current, {
-			cacheBust: true,
-			fetchRequestInit: { mode: "cors" },
-		});
+		const dataUrl = await domToPng(imageRef.current);
 		return dataUrl;
 	};
 
