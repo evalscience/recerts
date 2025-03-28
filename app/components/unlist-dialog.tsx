@@ -57,7 +57,7 @@ const UnlistDialog = ({
 		error: hypercertError,
 		refetch: refetchHypercert,
 	} = useQuery({
-		queryKey: [`create-listing-dialog-for-${hypercertId}`, hypercertId],
+		queryKey: [`unlist-dialog-for-${hypercertId}`, hypercertId],
 		queryFn: () => fetchHypercertById(hypercertId),
 	});
 
