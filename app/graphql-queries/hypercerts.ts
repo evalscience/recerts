@@ -77,9 +77,12 @@ export type Hypercert = {
 	pricePerPercentInUSD?: number;
 	buyerCount: number;
 	creationBlockTimestamp: bigint;
+	orderNonce?: number;
 };
 
-const fetchHypercertById = async (hypercertId: string): Promise<Hypercert> => {
+export const fetchHypercertById = async (
+	hypercertId: string,
+): Promise<Hypercert> => {
 	const [error, response] = await catchError<
 		HypercertByHypercertIdQueryResponse,
 		ApiError
@@ -112,6 +115,8 @@ const fetchHypercertById = async (hypercertId: string): Promise<Hypercert> => {
 		hypercert.sales?.data?.map((sale) => sale.buyer as string) ?? [],
 	);
 
+	const orderNonce = hypercert.orders?.data?.[0]?.orderNonce;
+
 	return {
 		hypercertId,
 		creatorAddress: hypercert.creator_address as string,
@@ -126,6 +131,7 @@ const fetchHypercertById = async (hypercertId: string): Promise<Hypercert> => {
 		buyerCount: uniqueBuyers.size,
 		creationBlockTimestamp:
 			typeCastApiResponseToBigInt(hypercert.creation_block_timestamp) ?? 0n,
+		orderNonce: orderNonce ? Number(orderNonce) : undefined,
 	};
 };
 

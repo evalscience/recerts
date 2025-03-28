@@ -15,6 +15,9 @@ export const hypercert = `
           cheapestOrder {
             pricePerPercentInUSD
           }
+          data {
+            orderNonce
+          }
         }
         sales {
           data {
