@@ -77,6 +77,7 @@ export const fetchHypercertsByUserId = async (
 			creationBlockTimestamp:
 				typeCastApiResponseToBigInt(hypercert.creation_block_timestamp) ?? 0n,
 			orderNonce: orderNonce ? Number(orderNonce) : undefined,
+			orderId: hypercert.orders?.data?.[0]?.id,
 		} satisfies Hypercert;
 	});
 

@@ -78,6 +78,7 @@ export type Hypercert = {
 	buyerCount: number;
 	creationBlockTimestamp: bigint;
 	orderNonce?: number;
+	orderId?: string;
 };
 
 export const fetchHypercertById = async (
@@ -132,6 +133,7 @@ export const fetchHypercertById = async (
 		creationBlockTimestamp:
 			typeCastApiResponseToBigInt(hypercert.creation_block_timestamp) ?? 0n,
 		orderNonce: orderNonce ? Number(orderNonce) : undefined,
+		orderId: hypercert.orders?.data?.[0]?.id,
 	};
 };
 
