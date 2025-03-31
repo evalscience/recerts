@@ -33,17 +33,15 @@ const EvaluationDetails = ({ hypercert }: { hypercert: FullHypercert }) => {
 			{attesters.size === 0 ? (
 				<div className="flex w-full flex-col items-center gap-4 px-8 py-4">
 					<span className="text-center text-muted-foreground leading-none">
-						This hypercert and the work has not been verified yet.
+						Verification allows you to display this hypercert in the ecocertain
+						homepage.
 					</span>
-					<GetVerifiedDialog
-						hypercertId={hypercert.hypercertId}
-						trigger={
-							<Button size={"sm"} className="gap-2">
-								<ShieldCheck size={16} />
-								Get Verified
-							</Button>
-						}
-					/>
+					<a href="https://tally.so/r/w8rRxA" target="_blank" rel="noreferrer">
+						<Button size={"sm"} className="gap-2">
+							<ShieldCheck size={16} />
+							Get Verified
+						</Button>
+					</a>
 				</div>
 			) : (
 				// Display subtitle if there are no attesters other than gainforest.

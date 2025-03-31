@@ -38,24 +38,21 @@ const VerificationIndicator = () => {
 				<div className="flex w-full items-center justify-between">
 					<span className="flex items-center gap-1">
 						<ShieldAlert size={16} className="opacity-50" />
-						<span>This ecocert is not verified.</span>
+						<span>This ecocert is not listed on the homepage.</span>
 					</span>
-					<GetVerifiedDialog
-						hypercertId={hypercert.hypercertId}
-						trigger={
-							<button
-								className="flex items-center justify-center gap-1 focus:underline hover:underline"
-								type="button"
-							>
-								Apply Now <ArrowRight size={16} />
-							</button>
-						}
-					/>
+					<a href="https://tally.so/r/w8rRxA" target="_blank" rel="noreferrer">
+						<button
+							className="flex items-center justify-center gap-1 focus:underline hover:underline"
+							type="button"
+						>
+							Apply for listing <ArrowRight size={16} />
+						</button>
+					</a>
 				</div>
 			) : (
 				<div className="flex w-full items-center justify-center gap-1 text-center">
 					<ShieldAlert size={16} className="opacity-50" />
-					<span>This ecocert is not verified.</span>
+					<span>This ecocert is not listed on the homepage.</span>
 				</div>
 			)}
 		</div>
