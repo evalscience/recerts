@@ -1,8 +1,10 @@
 "use client";
 import GetVerifiedDialog from "@/app/components/get-verified-dialog";
 import useFullHypercert from "@/app/contexts/full-hypercert";
+import { fetchHypercertIDs } from "@/app/graphql-queries/hypercerts";
 import { verifiedAttestors } from "@/config/gainforest";
 import { cn } from "@/lib/utils";
+import { useQuery } from "@tanstack/react-query";
 import { ArrowRight, ShieldAlert, ShieldCheck } from "lucide-react";
 import React from "react";
 import { useAccount } from "wagmi";
@@ -10,13 +12,13 @@ import { useAccount } from "wagmi";
 const VerificationIndicator = () => {
 	const { address } = useAccount();
 	const hypercert = useFullHypercert();
-	const attesters = hypercert.attestations.map(
-		(attestation) => attestation.attester,
-	);
+	const { data: hyperboardIds } = useQuery({
+		queryKey: ["hypercert-ids-in-hyperboard"],
+		queryFn: fetchHypercertIDs,
+	});
 
-	const isVerified = attesters.some((attester) =>
-		verifiedAttestors.has(attester),
-	);
+	const isVerified = hyperboardIds?.some((id) => id === hypercert.hypercertId);
+
 	const isCreator =
 		hypercert.creatorAddress.toLowerCase() === address?.toLowerCase();
 
