@@ -11,11 +11,13 @@ import Fuse from "fuse.js";
 import { TriangleAlert } from "lucide-react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Card from "./card";
-import Search from "./search";
+import Search, { type SortOption } from "./search";
 
 export function GridView({ hypercerts }: { hypercerts: Hypercert[] }) {
 	const searchInputState = useState("");
 	const [searchInput, setSearchInput] = searchInputState;
+	const sortOptionsState = useState<SortOption | null>(null);
+	const [sortOptions, setSortOptions] = sortOptionsState;
 
 	const filteredHypercerts = useMemo(() => {
 		if (searchInput === "") {
@@ -42,6 +44,21 @@ export function GridView({ hypercerts }: { hypercerts: Hypercert[] }) {
 		}
 	}, [filteredHypercerts]);
 
+	const sortedHypercerts = useMemo(() => {
+		if (sortOptions) {
+			if (sortOptions.key === "date") {
+				const temp = [...filteredHypercerts].sort((a, b) => {
+					const diff =
+						Number(a.creationBlockTimestamp) - Number(b.creationBlockTimestamp);
+					return sortOptions.order === "asc" ? diff : -diff;
+				});
+				return temp;
+			}
+			return filteredHypercerts;
+		}
+		return filteredHypercerts;
+	}, [filteredHypercerts, sortOptions]);
+
 	const itemsPerPage = 10;
 
 	const { currentPage, currentPageItems, loadPage, maxPage, needsPagination } =
@@ -53,14 +70,19 @@ export function GridView({ hypercerts }: { hypercerts: Hypercert[] }) {
 			id="discover"
 		>
 			<section className="flex w-full max-w-6xl flex-1 flex-col">
-				{hypercerts.length > 0 && <Search inputState={searchInputState} />}
+				{hypercerts.length > 0 && (
+					<Search
+						inputState={searchInputState}
+						sortOptionsState={sortOptionsState}
+					/>
+				)}
 				<div className="p-3" />
 				{filteredHypercerts.length ? (
 					<div
 						className="grid grid-cols-[minmax(300px,_1fr)] gap-5 self-center lg:grid-cols-[300px_300px_300px] md:grid-cols-[300px_300px] md:gap-3"
 						ref={gridRef}
 					>
-						{filteredHypercerts.map((hypercert: Hypercert) => (
+						{sortedHypercerts.map((hypercert: Hypercert) => (
 							<Card hypercert={hypercert} key={hypercert.hypercertId} />
 						))}
 					</div>
