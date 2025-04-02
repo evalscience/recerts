@@ -7,7 +7,7 @@ import UserChip from "@/components/user-chip";
 import { EAS_CONFIGS } from "@/config/eas";
 import { PlusCircle } from "lucide-react";
 import React from "react";
-import SectionWrapper from "../SectionWrapper";
+import SectionWrapper from "./SectionWrapper";
 
 const Attestations = () => {
 	const hypercert = useFullHypercert();
