@@ -45,7 +45,7 @@ const CardOptions = () => {
 						/>
 					</div>
 					<UnlistDialog hypercertId={hypercert.hypercertId}>
-						<Button variant={"destructive"} className="gap-2">
+						<Button variant={"secondary"} className="gap-2">
 							<Trash2 size={16} />
 							Unlist
 						</Button>

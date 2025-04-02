@@ -152,11 +152,13 @@ const UnlistDialog = ({
 						hypercert.orderId && hypercert.orderNonce ? (
 							<div className="flex flex-col gap-2">
 								<span>
-									After this action, the Ecocert,{" "}
-									<b>{hypercert?.name ?? "Untitled"}</b> would no longer be able
-									to get donations.
+									Are you sure to unlist the Ecocert,{" "}
+									<b>{hypercert?.name ?? "Untitled"}</b> from the marketplace?
 								</span>
-								<span>This action is irreversible.</span>
+								<span>
+									Unlisting the ecocert will stop donations. You can create a
+									new listing to start accepting donations again.
+								</span>
 							</div>
 						) : (
 							<StatusBox
@@ -190,7 +192,7 @@ const UnlistDialog = ({
 						address?.toLowerCase() === hypercert.creatorAddress.toLowerCase() &&
 						status?.type !== "success" && (
 							<Button
-								variant="destructive"
+								variant="secondary"
 								onClick={handleUnlist}
 								disabled={status?.type === "loading"}
 							>
