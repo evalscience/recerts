@@ -118,12 +118,12 @@ export function GridView({ hypercerts }: { hypercerts: Hypercert[] }) {
 								itemsPerPage={itemsPerPage}
 							/>
 						)}
-						<VDPaginator
+						{/* <VDPaginator
 							needsPagination={needsPagination}
 							currentPage={currentPage}
 							maxPage={maxPage}
 							loadPage={loadPage}
-						/>
+						/> */}
 					</section>
 				}
 			</section>
