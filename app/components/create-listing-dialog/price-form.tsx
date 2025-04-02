@@ -12,13 +12,14 @@ import {
 	type Currency,
 	SUPPORTED_CURRENCIES,
 } from "@hypercerts-org/marketplace-sdk";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, Info } from "lucide-react";
 import React, {
 	type Dispatch,
 	type SetStateAction,
 	useEffect,
 	useState,
 } from "react";
+
 const PriceForm = ({
 	priceState,
 	priceValidityErrorState,
@@ -66,35 +67,48 @@ const PriceForm = ({
 	}, [priceInputValue, setPrice, setPriceValidityError]);
 
 	return (
-		<div className="flex flex-col gap-2">
-			<div className="flex items-center gap-2">
-				<Input
-					placeholder="Enter a price"
-					className={cn("w-full", priceValidityError && "border-destructive")}
-					value={priceInputValue}
-					onChange={(e) => {
-						setPriceInputValue(e.target.value);
-					}}
-				/>
-				<Combobox
-					options={currencyOptions.map((currency) => ({
-						label: currency.symbol,
-						value: currency.symbol,
-					}))}
-					value={selectedCurrency?.symbol}
-					onChange={(value) => {
-						setSelectedCurrency(
-							currencyOptions.find((currency) => currency.symbol === value),
-						);
-					}}
-					placeholder="Select a currency"
-					emptyLabel="No currencies supported"
-					searchPlaceholder="Search for a currency"
-				/>
+		<div className="flex flex-1 flex-col gap-4">
+			<div className="flex flex-col gap-2">
+				<div className="flex items-center gap-2">
+					<Input
+						placeholder="Enter a price"
+						className={cn("w-full", priceValidityError && "border-destructive")}
+						value={priceInputValue}
+						onChange={(e) => {
+							setPriceInputValue(e.target.value);
+						}}
+					/>
+					<Combobox
+						options={currencyOptions.map((currency) => ({
+							label: currency.symbol,
+							value: currency.symbol,
+						}))}
+						value={selectedCurrency?.symbol}
+						onChange={(value) => {
+							setSelectedCurrency(
+								currencyOptions.find((currency) => currency.symbol === value),
+							);
+						}}
+						placeholder="Select a currency"
+						emptyLabel="No currencies supported"
+						searchPlaceholder="Search for a currency"
+					/>
+				</div>
+				{priceValidityError && (
+					<p className="text-destructive text-sm">{priceValidityError}</p>
+				)}
 			</div>
-			{priceValidityError && (
-				<p className="text-destructive text-sm">{priceValidityError}</p>
-			)}
+			<div className="flex w-full flex-1" />
+			<div className="flex items-start gap-2 rounded-lg border bg-muted/50 p-3 font-sans text-muted-foreground text-xs">
+				<Info className="mt-0.5 h-4 w-4 shrink-0" />
+				<p>
+					The price of a hypercert varies based on the country of work and
+					timeframe. Some projects may list costs for specific periods (e.g.,
+					monthly). The amount you enter is an estimation of environmental
+					impact costs in different regions and activities, not necessarily the
+					final amount you will receive or the maximum possible value.
+				</p>
+			</div>
 		</div>
 	);
 };
