@@ -13,6 +13,7 @@
     "test": "bun jest"
   },
   "dependencies": {
+    "@ethereum-attestation-service/eas-sdk": "^2.7.0",
     "@fontsource-variable/plus-jakarta-sans": "^5.0.20",
     "@formkit/auto-animate": "^0.8.2",
     "@hookform/resolvers": "^3.3.4",

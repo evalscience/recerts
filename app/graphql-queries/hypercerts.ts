@@ -186,10 +186,16 @@ const fullHypercertByHypercertIdQuery = graphql(`
         }
         attestations {
           data {
+            eas_schema {
+              chain_id
+              schema
+              uid
+            }
             attester
             creation_block_timestamp
             data
-            id
+            schema_uid
+            uid
           }
         }
         sales {
@@ -246,10 +252,12 @@ export type FullHypercert = {
 	attestations: {
 		attester: string;
 		creationBlockTimestamp: bigint;
-		data: string;
-		id: string;
-		easSchema?: {
-			id: string;
+		data: JSON;
+		uid: string;
+		schema_uid: string;
+		easSchema: {
+			chainId: bigint;
+			uid: string;
 			schema: string;
 		};
 	}[];
@@ -343,13 +351,24 @@ export const fetchFullHypercertById = async (
 	const parsedAttestations = attestations
 		.map((attestation) => {
 			if (!attestation.attester) return null;
+			const easSchema = attestation.eas_schema as {
+				chain_id: string;
+				uid: string;
+				schema: string;
+			};
 			return {
 				attester: attestation.attester.toLowerCase(),
 				creationBlockTimestamp:
 					typeCastApiResponseToBigInt(attestation.creation_block_timestamp) ??
 					0n,
-				data: attestation.data as string,
-				id: attestation.id,
+				data: attestation.data as JSON,
+				uid: attestation.uid as string,
+				schema_uid: attestation.schema_uid as string,
+				easSchema: {
+					chainId: typeCastApiResponseToBigInt(easSchema.chain_id) ?? 0n,
+					uid: easSchema.uid,
+					schema: easSchema.schema,
+				},
 			};
 		})
 		.filter((attestation) => attestation !== null);
