@@ -42,7 +42,7 @@ export function GridView({ hypercerts }: { hypercerts: Hypercert[] }) {
 		}
 	}, [filteredHypercerts]);
 
-	const itemsPerPage = 10;
+	const itemsPerPage = hypercerts.length;
 
 	const { currentPage, currentPageItems, loadPage, maxPage, needsPagination } =
 		usePagination<Hypercert>(filteredHypercerts, itemsPerPage);
@@ -96,12 +96,12 @@ export function GridView({ hypercerts }: { hypercerts: Hypercert[] }) {
 								itemsPerPage={itemsPerPage}
 							/>
 						)}
-						<VDPaginator
+						{/* <VDPaginator
 							needsPagination={needsPagination}
 							currentPage={currentPage}
 							maxPage={maxPage}
 							loadPage={loadPage}
-						/>
+						/> */}
 					</section>
 				}
 			</section>
