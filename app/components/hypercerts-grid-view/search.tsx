@@ -71,7 +71,7 @@ const Search = ({
 							className="text-muted-foreground"
 							htmlFor="latest-ecocerts-switch"
 						>
-							Order by latest ecocerts first
+							Order by recently created
 						</Label>
 						<Switch
 							className="scale-90"
