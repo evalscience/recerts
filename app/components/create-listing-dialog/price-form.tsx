@@ -104,9 +104,8 @@ const PriceForm = ({
 				<p>
 					The price of a hypercert varies based on the country of work and
 					timeframe. Some projects may list costs for specific periods (e.g.,
-					monthly). The amount you enter is an estimation of environmental
-					impact costs in different regions and activities, not necessarily the
-					final amount you will receive or the maximum possible value.
+					monthly). The amount you enter is an estimation of the cost it requires you to create the stated environmental
+					impact in your region. 
 				</p>
 			</div>
 		</div>
