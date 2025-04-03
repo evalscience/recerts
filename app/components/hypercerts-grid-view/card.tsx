@@ -68,9 +68,9 @@ const Card = ({ hypercert }: { hypercert: Hypercert }) => {
 					</p>
 					{pricePerPercentInUSD === undefined ? (
 						<div className="flex w-full items-center justify-start text-muted-foreground text-sm">
-							<span className="inline-block rounded-full bg-beige-muted px-2 text-beige-muted-foreground">
-								Coming Soon...
-							</span>
+							{/* <span className="inline-block rounded-full bg-beige-muted px-2 text-beige-muted-foreground">
+								Not listed for sale
+							</span> */}
 						</div>
 					) : unitsForSale === 0n ? (
 						<div className="flex w-full items-center justify-start text-muted-foreground text-sm">
