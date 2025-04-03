@@ -59,11 +59,6 @@ export function GridView({ hypercerts }: { hypercerts: Hypercert[] }) {
 		return filteredHypercerts;
 	}, [filteredHypercerts, sortOptions]);
 
-	const itemsPerPage = 10;
-
-	const { currentPage, currentPageItems, loadPage, maxPage, needsPagination } =
-		usePagination<Hypercert>(filteredHypercerts, itemsPerPage);
-
 	return (
 		<section
 			className="flex w-full flex-col items-center px-2 py-6 md:px-6"
@@ -113,9 +108,9 @@ export function GridView({ hypercerts }: { hypercerts: Hypercert[] }) {
 					<section className="mt-4 flex flex-col items-center justify-center gap-2">
 						{filteredHypercerts.length > 0 && (
 							<ShowingDisplay
-								currentPage={currentPage}
+								currentPage={1}
 								totalItemAmount={filteredHypercerts.length}
-								itemsPerPage={itemsPerPage}
+								itemsPerPage={filteredHypercerts.length}
 							/>
 						)}
 						{/* <VDPaginator
