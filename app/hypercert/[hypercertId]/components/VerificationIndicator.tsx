@@ -12,7 +12,7 @@ import { useAccount } from "wagmi";
 const VerificationIndicator = () => {
 	const { address } = useAccount();
 	const hypercert = useFullHypercert();
-	const { data: hyperboardIds } = useQuery({
+	const { data: hyperboardIds, isLoading: hyperboardIdsLoading } = useQuery({
 		queryKey: ["hypercert-ids-in-hyperboard"],
 		queryFn: fetchHypercertIDs,
 	});
@@ -21,6 +21,8 @@ const VerificationIndicator = () => {
 
 	const isCreator =
 		hypercert.creatorAddress.toLowerCase() === address?.toLowerCase();
+
+	if (hyperboardIdsLoading) return null;
 
 	return (
 		<div

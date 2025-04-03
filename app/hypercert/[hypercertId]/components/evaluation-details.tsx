@@ -21,7 +21,7 @@ const EvaluationDetails = ({ hypercert }: { hypercert: FullHypercert }) => {
 	const isCreator =
 		address?.toLowerCase() === hypercert.creatorAddress.toLowerCase();
 
-	const { data: hyperboardIds } = useQuery({
+	const { data: hyperboardIds, isLoading: hyperboardIdsLoading } = useQuery({
 		queryKey: ["hypercert-ids-in-hyperboard"],
 		queryFn: fetchHypercertIDs,
 	});
@@ -36,20 +36,21 @@ const EvaluationDetails = ({ hypercert }: { hypercert: FullHypercert }) => {
 
 	return (
 		<div className="group overflow-hidden">
-			{isVerifiedByGainForest && (
+			{/* {isVerifiedByGainForest && (
 				<EvervaultCard>
 					<div className="flex w-full items-center gap-2">
 						<ShieldCheck className="text-primary" size={24} />
 						<span className="font-bold text-lg">Verified by Gainforest</span>
 					</div>
 				</EvervaultCard>
-			)}
+			)} */}
 			{attesters.size === 0 && (
 				<div className="flex w-full flex-col items-center gap-1 px-8 py-4">
 					<span className="text-center text-muted-foreground leading-none">
-						{isVerifiedByGainForest
-							? "This hypercert and its works have been verified by GainForest and is visible on the homepage."
-							: "This hypercert is not yet verified by GainForest, and cannot be accessed on the homepage."}
+						{!hyperboardIdsLoading &&
+							(isVerifiedByGainForest
+								? "This hypercert and its works have been verified by GainForest and is visible on the homepage."
+								: "This hypercert is not yet verified by GainForest, and cannot be accessed on the homepage.")}
 					</span>
 					{isCreator && (
 						<Link
@@ -67,14 +68,9 @@ const EvaluationDetails = ({ hypercert }: { hypercert: FullHypercert }) => {
 				</div>
 			)}
 			{attesters.size > 0 && (
-				<div
-					className={cn(
-						"flex w-full flex-col gap-2",
-						isVerifiedByGainForest ? "mt-4" : "",
-					)}
-				>
+				<div className={cn("flex w-full flex-col gap-2")}>
 					<span className="font-bold text-muted-foreground text-sm">
-						{isVerifiedByGainForest ? "Other Evaluators" : "Evaluators"}:
+						Evaluators:
 					</span>
 					<ul className="flex flex-wrap items-center gap-1">
 						{[...attesters]
