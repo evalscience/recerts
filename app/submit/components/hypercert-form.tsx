@@ -483,7 +483,7 @@ const HypercertForm = () => {
 				}
 
 				const data = await response.json();
-				if (!data.type || !data.features) {
+				if (!data.type || !(data.features || data.geometry)) {
 					form.setError("geojson", {
 						type: "manual",
 						message: "Invalid GeoJSON format",
