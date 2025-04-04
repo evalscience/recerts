@@ -398,9 +398,8 @@ const AmountOptions = ({
 			<div className="flex items-start gap-2 rounded-lg border bg-muted/50 p-3 font-sans text-muted-foreground text-xs">
 				<Info className="mt-0.5 h-4 w-4 shrink-0" />
 				<p>
-					The amount you donate, represents an estimate of all the costs
-					required to create the specified environmental impact in your region
-					and within the outlined timeframes.
+					All the proceeds from the purchase of this ecocert goes directly to the creator of the ecocert. 
+					Ecocertain does not charge a platform fee. 
 				</p>
 			</div>
 		</div>
