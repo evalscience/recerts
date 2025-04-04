@@ -125,15 +125,30 @@ const AmountOptions = ({
 			? false
 			: info.data.chainId === currentChainId.toString(),
 	);
-	const currentChainOrderCurrencies = currentChainOrdersInfo.map((info) => ({
-		currency: info.data.currency,
-		orderId: info.id,
-	}));
+	const currentChainOrderCurrencies = currentChainOrdersInfo.reduce<
+		OrderCurrency[]
+	>((acc, info) => {
+		// Check if this currency is already in the accumulator
+		const currencyExists = acc.some(
+			(item) => item.currency === info.data.currency,
+		);
+
+		// Only add if the currency doesn't exist yet
+		if (!currencyExists) {
+			acc.push({
+				currency: info.data.currency,
+				orderId: info.id,
+			});
+		}
+
+		return acc;
+	}, []);
 	const currenciesSupportedOnCurrentChainByApp = currentChainId
 		? currentChainId in TOKENS_CONFIG
 			? TOKENS_CONFIG[currentChainId]
 			: []
 		: [];
+
 	const currenciesSupportedOnCurrentChainByHypercertAndApp =
 		currentChainOrderCurrencies.filter(
 			(currency) =>
@@ -241,7 +256,7 @@ const AmountOptions = ({
 	};
 
 	return (
-		<div className="mb-10 flex w-full flex-col gap-8">
+		<div className="flex w-full flex-col gap-8">
 			<div className="w-full">
 				<div className="mt-2 flex w-full items-center gap-2">
 					{QuickAmounts.map(({ valueInUSD, emojis }) => (
@@ -269,71 +284,11 @@ const AmountOptions = ({
 				<span className="text-muted-foreground text-sm">OR</span>
 				<Separator className="w-auto flex-1" />
 			</div>
-			<div className="flex w-full flex-col gap-4">
-				<div className="flex items-center justify-between rounded-lg bg-muted px-4 py-2 font-sans">
-					<div className="flex items-center gap-1">
-						<span>Paying in</span>
-						<Combobox
-							options={currenciesSupportedOnCurrentChainByHypercertAndApp.map(
-								(currency) => ({
-									value: currency.currency,
-									label: currenciesSupportedOnCurrentChainByApp.find(
-										(token) => token.address === currency.currency,
-									)?.symbol as string,
-								}),
-							)}
-							placeholder="Select currency"
-							searchPlaceholder="Search currency"
-							emptyLabel="No supported currencies found."
-							value={preferredCurrencyConfig.address}
-							onChange={(value) => {
-								if (value === undefined) return;
-								const orderId =
-									currenciesSupportedOnCurrentChainByHypercertAndApp.find(
-										(currency) => currency.currency === value,
-									)?.orderId;
-								if (orderId === undefined) return;
-								setPreferredCurrency({
-									currency: value,
-									orderId,
-								});
-							}}
-						/>
-					</div>
-					{userFunds.isLoading ? (
-						<Loader2 size={16} className="animate-spin text-primary" />
-					) : userFunds.error ? (
-						<span className="flex items-center justify-center font-sans text-destructive">
-							<TooltipProvider>
-								<Tooltip>
-									<TooltipTrigger className="flex items-center gap-1">
-										<CircleAlert size={14} />
-										<span>Balance</span>
-									</TooltipTrigger>
-									<TooltipContent>
-										Unable to load your balance for{" "}
-										<b>{preferredCurrencyConfig.symbol}</b>.
-									</TooltipContent>
-								</Tooltip>
-							</TooltipProvider>
-							<Button size={"sm"} variant={"ghost"} onClick={userFunds.refetch}>
-								<RefreshCw size={14} />
-							</Button>
-						</span>
-					) : (
-						<span className="flex items-center justify-center font-sans text-foreground text-sm">
-							{formatDecimals(Number(userFunds.data.formatted))}&nbsp;
-							<b>{preferredCurrencyConfig.symbol}</b>
-							<Button size={"sm"} variant={"ghost"} onClick={userFunds.refetch}>
-								<RefreshCw size={14} />
-							</Button>
-						</span>
-					)}
-				</div>
-				<div className="flex items-center gap-4">
-					<div className="flex flex-col gap-1">
+			<div className="flex w-full items-center gap-4">
+				<div className="flex w-full flex-col gap-1">
+					<div className="flex w-full items-center justify-between">
 						<div className="flex items-center gap-2">
-							<span>{preferredCurrencyConfig.symbol}</span>
+							<span className="font-bold font-sans text-sm">Amount</span>
 							<Input
 								type="number"
 								min={getCurrencyTokens(1n)}
@@ -362,42 +317,90 @@ const AmountOptions = ({
 										: "border border-destructive",
 								)}
 							/>
-						</div>
-
-						<span
-							className={cn(
-								"text-destructive text-sm",
-								isValidAmount && hasSufficientFunds
-									? "select-none opacity-0"
-									: "opacity-100",
-							)}
-						>
-							{hasSufficientFunds ? "Invalid Value" : "Insufficient Funds"}
-						</span>
-					</div>
-					<div className="flex-1">
-						<div className="flex flex-col gap-1">
-							<BigintSlider
-								min={1n}
-								max={unitsForSale}
-								value={unitsToBuy}
+							<Combobox
+								size={"sm"}
+								options={currenciesSupportedOnCurrentChainByHypercertAndApp.map(
+									(currency) => ({
+										value: currency.currency,
+										label: currenciesSupportedOnCurrentChainByApp.find(
+											(token) => token.address === currency.currency,
+										)?.symbol as string,
+									}),
+								)}
+								placeholder="Select currency"
+								searchPlaceholder="Search currency"
+								emptyLabel="No supported currencies found."
+								value={preferredCurrencyConfig.address}
 								onChange={(value) => {
-									setUnitsToBuy(value);
-									setCurrencyTokensString(
-										formatTokenString(getCurrencyTokens(value)).toString(),
-									);
+									if (value === undefined) return;
+									const orderId =
+										currenciesSupportedOnCurrentChainByHypercertAndApp.find(
+											(currency) => currency.currency === value,
+										)?.orderId;
+									if (orderId === undefined) return;
+									setPreferredCurrency({
+										currency: value,
+										orderId,
+									});
 								}}
-								display={" "}
 							/>
-							<span className="flex items-center justify-between text-muted-foreground text-sm">
-								<span>{formatTokenString(getCurrencyTokens(1n))}</span>
-								<span>
-									{formatTokenString(getCurrencyTokens(unitsForSale))}
-								</span>
-							</span>
 						</div>
+						<TooltipProvider>
+							<Tooltip>
+								<TooltipTrigger className="flex items-center gap-1" asChild>
+									<Button
+										variant={"ghost"}
+										size={"sm"}
+										onClick={userFunds.refetch}
+									>
+										{userFunds.isLoading ? (
+											<Loader2
+												size={16}
+												className="animate-spin text-primary"
+											/>
+										) : userFunds.error ? (
+											<span className="flex items-center justify-center font-sans text-destructive">
+												<RefreshCw size={14} />
+											</span>
+										) : (
+											<span className="flex items-center justify-center gap-2 font-sans text-muted-foreground text-sm">
+												<span className="flex flex-col items-end text-xs leading-3">
+													<span>
+														{formatDecimals(Number(userFunds.data.formatted))}
+													</span>
+													<b>{preferredCurrencyConfig.symbol}</b>
+												</span>
+												<RefreshCw size={14} />
+											</span>
+										)}
+									</Button>
+								</TooltipTrigger>
+								<TooltipContent className="font-sans text-sm">
+									Refresh your balance in{" "}
+									<b>{preferredCurrencyConfig.symbol}</b>.
+								</TooltipContent>
+							</Tooltip>
+						</TooltipProvider>
 					</div>
+
+					<span
+						className={cn(
+							"text-destructive text-sm",
+							isValidAmount && hasSufficientFunds
+								? "select-none opacity-0"
+								: "opacity-100",
+						)}
+					>
+						{hasSufficientFunds ? "Invalid Value" : "Insufficient Funds"}
+					</span>
 				</div>
+			</div>
+			<div className="flex items-start gap-2 rounded-lg border bg-muted/50 p-3 font-sans text-muted-foreground text-xs">
+				<Info className="mt-0.5 h-4 w-4 shrink-0" />
+				<p>
+					All proceeds from the purchase of this ecocert goes directly to the creator of the ecocert. 
+					Ecocertain does not charge a platform fee. 
+				</p>
 			</div>
 		</div>
 	);
