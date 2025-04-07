@@ -11,6 +11,7 @@ import { cn } from "@/lib/utils";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import { Copy, Eye, Globe, Link2, LinkIcon, PlusCircle } from "lucide-react";
+import Link from "next/link";
 import React from "react";
 import SectionWrapper from "../SectionWrapper";
 import URLSourcePreviewDialog from "./URLSourcePreviewDialog";
@@ -109,16 +110,29 @@ const Attestations = () => {
 																							disabled
 																						/>
 																						<div className="flex items-center gap-3">
-																							<Button
-																								variant={"link"}
-																								className="h-auto gap-1 p-0 text-muted-foreground text-xs"
+																							<Link
+																								href={urlSource.src}
+																								target="_blank"
 																							>
-																								<Globe size={12} />
-																								Visit
-																							</Button>
+																								<Button
+																									variant={"link"}
+																									className="h-auto gap-1 p-0 text-muted-foreground text-xs"
+																								>
+																									<Globe size={12} />
+																									Visit
+																								</Button>
+																							</Link>
+
 																							<Button
 																								variant={"link"}
 																								className="h-auto gap-1 p-0 text-muted-foreground text-xs"
+																								onClick={() => {
+																									if (window) {
+																										window.navigator.clipboard.writeText(
+																											urlSource.src,
+																										);
+																									}
+																								}}
 																							>
 																								<Copy size={12} />
 																								Copy
