@@ -398,8 +398,8 @@ const AmountOptions = ({
 			<div className="flex items-start gap-2 rounded-lg border bg-muted/50 p-3 font-sans text-muted-foreground text-xs">
 				<Info className="mt-0.5 h-4 w-4 shrink-0" />
 				<p>
-					All proceeds from the purchase of this ecocert goes directly to the creator of the ecocert. 
-					Ecocertain does not charge a platform fee. 
+					All proceeds from the purchase of this ecocert goes directly to the
+					creator of the ecocert. Ecocertain does not charge a platform fee.
 				</p>
 			</div>
 		</div>

@@ -5,6 +5,7 @@ import Attestations from "./Attestations";
 import Contributors from "./Contributors";
 import SectionWrapper from "./SectionWrapper";
 import EvaluationDetails from "./evaluation-details";
+
 const RightContent = ({ hypercert }: { hypercert: FullHypercert }) => {
 	return (
 		<div className="flex w-full flex-initial flex-col gap-6 lg:w-auto lg:flex-[2]">
