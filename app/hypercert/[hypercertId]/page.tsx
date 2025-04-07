@@ -71,7 +71,7 @@ export default async function HypercertPage({
 									</li>
 								))}
 							</ul>
-							<div className="mt-1 flex items-center gap-2 text-muted-foreground text-sm">
+							<div className="mt-3 flex flex-col items-start gap-2 text-muted-foreground text-sm md:flex-row md:items-center">
 								<CopyButton text={hypercertId} />
 								<Link
 									href={`https://app.hypercerts.org/hypercerts/${hypercertId}`}

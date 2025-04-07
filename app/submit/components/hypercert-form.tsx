@@ -435,7 +435,7 @@ const HypercertForm = () => {
 
 			// Encode the coordinates for the URL
 			const encodedPolygon = encodeURIComponent(JSON.stringify(coordinates));
-			return `https://gainforest.app/?shapefile=${encodedPolygon}&showUI=false`;
+			return `https://legacy.gainforest.app/?shapefile=${encodedPolygon}&showUI=false`;
 		} catch (error) {
 			console.error(
 				"Something went wrong while generating geojson preview:",
@@ -483,7 +483,7 @@ const HypercertForm = () => {
 				}
 
 				const data = await response.json();
-				if (!data.type || !data.features) {
+				if (!data.type || !(data.features || data.geometry)) {
 					form.setError("geojson", {
 						type: "manual",
 						message: "Invalid GeoJSON format",
@@ -933,7 +933,7 @@ const HypercertForm = () => {
 													{field.value && (
 														<div className="mt-4 aspect-video w-full rounded-lg border border-border">
 															<iframe
-																src={`https://gainforest.app/?shapefile=${encodeURIComponent(
+																src={`https://legacy.gainforest.app/?shapefile=${encodeURIComponent(
 																	field.value,
 																)}&showUI=false`}
 																className="h-full w-full rounded-lg"

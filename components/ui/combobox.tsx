@@ -3,7 +3,7 @@
 import { Check, ChevronsUpDown } from "lucide-react";
 import * as React from "react";
 
-import { Button } from "@/components/ui/button";
+import { Button, type ButtonProps } from "@/components/ui/button";
 import {
 	Command,
 	CommandEmpty,
@@ -32,7 +32,8 @@ export function Combobox({
 	searchPlaceholder,
 	value,
 	onChange,
-}: {
+	...props
+}: Omit<ButtonProps, "onChange"> & {
 	options: ComboboxOption[];
 	placeholder?: string;
 	emptyLabel?: string;
@@ -47,10 +48,11 @@ export function Combobox({
 		<Popover open={open} onOpenChange={setOpen}>
 			<PopoverTrigger asChild>
 				<Button
+					{...props}
 					variant="outline"
 					role="combobox"
 					aria-expanded={open}
-					className="justify-between font-sans"
+					className={cn("justify-between font-sans", props.className)}
 				>
 					{value
 						? options.find((option) => option.value === value)?.label

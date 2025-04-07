@@ -1,68 +1,76 @@
 "use client";
 import GetVerifiedDialog from "@/app/components/get-verified-dialog";
-import type { FullHypercert } from "@/app/graphql-queries/hypercerts";
+import {
+	type FullHypercert,
+	fetchHypercertIDs,
+} from "@/app/graphql-queries/hypercerts";
 import { Button } from "@/components/ui/button";
 import { EvervaultCard } from "@/components/ui/evervault-card";
 import UserChip from "@/components/user-chip";
 import { verifiedAttestors } from "@/config/gainforest";
 import { cn } from "@/lib/utils";
+import { useQuery } from "@tanstack/react-query";
 import { ArrowRight, ShieldCheck } from "lucide-react";
+import Link from "next/link";
 import React, { useState } from "react";
+import { useAccount } from "wagmi";
 
 const EvaluationDetails = ({ hypercert }: { hypercert: FullHypercert }) => {
 	const { attestations } = hypercert;
+	const { address } = useAccount();
+	const isCreator =
+		address?.toLowerCase() === hypercert.creatorAddress.toLowerCase();
+
+	const { data: hyperboardIds, isLoading: hyperboardIdsLoading } = useQuery({
+		queryKey: ["hypercert-ids-in-hyperboard"],
+		queryFn: fetchHypercertIDs,
+	});
+	const isVerifiedByGainForest = hyperboardIds?.some(
+		(id) => id === hypercert.hypercertId,
+	);
+
 	const attesters = new Set(
 		attestations.map((attestation) => attestation.attester),
 	);
 	const [viewingAll, setViewingAll] = useState(false);
 
-	const hasGainforestAttestation = [...attesters].some((attester) =>
-		verifiedAttestors.has(attester),
-	);
-
 	return (
 		<div className="group overflow-hidden">
-			{hasGainforestAttestation && (
+			{/* {isVerifiedByGainForest && (
 				<EvervaultCard>
 					<div className="flex w-full items-center gap-2">
 						<ShieldCheck className="text-primary" size={24} />
 						<span className="font-bold text-lg">Verified by Gainforest</span>
 					</div>
 				</EvervaultCard>
-			)}
-			{attesters.size === 0 ? (
-				<div className="flex w-full flex-col items-center gap-4 px-8 py-4">
+			)} */}
+			{attesters.size === 0 && (
+				<div className="flex w-full flex-col items-center gap-1 px-8 py-4">
 					<span className="text-center text-muted-foreground leading-none">
-						Verification allows you to display this hypercert in the ecocertain
-						homepage.
+						{!hyperboardIdsLoading &&
+							(isVerifiedByGainForest
+								? "This hypercert and its works have been verified by GainForest and is visible on the homepage."
+								: "This hypercert is not yet verified by GainForest, and cannot be accessed on the homepage.")}
 					</span>
-					<a href="https://tally.so/r/w8rRxA" target="_blank" rel="noreferrer">
-						<Button size={"sm"} className="gap-2">
-							<ShieldCheck size={16} />
-							Get Verified
-						</Button>
-					</a>
+					{isCreator && (
+						<Link
+							href="https://tally.so/r/w8rRxA"
+							target="_blank"
+							rel="noreferrer"
+							className="mt-2"
+						>
+							<Button size={"sm"} className="gap-2">
+								<ShieldCheck size={16} />
+								Get Verified
+							</Button>
+						</Link>
+					)}
 				</div>
-			) : (
-				// Display subtitle if there are no attesters other than gainforest.
-				attesters.size === 1 &&
-				hasGainforestAttestation && (
-					<div className="flex w-full flex-col items-center gap-1 px-8 py-4">
-						<span className="text-center text-muted-foreground leading-none">
-							This hypercert and the work has been verified by Gainforest.
-						</span>
-					</div>
-				)
 			)}
 			{attesters.size > 0 && (
-				<div
-					className={cn(
-						"flex w-full flex-col gap-2",
-						hasGainforestAttestation ? "mt-4" : "",
-					)}
-				>
+				<div className={cn("flex w-full flex-col gap-2")}>
 					<span className="font-bold text-muted-foreground text-sm">
-						{hasGainforestAttestation ? "Other Evaluators" : "Evaluators"}:
+						Evaluators:
 					</span>
 					<ul className="flex flex-wrap items-center gap-1">
 						{[...attesters]
