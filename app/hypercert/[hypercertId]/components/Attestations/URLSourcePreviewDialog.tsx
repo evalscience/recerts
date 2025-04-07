@@ -23,10 +23,13 @@ import type React from "react";
 import { useState } from "react";
 
 const URLSourcePreviewDialog = ({
-	triggers,
+	TriggerRenderer,
 	urls,
 }: {
-	triggers: React.ReactNode[];
+	TriggerRenderer: React.FC<{
+		wrapper: React.FC<{ children: React.ReactNode }>;
+		setActiveIndex: (index: number) => void;
+	}>;
 	urls: string[];
 }) => {
 	const [currentIndex, setCurrentIndex] = useState(0);
@@ -43,18 +46,12 @@ const URLSourcePreviewDialog = ({
 
 	return (
 		<Dialog>
-			{triggers.map((trigger, index) => {
-				const key = `trigger-${index}-${urls[index]}`;
-				return (
-					<DialogTrigger
-						asChild
-						key={key}
-						onClick={() => setCurrentIndex(index)}
-					>
-						{trigger}
-					</DialogTrigger>
-				);
-			})}
+			<TriggerRenderer
+				wrapper={({ children }) => (
+					<DialogTrigger asChild>{children}</DialogTrigger>
+				)}
+				setActiveIndex={setCurrentIndex}
+			/>
 			<DialogContent className="font-sans">
 				<DialogHeader>
 					<DialogTitle>Attachment Preview</DialogTitle>
@@ -71,8 +68,9 @@ const URLSourcePreviewDialog = ({
 						<ChevronLeft size={16} />
 					</Button>
 					<div className="flex flex-1 flex-col items-center gap-2">
-						<div className="h-[300px] overflow-hidden rounded-lg border border-border">
+						<div className="h-[300px] w-full overflow-hidden rounded-lg border border-border">
 							<iframe
+								key={urls[currentIndex]}
 								src={urls[currentIndex]}
 								className="h-full w-full"
 								title="Attachment Preview"

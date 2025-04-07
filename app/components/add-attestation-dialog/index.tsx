@@ -226,10 +226,12 @@ const AddAttestationDialog = ({
 				)}
 
 				<DialogFooter>
-					<DialogCancel>Cancel</DialogCancel>
-					<Button onClick={handleContinue} type="button">
-						Continue
-					</Button>
+					<DialogCancel>Close</DialogCancel>
+					{!attestationProgressVisible && (
+						<Button onClick={handleContinue} type="button">
+							Continue
+						</Button>
+					)}
 				</DialogFooter>
 			</DialogContent>
 		</Dialog>
