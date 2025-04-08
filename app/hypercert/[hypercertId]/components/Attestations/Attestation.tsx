@@ -1,4 +1,4 @@
-import type { EcocertAttestation } from "@/app/graphql-queries/attestations";
+import type { EcocertAttestation } from "@/app/graphql-queries/hypercerts";
 import { Button } from "@/components/ui/button";
 import EthAvatar from "@/components/ui/eth-avatar";
 import UserChip from "@/components/user-chip";

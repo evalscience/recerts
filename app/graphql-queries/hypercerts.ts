@@ -5,10 +5,8 @@ import type { ApiError } from "@/types/api";
 import { type ResultOf, graphql } from "gql.tada";
 import { catchError } from "../utils";
 import { fetchHypercertsGraphQL as fetchGraphQL } from "../utils/graphql";
-import fetchAttestationByHypercertId, {
-	type EcocertAttestation,
-} from "./attestations";
 import { hypercert } from "./templates";
+
 const hypercertIdsByHyperboardIdQuery = graphql(`
   query GetHypercertIdsByHyperboardId($hyperboard_id: UUID!) {
     hyperboards(where: { id: { eq: $hyperboard_id } }) {
@@ -187,6 +185,20 @@ const fullHypercertByHypercertIdQuery = graphql(`
             currency
           }
         }
+        attestations {
+          data {
+            eas_schema {
+              chain_id
+              schema
+              uid
+            }
+            attester
+            creation_block_timestamp
+            data
+            schema_uid
+            uid
+          }
+        }
         sales {
           data {
             amounts
@@ -204,6 +216,30 @@ const fullHypercertByHypercertIdQuery = graphql(`
 type FullHypercertByHypercertIdQueryResponse = ResultOf<
 	typeof fullHypercertByHypercertIdQuery
 >;
+
+type AttestationDataResponse = {
+	title: string;
+	chain_id: string;
+	token_id: string;
+	description: string;
+	contract_address: string;
+	sources: string[];
+};
+
+type AttestationData = Omit<AttestationDataResponse, "sources"> & {
+	sources: {
+		type: string;
+		src: string;
+	}[];
+};
+
+export type EcocertAttestation = {
+	uid: string;
+	schema_uid: string;
+	data: AttestationData;
+	attester: string;
+	creationBlockTimestamp: bigint;
+};
 
 export type FullHypercert = {
 	hypercertId: string;
@@ -256,7 +292,10 @@ export const fetchFullHypercertById = async (
 	if (testingLog) {
 		console.log("calling from fetchFullHypercertById", testingLog);
 	}
-	const promises = [
+	const [error, response] = await catchError<
+		FullHypercertByHypercertIdQueryResponse,
+		ApiError
+	>(
 		fetchGraphQL(
 			fullHypercertByHypercertIdQuery,
 			{
@@ -264,23 +303,13 @@ export const fetchFullHypercertById = async (
 			},
 			testingLog,
 		),
-		fetchAttestationByHypercertId(hypercertId),
-	] satisfies [
-		Promise<FullHypercertByHypercertIdQueryResponse>,
-		Promise<EcocertAttestation[]>,
-	];
-	const [error, response] = await catchError<
-		[FullHypercertByHypercertIdQueryResponse, EcocertAttestation[]],
-		ApiError
-	>(Promise.all(promises));
+	);
 	if (error) {
 		throw error;
 	}
 
-	const [hypercertResponse, attestationsResponse] = response;
-
-	const hypercert = hypercertResponse.hypercerts.data
-		? hypercertResponse.hypercerts.data[0]
+	const hypercert = response.hypercerts.data
+		? response.hypercerts.data[0]
 		: null;
 	if (!hypercert)
 		throw {
@@ -332,6 +361,34 @@ export const fetchFullHypercertById = async (
 		};
 	});
 
+	const attestations = hypercert.attestations?.data ?? [];
+	const parsedAttestations = attestations
+		.map((attestation) => {
+			if (
+				attestation.schema_uid !==
+				"0x48e3e1be1e08084b408a7035ac889f2a840b440bbf10758d14fb722831a200c3"
+			)
+				return null;
+			const data = attestation.data as AttestationDataResponse;
+			const parsedData: AttestationData = {
+				...data,
+				sources: data.sources.map((source) => JSON.parse(source)) as {
+					type: string;
+					src: string;
+				}[],
+			};
+			return {
+				uid: attestation.uid ?? "",
+				schema_uid: (attestation.schema_uid ?? "") as string,
+				data: parsedData,
+				attester: attestation.attester ?? "",
+				creationBlockTimestamp:
+					typeCastApiResponseToBigInt(attestation.creation_block_timestamp) ??
+					0n,
+			};
+		})
+		.filter((attestation) => attestation !== null);
+
 	const fullHypercert = {
 		hypercertId,
 		saleStatus,
@@ -360,8 +417,8 @@ export const fetchFullHypercertById = async (
 		},
 		orders: parsedOrders,
 		sales: parsedSales,
-		attestations: attestationsResponse,
-	};
+		attestations: parsedAttestations,
+	} satisfies FullHypercert;
 	return fullHypercert;
 };
 
