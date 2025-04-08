@@ -37,13 +37,13 @@ const Attestations = () => {
 	//   );
 
 	return (
-		<SectionWrapper title="Attestations">
+		<SectionWrapper title="Proofs of Impact">
 			<div className="flex flex-col items-center gap-4">
 				<div className="flex w-full flex-col gap-2">
 					{validAttestations.length === 0 ? (
 						<div className="flex flex-col items-center justify-center gap-2 rounded-md bg-muted p-4 font-sans">
 							<p className="text-muted-foreground text-sm">
-								No attestations found
+								No proofs of impact found
 							</p>
 						</div>
 					) : (
@@ -64,7 +64,7 @@ const Attestations = () => {
 						trigger={
 							<Button variant="outline" className="gap-2" size={"sm"}>
 								<PlusCircle size={16} />
-								Add Attestation
+								Add Proof of Impact
 							</Button>
 						}
 						hypercertId={hypercert.hypercertId}

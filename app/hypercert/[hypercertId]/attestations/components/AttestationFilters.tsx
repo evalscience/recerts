@@ -33,7 +33,7 @@ export default function AttestationFilters({
 			<div className="relative flex-1">
 				<Search className="-translate-y-1/2 absolute top-1/2 left-3 h-4 w-4 text-muted-foreground" />
 				<Input
-					placeholder="Search attestations..."
+					placeholder="Search proofs of impact..."
 					className="bg-background pl-9"
 					value={searchQuery}
 					onChange={(e) => {

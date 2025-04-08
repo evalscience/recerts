@@ -84,7 +84,7 @@ export default function AttestationsList({
 				{filteredAndSortedAttestations.length === 0 && (
 					<div className="flex flex-col items-center gap-2 rounded-lg border border-border bg-background p-4">
 						<CircleAlert size={48} className="text-muted-foreground/50" />
-						<p className="text-muted-foreground">No attestations found.</p>
+						<p className="text-muted-foreground">Nothing to show.</p>
 						<Button
 							variant="secondary"
 							className="gap-2"

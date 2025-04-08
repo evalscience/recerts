@@ -11,7 +11,7 @@ type PageProps = {
 	params: { hypercertId: string };
 };
 
-export default async function HypercertAttestationsPage({
+export default async function HypercertProofOfImpactPage({
 	params: { hypercertId },
 }: PageProps) {
 	const hypercert = await fetchFullHypercertById(hypercertId);
@@ -36,8 +36,12 @@ export default async function HypercertAttestationsPage({
 						</Button>
 					</Link>
 					<div className="w-full">
-						<h1 className="mb-8 font-baskerville font-bold text-3xl">
-							Attestations for {hypercert.metadata.name}
+						<h1 className="mb-8 text-balance text-center font-baskerville font-bold text-3xl">
+							<i className="text-2xl text-beige-muted-foreground">
+								Proofs of Impact for
+							</i>
+							<br />
+							<span>{hypercert.metadata.name}</span>
 						</h1>
 						<AttestationsList
 							attestations={hypercert.attestations}

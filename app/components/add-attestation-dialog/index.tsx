@@ -118,10 +118,10 @@ const AddAttestationDialog = ({
 			<DialogContent className="font-sans" sidebarChildren={<Sidebar />}>
 				<DialogHeader>
 					<DialogTitle className="font-baskerville">
-						Add Attestation
+						Add Proof of Impact
 					</DialogTitle>
 					<DialogDescription className="font-sans text-base">
-						Add an attestation to the ecocert.
+						Add a proof of impact to the hypercert.
 					</DialogDescription>
 				</DialogHeader>
 				{attestationProgressVisible ? (

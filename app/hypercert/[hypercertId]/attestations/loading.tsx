@@ -33,8 +33,8 @@ export default function HypercertAttestationsLoading() {
 						<ChevronLeft size={20} /> Back to hypercert
 					</Button>
 				</Link>
-				<div className="container mx-auto max-w-4xl py-8">
-					<Skeleton className="mb-8 h-9 w-64" />
+				<div className="w-full">
+					<Skeleton className="mb-8 h-9 w-96 font-baskerville text-3xl" />
 					<div className="flex flex-col gap-4">
 						{[1, 2, 3].map((i) => (
 							<div
