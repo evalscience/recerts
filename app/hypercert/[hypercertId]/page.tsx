@@ -19,26 +19,11 @@ import CopyButton from "./components/copy-button";
 import LeftContent from "./components/left-content";
 import RightContent from "./components/right-content";
 
-export const dynamic = "force-dynamic";
-
-type PageProps = {
-	params: { hypercertId: string };
-};
-
-// const getCachedHypercert = unstable_cache(
-// 	async (hypercertId: string) => fetchFullHypercertById(hypercertId),
-// 	["full-hypercert"],
-// 	{
-// 		revalidate: 10,
-// 	},
-// );
-
 export default async function HypercertPage({
 	params: { hypercertId },
 }: {
 	params: { hypercertId: string };
 }) {
-	// Remove the error catching and let errors propagate up to the error boundary
 	const hypercert = await fetchFullHypercertById(hypercertId);
 
 	return (

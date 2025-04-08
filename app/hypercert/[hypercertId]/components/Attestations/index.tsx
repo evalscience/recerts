@@ -70,9 +70,11 @@ const Attestations = () => {
 						hypercertId={hypercert.hypercertId}
 					/>
 					{validAttestations.length > 2 && (
-						<Button variant={"ghost"} size={"sm"}>
-							View all
-						</Button>
+						<Link href={`/hypercert/${hypercert.hypercertId}/attestations`}>
+							<Button variant={"ghost"} size={"sm"}>
+								View all
+							</Button>
+						</Link>
 					)}
 				</div>
 			</div>
