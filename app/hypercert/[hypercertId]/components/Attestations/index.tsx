@@ -37,7 +37,23 @@ const Attestations = () => {
 	//   );
 
 	return (
-		<SectionWrapper title="Proof of Impact">
+		<SectionWrapper
+			title="Proof of Impact"
+			titleRight={
+				<>
+					{validAttestations.length > 2 && (
+						<Link href={`/hypercert/${hypercert.hypercertId}/attestations`}>
+							<Button variant={"ghost"} size={"sm"} className="gap-2">
+								View all
+								<span className="rounded-full border border-border px-1 py-0.5 text-xs">
+									{validAttestations.length}
+								</span>
+							</Button>
+						</Link>
+					)}
+				</>
+			}
+		>
 			<div className="flex flex-col items-center gap-4">
 				<div className="flex w-full flex-col gap-2">
 					{validAttestations.length === 0 ? (
@@ -58,12 +74,7 @@ const Attestations = () => {
 						})
 					)}
 				</div>
-				<div
-					className={cn(
-						"flex w-full items-center justify-center",
-						validAttestations.length > 2 && "justify-between",
-					)}
-				>
+				<div className={"flex w-full items-center justify-center"}>
 					<AddAttestationDialog
 						trigger={
 							<Button variant="outline" className="gap-2" size={"sm"}>
@@ -73,13 +84,6 @@ const Attestations = () => {
 						}
 						hypercertId={hypercert.hypercertId}
 					/>
-					{validAttestations.length > 2 && (
-						<Link href={`/hypercert/${hypercert.hypercertId}/attestations`}>
-							<Button variant={"ghost"} size={"sm"}>
-								View all
-							</Button>
-						</Link>
-					)}
 				</div>
 			</div>
 		</SectionWrapper>
