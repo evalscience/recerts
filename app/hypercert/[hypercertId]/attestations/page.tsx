@@ -38,7 +38,7 @@ export default async function HypercertProofOfImpactPage({
 					<div className="w-full">
 						<h1 className="mb-8 text-balance text-center font-baskerville font-bold text-3xl">
 							<i className="text-2xl text-beige-muted-foreground">
-								Proofs of Impact for
+								Proof of Impact for
 							</i>
 							<br />
 							<span>{hypercert.metadata.name}</span>

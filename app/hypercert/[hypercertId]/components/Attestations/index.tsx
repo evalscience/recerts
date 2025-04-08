@@ -37,13 +37,13 @@ const Attestations = () => {
 	//   );
 
 	return (
-		<SectionWrapper title="Proofs of Impact">
+		<SectionWrapper title="Proof of Impact">
 			<div className="flex flex-col items-center gap-4">
 				<div className="flex w-full flex-col gap-2">
 					{validAttestations.length === 0 ? (
 						<div className="flex flex-col items-center justify-center gap-2 rounded-md bg-muted p-4 font-sans">
 							<p className="text-muted-foreground text-sm">
-								No proofs of impact found
+								No proof of impact found
 							</p>
 						</div>
 					) : (
