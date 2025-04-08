@@ -12,21 +12,21 @@ import {
 } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { Search, SortAsc, SortDesc } from "lucide-react";
-import { useState } from "react";
 
 type SortOption = "newest" | "oldest";
 
 export default function AttestationFilters({
-	onSearch,
-	onSort,
-	onCreatorOnlyChange,
+	searchState,
+	sortState,
+	showCreatorOnlyState,
 }: {
-	onSearch: (query: string) => void;
-	onSort: (sort: SortOption) => void;
-	onCreatorOnlyChange: (showCreatorOnly: boolean) => void;
+	searchState: [string, (value: string) => void];
+	sortState: [SortOption, (value: SortOption) => void];
+	showCreatorOnlyState: [boolean, (value: boolean) => void];
 }) {
-	const [searchQuery, setSearchQuery] = useState("");
-	const [showCreatorOnly, setShowCreatorOnly] = useState(false);
+	const [searchQuery, setSearchQuery] = searchState;
+	const [sort, setSort] = sortState;
+	const [showCreatorOnly, setShowCreatorOnly] = showCreatorOnlyState;
 
 	return (
 		<div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
@@ -38,13 +38,12 @@ export default function AttestationFilters({
 					value={searchQuery}
 					onChange={(e) => {
 						setSearchQuery(e.target.value);
-						onSearch(e.target.value);
 					}}
 				/>
 			</div>
 			<div className="flex items-center gap-4">
 				<Select
-					onValueChange={(value) => onSort(value as SortOption)}
+					onValueChange={(value) => setSort(value as SortOption)}
 					defaultValue="newest"
 				>
 					<SelectTrigger className="w-[180px] bg-background">
@@ -71,7 +70,6 @@ export default function AttestationFilters({
 						checked={showCreatorOnly}
 						onCheckedChange={(checked) => {
 							setShowCreatorOnly(checked);
-							onCreatorOnlyChange(checked);
 						}}
 					/>
 					<Label htmlFor="creator-only">Creator only</Label>

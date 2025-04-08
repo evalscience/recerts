@@ -1,11 +1,13 @@
 "use client";
 
 import type { EcocertAttestation } from "@/app/graphql-queries/hypercerts";
+import { Button } from "@/components/ui/button";
 import EthAvatar from "@/components/ui/eth-avatar";
 import UserChip from "@/components/user-chip";
 import autoAnimate from "@formkit/auto-animate";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
+import { CircleAlert, Eraser } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import AttestationFilters from "./AttestationFilters";
 import URLSource from "./URLSource";
@@ -21,9 +23,13 @@ export default function AttestationsList({
 	attestations: EcocertAttestation[];
 	creatorAddress: `0x${string}`;
 }) {
-	const [searchQuery, setSearchQuery] = useState("");
-	const [sortBy, setSortBy] = useState<SortOption>("newest");
-	const [showCreatorOnly, setShowCreatorOnly] = useState(false);
+	const searchState = useState("");
+	const sortState = useState<SortOption>("newest");
+	const showCreatorOnlyState = useState(false);
+
+	const [searchQuery, setSearchQuery] = searchState;
+	const [sortBy, setSortBy] = sortState;
+	const [showCreatorOnly, setShowCreatorOnly] = showCreatorOnlyState;
 
 	const listRef = useRef<HTMLDivElement>(null);
 
@@ -70,11 +76,28 @@ export default function AttestationsList({
 	return (
 		<>
 			<AttestationFilters
-				onSearch={setSearchQuery}
-				onSort={setSortBy}
-				onCreatorOnlyChange={setShowCreatorOnly}
+				searchState={searchState}
+				sortState={sortState}
+				showCreatorOnlyState={showCreatorOnlyState}
 			/>
 			<div className="mt-4 flex flex-col gap-2" ref={listRef}>
+				{filteredAndSortedAttestations.length === 0 && (
+					<div className="flex flex-col items-center gap-2 rounded-lg border border-border bg-background p-4">
+						<CircleAlert size={48} className="text-muted-foreground/50" />
+						<p className="text-muted-foreground">No attestations found.</p>
+						<Button
+							variant="secondary"
+							className="gap-2"
+							onClick={() => {
+								setSearchQuery("");
+								setShowCreatorOnly(false);
+							}}
+						>
+							<Eraser size={16} />
+							<span>Clear filters</span>
+						</Button>
+					</div>
+				)}
 				{filteredAndSortedAttestations.map((attestation) => {
 					const creationDateFromNow = dayjs(
 						Number(attestation.creationBlockTimestamp) * 1000,
