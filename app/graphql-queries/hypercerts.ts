@@ -230,6 +230,7 @@ type AttestationData = Omit<AttestationDataResponse, "sources"> & {
 	sources: {
 		type: string;
 		src: string;
+		description?: string;
 	}[];
 };
 
@@ -375,6 +376,7 @@ export const fetchFullHypercertById = async (
 				sources: data.sources.map((source) => JSON.parse(source)) as {
 					type: string;
 					src: string;
+					description?: string;
 				}[],
 			};
 			return {

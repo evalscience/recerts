@@ -7,7 +7,7 @@ import UserChip from "@/components/user-chip";
 import autoAnimate from "@formkit/auto-animate";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
-import { CircleAlert, Eraser } from "lucide-react";
+import { BadgeCheck, CircleAlert, Eraser } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import AttestationFilters from "./AttestationFilters";
 import URLSource from "./URLSource";
@@ -109,25 +109,31 @@ export default function AttestationsList({
 					return (
 						<div
 							key={attestation.uid}
-							className="flex flex-col gap-4 rounded-lg border border-border bg-background p-4 md:flex-row"
+							className="flex flex-col gap-4 rounded-lg border border-border bg-background p-4 md:flex-row md:gap-8"
 						>
 							<div className="flex flex-1 flex-col gap-4">
-								<div className="flex items-center gap-2">
-									<EthAvatar
-										address={attestation.attester as `0x${string}`}
-										size={36}
-									/>
-									<div className="flex flex-col">
-										<UserChip
+								<div className="flex w-full items-center justify-between">
+									<div className="flex items-center gap-2">
+										<EthAvatar
 											address={attestation.attester as `0x${string}`}
-											className="border-none bg-transparent p-0 font-bold text-sm"
-											showCopyButton="hover"
-											showAvatar={false}
+											size={36}
 										/>
-										<span className="text-muted-foreground text-xs">
-											{creationDateFromNow}
-										</span>
+										<div className="flex flex-col">
+											<UserChip
+												address={attestation.attester as `0x${string}`}
+												className="border-none bg-transparent p-0 font-bold text-sm"
+												showCopyButton="hover"
+												showAvatar={false}
+											/>
+											<span className="text-muted-foreground text-xs">
+												{creationDateFromNow}
+											</span>
+										</div>
 									</div>
+									{attestation.attester.toLowerCase() ===
+										creatorAddress.toLowerCase() && (
+										<BadgeCheck className="text-primary" size={24} />
+									)}
 								</div>
 								<div className="flex flex-col gap-2">
 									<h3 className="font-bold">{attestation.data.title}</h3>
@@ -144,7 +150,7 @@ export default function AttestationsList({
 									<div className="flex flex-col divide-y overflow-hidden rounded-md border border-border bg-white">
 										{urlSources.map((urlSource, index) => {
 											const key = `${urlSource.src}-${index}`;
-											return <URLSource key={key} url={urlSource.src} />;
+											return <URLSource key={key} urlSource={urlSource} />;
 										})}
 									</div>
 								</div>

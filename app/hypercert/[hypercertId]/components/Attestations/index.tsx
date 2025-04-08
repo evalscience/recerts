@@ -49,7 +49,11 @@ const Attestations = () => {
 					) : (
 						validAttestations.slice(0, 2).map((attestation) => {
 							return (
-								<Attestation key={attestation.uid} attestation={attestation} />
+								<Attestation
+									key={attestation.uid}
+									attestation={attestation}
+									creatorAddress={hypercert.creatorAddress as `0x${string}`}
+								/>
 							);
 						})
 					)}

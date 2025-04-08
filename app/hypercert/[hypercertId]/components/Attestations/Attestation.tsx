@@ -5,43 +5,41 @@ import UserChip from "@/components/user-chip";
 import useCopy from "@/hooks/use-copy";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
-import { ArrowUpRight, Check, Copy, Globe } from "lucide-react";
+import { ArrowUpRight, BadgeCheck, Check, Copy, Globe } from "lucide-react";
 import Link from "next/link";
 import React, { useState } from "react";
 
 dayjs.extend(relativeTime);
 
-const URLSource = ({ url }: { url: string }) => {
-	const { copy, isCopied } = useCopy();
+const URLSource = ({
+	urlSource,
+}: {
+	urlSource: { src: string; description?: string };
+}) => {
 	return (
 		<div className="rounded-md border border-border bg-background">
 			<div className="flex w-full items-center justify-start gap-2 p-2">
 				<div className="flex h-9 w-9 items-center justify-center rounded-md bg-primary/10">
 					<Globe className="text-primary" size={16} />
 				</div>
-				<div className="flex flex-1 flex-col gap-1">
+				<div className="flex flex-1 flex-col">
 					<input
 						type="text"
-						className="h-auto w-full truncate bg-transparent p-0 text-sm"
-						value={url}
+						className="h-auto w-full truncate bg-transparent p-0 font-bold text-sm"
+						value={urlSource.description ?? urlSource.src}
 						readOnly
 						disabled
 					/>
-					<div className="flex items-center gap-3">
-						<Button
-							variant={"link"}
-							className="h-auto gap-1 p-0 text-muted-foreground text-xs"
-							onClick={() => {
-								copy(url);
-							}}
-						>
-							{isCopied ? <Check size={12} /> : <Copy size={12} />}
-							{isCopied ? "Copied" : "Copy"}
-						</Button>
-					</div>
+					<input
+						type="text"
+						className="h-auto w-full truncate bg-transparent p-0 text-muted-foreground text-xs"
+						value={urlSource.src}
+						readOnly
+						disabled
+					/>
 				</div>
 
-				<Link href={url} target="_blank">
+				<Link href={urlSource.src} target="_blank">
 					<Button variant="outline" size={"sm"}>
 						<ArrowUpRight size={16} />
 					</Button>
@@ -51,7 +49,13 @@ const URLSource = ({ url }: { url: string }) => {
 	);
 };
 
-const Attestation = ({ attestation }: { attestation: EcocertAttestation }) => {
+const Attestation = ({
+	attestation,
+	creatorAddress,
+}: {
+	attestation: EcocertAttestation;
+	creatorAddress: `0x${string}`;
+}) => {
 	const creationDateFromNow = dayjs(
 		Number(attestation.creationBlockTimestamp) * 1000,
 	).fromNow();
@@ -64,19 +68,28 @@ const Attestation = ({ attestation }: { attestation: EcocertAttestation }) => {
 			className="flex flex-col gap-4 rounded-lg bg-accent p-4 font-sans"
 			key={attestation.uid}
 		>
-			<div className="flex items-center gap-2">
-				<EthAvatar address={attestation.attester as `0x${string}`} size={36} />
-				<div className="flex flex-col">
-					<UserChip
+			<div className="flex w-full items-center justify-between">
+				<div className="flex items-center gap-2">
+					<EthAvatar
 						address={attestation.attester as `0x${string}`}
-						className="border-none p-0 font-bold text-sm"
-						showCopyButton="hover"
-						showAvatar={false}
+						size={36}
 					/>
-					<span className="text-muted-foreground text-xs">
-						{creationDateFromNow}
-					</span>
+					<div className="flex flex-col">
+						<UserChip
+							address={attestation.attester as `0x${string}`}
+							className="border-none p-0 font-bold text-sm"
+							showCopyButton="hover"
+							showAvatar={false}
+						/>
+						<span className="text-muted-foreground text-xs">
+							{creationDateFromNow}
+						</span>
+					</div>
 				</div>
+				{attestation.attester.toLowerCase() ===
+					creatorAddress.toLowerCase() && (
+					<BadgeCheck className="text-primary" size={24} />
+				)}
 			</div>
 			<div className="flex flex-col">
 				<b>{attestation.data.title}</b>
@@ -92,7 +105,7 @@ const Attestation = ({ attestation }: { attestation: EcocertAttestation }) => {
 							.slice(0, isShowingAllAttachments ? undefined : 2)
 							.map((urlSource, index) => {
 								const key = `${urlSource.src}-${index}`;
-								return <URLSource url={urlSource.src} key={key} />;
+								return <URLSource urlSource={urlSource} key={key} />;
 							})}
 						{urlSources.length > 2 && (
 							<div className="flex items-center justify-center">

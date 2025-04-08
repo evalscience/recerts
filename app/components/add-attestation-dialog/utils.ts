@@ -2,18 +2,20 @@ import { EAS_SCHEMA, getEASConfig } from "@/config/eas";
 import { EAS, SchemaEncoder } from "@ethereum-attestation-service/eas-sdk";
 import type { JsonRpcSigner } from "ethers";
 
+type AttestationSchema = {
+	referencedAttestation: string | undefined;
+	chainId: string;
+	contractAddress: string;
+	tokenId: string;
+	title: string;
+	description: string;
+	sourceURLs: Array<[string, string | undefined]>;
+};
+
 export const addAttestation = async (
 	signer: JsonRpcSigner,
 	chainId: number,
-	values: {
-		chainId: string;
-		contractAddress: string;
-		tokenId: string;
-		title: string;
-		description: string;
-		sourceURLs: string[];
-		referencedAttestation?: string;
-	},
+	values: AttestationSchema,
 ) => {
 	const easConfig = getEASConfig(chainId);
 	if (!easConfig) {
@@ -36,7 +38,8 @@ export const addAttestation = async (
 	const sources = sourceURLs.map((source) => {
 		return JSON.stringify({
 			type: "url",
-			src: source,
+			src: source[0],
+			description: source[1],
 		});
 	});
 
