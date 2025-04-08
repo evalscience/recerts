@@ -18,12 +18,12 @@ import { Textarea } from "@/components/ui/textarea";
 import { useEthersSigner } from "@/hooks/use-ethers-signer";
 import autoAnimate from "@formkit/auto-animate";
 import { Edit, Globe, Info, Pen, PlusCircle, Trash2 } from "lucide-react";
+import Link from "next/link";
 import type React from "react";
 import { useEffect, useRef, useState } from "react";
 import { z } from "zod";
 import AttestationProgress from "./attestation-progress";
 import Sidebar from "./sidebar";
-
 const MAX_SOURCES = 5;
 
 const attestationSchema = z.object({
@@ -324,7 +324,17 @@ const AddAttestationDialog = ({
 									setFormData({ ...formData, acceptTerms: checked as boolean })
 								}
 							/>
-							<Label htmlFor="terms">I accept the terms and conditions</Label>
+							<Label htmlFor="terms">
+								I accept the{" "}
+								<Link
+									href="https://www.hypercerts.org/terms"
+									target="_blank"
+									className="underline"
+								>
+									terms and conditions
+								</Link>
+								.
+							</Label>
 						</div>
 						{errors.acceptTerms && (
 							<p className="text-red-500 text-sm">{errors.acceptTerms}</p>
