@@ -29,7 +29,7 @@ export default async function HypercertProofOfImpactPage({
 				animate={{ opacity: 1, filter: "blur(0px)" }}
 				transition={{ duration: 0.5 }}
 			>
-				<div className="flex w-full max-w-6xl flex-col gap-2 p-8">
+				<div className="flex w-full max-w-6xl flex-col gap-2 p-3 md:p-8">
 					<Link href={`/hypercert/${hypercertId}`}>
 						<Button variant={"link"} className="gap-2 p-0">
 							<ChevronLeft size={20} /> Back to hypercert
@@ -43,10 +43,7 @@ export default async function HypercertProofOfImpactPage({
 							<br />
 							<span>{hypercert.metadata.name}</span>
 						</h1>
-						<AttestationsList
-							attestations={hypercert.attestations}
-							creatorAddress={hypercert.creatorAddress as `0x${string}`}
-						/>
+						<AttestationsList attestations={hypercert.attestations} />
 					</div>
 				</div>
 			</MotionWrapper>

@@ -1,14 +1,24 @@
 "use client";
 
+import AddAttestationDialog from "@/app/components/add-attestation-dialog";
+import useFullHypercert from "@/app/contexts/full-hypercert";
 import type { EcocertAttestation } from "@/app/graphql-queries/hypercerts";
 import { Button } from "@/components/ui/button";
 import EthAvatar from "@/components/ui/eth-avatar";
 import QuickTooltip from "@/components/ui/quicktooltip";
 import UserChip from "@/components/user-chip";
+import { EAS_CONFIGS, getEASConfig } from "@/config/eas";
 import autoAnimate from "@formkit/auto-animate";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
-import { BadgeCheck, CircleAlert, Eraser } from "lucide-react";
+import {
+	ArrowUpRight,
+	BadgeCheck,
+	CircleAlert,
+	Eraser,
+	PlusCircle,
+} from "lucide-react";
+import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
 import AttestationFilters from "./AttestationFilters";
 import URLSource from "./URLSource";
@@ -19,11 +29,12 @@ type SortOption = "newest" | "oldest";
 
 export default function AttestationsList({
 	attestations,
-	creatorAddress,
 }: {
 	attestations: EcocertAttestation[];
-	creatorAddress: `0x${string}`;
 }) {
+	const hypercert = useFullHypercert();
+	const creatorAddress = hypercert.creatorAddress as `0x${string}`;
+
 	const searchState = useState("");
 	const sortState = useState<SortOption>("newest");
 	const showCreatorOnlyState = useState(false);
@@ -81,6 +92,21 @@ export default function AttestationsList({
 				sortState={sortState}
 				showCreatorOnlyState={showCreatorOnlyState}
 			/>
+			<div className="mt-2 flex flex-col items-center justify-between gap-2 rounded-lg border border-border bg-beige-muted p-2 md:flex-row">
+				<p className="text-balance text-center text-beige-muted-foreground text-sm md:text-left">
+					Have any assets or data that verifies project's authenticity, or its
+					impact? Attest your proofs now.
+				</p>
+				<AddAttestationDialog
+					hypercertId={hypercert.hypercertId}
+					trigger={
+						<Button className="gap-2">
+							<PlusCircle size={16} />
+							Add proof of impact
+						</Button>
+					}
+				/>
+			</div>
 			<div className="mt-4 flex flex-col gap-2" ref={listRef}>
 				{filteredAndSortedAttestations.length === 0 && (
 					<div className="flex flex-col items-center gap-2 rounded-lg border border-border bg-background p-4">
@@ -106,6 +132,17 @@ export default function AttestationsList({
 					const urlSources = attestation.data.sources.filter(
 						(source) => source.type === "url",
 					);
+
+					let easConfig = undefined;
+					try {
+						const chainId = Number.parseInt(attestation.data.chain_id);
+						if (Number.isNaN(chainId)) {
+							throw new Error("Invalid chain id");
+						}
+						easConfig = getEASConfig(chainId);
+					} catch (error) {
+						console.error(error);
+					}
 
 					return (
 						<div
@@ -161,6 +198,20 @@ export default function AttestationsList({
 									<p className="text-muted-foreground">
 										{attestation.data.description}
 									</p>
+									{easConfig && (
+										<Link
+											href={`${easConfig.explorerUrl}/attestation/view/${attestation.uid}`}
+											target="_blank"
+										>
+											<Button
+												variant={"link"}
+												size={"sm"}
+												className="gap-2 px-0"
+											>
+												View on easScan <ArrowUpRight size={16} />
+											</Button>
+										</Link>
+									)}
 								</div>
 							</div>
 							{urlSources.length > 0 && (

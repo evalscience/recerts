@@ -1,5 +1,7 @@
 "use client";
 
+import AddAttestationDialog from "@/app/components/add-attestation-dialog";
+import useFullHypercert from "@/app/contexts/full-hypercert";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -11,7 +13,7 @@ import {
 	SelectValue,
 } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
-import { Search, SortAsc, SortDesc } from "lucide-react";
+import { PlusCircle, Search, SortAsc, SortDesc } from "lucide-react";
 
 type SortOption = "newest" | "oldest";
 
@@ -41,7 +43,7 @@ export default function AttestationFilters({
 					}}
 				/>
 			</div>
-			<div className="flex items-center gap-4">
+			<div className="flex flex-wrap items-center gap-4">
 				<Select
 					onValueChange={(value) => setSort(value as SortOption)}
 					defaultValue="newest"
