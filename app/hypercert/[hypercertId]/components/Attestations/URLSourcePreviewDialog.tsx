@@ -81,7 +81,7 @@ const URLSourcePreviewDialog = ({
 								Viewing <b>{currentIndex + 1}</b> of <b>{urls.length}</b>
 							</span>
 							<div className="h-4 w-[2px] rounded-full bg-border" />
-							<QuickTooltip content={"Click to copy"}>
+							<QuickTooltip content={"Click to copy"} asChild>
 								<button
 									className="flex items-center gap-1"
 									type="button"

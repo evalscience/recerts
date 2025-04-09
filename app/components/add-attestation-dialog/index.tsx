@@ -148,8 +148,11 @@ const AddAttestationDialog = ({
 					<DialogTitle className="font-baskerville">
 						Add Proof of Impact
 					</DialogTitle>
-					<DialogDescription className="font-sans text-base">
-						Add a proof of impact to the hypercert.
+					<DialogDescription className="font-sans text-xs">
+						Share concrete evidence of your project's impact. This can include
+						impact reports, visual documentation, video testimonials,
+						data-driven insights, or any other external links that verify the
+						project's success and substantiate its claims.
 					</DialogDescription>
 				</DialogHeader>
 				{attestationProgressVisible ? (

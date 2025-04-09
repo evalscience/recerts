@@ -1,6 +1,7 @@
 import type { EcocertAttestation } from "@/app/graphql-queries/hypercerts";
 import { Button } from "@/components/ui/button";
 import EthAvatar from "@/components/ui/eth-avatar";
+import QuickTooltip from "@/components/ui/quicktooltip";
 import UserChip from "@/components/user-chip";
 import useCopy from "@/hooks/use-copy";
 import dayjs from "dayjs";
@@ -88,7 +89,27 @@ const Attestation = ({
 				</div>
 				{attestation.attester.toLowerCase() ===
 					creatorAddress.toLowerCase() && (
-					<BadgeCheck className="text-primary" size={24} />
+					<QuickTooltip
+						content={
+							<div className="flex max-w-[200px] flex-col items-center gap-1">
+								<BadgeCheck size={24} className="text-primary" />
+								<span className="text-balance text-center font-sans text-muted-foreground text-xs">
+									This proof of impact was attested by the creator of the
+									hypercert.
+								</span>
+							</div>
+						}
+						asChild
+					>
+						<Button
+							variant={"outline"}
+							size={"sm"}
+							className="h-auto w-auto gap-1 rounded-full px-1.5 py-1.5 text-primary leading-none"
+						>
+							<BadgeCheck size={16} />
+							<span>Creator</span>
+						</Button>
+					</QuickTooltip>
 				)}
 			</div>
 			<div className="flex flex-col">
