@@ -21,12 +21,10 @@ const PageError = ({ title, body }: { title?: string; body?: string }) => {
 				<p className="text-muted-foreground">
 					{body ?? "Please try refreshing the page."}
 				</p>
-				<Link href={""}>
-					<Button className="mt-4 gap-2">
-						<RotateCw size={20} />
-						Refresh
-					</Button>
-				</Link>
+				<Button onClick={() => window.location.reload()} className="mt-4 gap-2">
+					<RotateCw size={20} />
+					Refresh
+				</Button>
 			</div>
 		</section>
 	);

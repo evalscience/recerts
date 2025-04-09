@@ -110,7 +110,7 @@ const AttestationProgress = ({
 	values: {
 		title: string;
 		description: string;
-		sourceURLs: string[];
+		sourceURLs: Array<[string, string | undefined]>;
 	};
 	visible: boolean;
 	setVisible: (visible: boolean) => void;
@@ -154,14 +154,17 @@ const AttestationProgress = ({
 		const [hcChain, hcContractAddress, hcTokenId] = hypercertId.split("-");
 
 		setConfigKey("WAITING_TO_SIGN");
+
 		const [transaction, transactionError] = await catchError(
 			async () =>
 				await addAttestation(signer, chainId, {
-					...values,
 					referencedAttestation,
 					chainId: hcChain,
 					contractAddress: hcContractAddress,
 					tokenId: hcTokenId,
+					title: values.title,
+					description: values.description,
+					sourceURLs: values.sourceURLs,
 				}),
 		);
 		if (transactionError) {
