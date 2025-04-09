@@ -1,6 +1,7 @@
 import type { FullHypercert } from "@/app/graphql-queries/hypercerts";
 import MapRenderer from "@/components/map-renderer";
 import React from "react";
+import Attestations from "./Attestations";
 import Contributors from "./Contributors";
 import SectionWrapper from "./SectionWrapper";
 import EvaluationDetails from "./evaluation-details";
@@ -15,6 +16,7 @@ const RightContent = ({ hypercert }: { hypercert: FullHypercert }) => {
 					</div>
 				</SectionWrapper>
 			)}
+			<Attestations />
 			<Contributors hypercert={hypercert} />
 			<SectionWrapper title={"Verification"}>
 				<EvaluationDetails hypercert={hypercert} />

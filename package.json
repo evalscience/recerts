@@ -13,6 +13,7 @@
     "test": "bun jest"
   },
   "dependencies": {
+    "@ethereum-attestation-service/eas-sdk": "^2.7.0",
     "@fontsource-variable/plus-jakarta-sans": "^5.0.20",
     "@formkit/auto-animate": "^0.8.2",
     "@hookform/resolvers": "^3.3.4",
@@ -56,6 +57,7 @@
     "clsx": "^2.1.0",
     "cmdk": "^1.0.0",
     "date-fns": "^3.6.0",
+    "dayjs": "^1.11.13",
     "emailjs": "^4.0.3",
     "ethers": "^6.13.0",
     "framer-motion": "^11.15.0",
