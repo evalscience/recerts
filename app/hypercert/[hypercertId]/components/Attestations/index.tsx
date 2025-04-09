@@ -43,7 +43,7 @@ const Attestations = () => {
 				<>
 					{validAttestations.length > 2 && (
 						<Link href={`/hypercert/${hypercert.hypercertId}/attestations`}>
-							<Button variant={"ghost"} size={"sm"} className="gap-2">
+							<Button variant={"outline"} size={"sm"} className="gap-2">
 								View all
 								<span className="rounded-full border border-border px-1 py-0.5 text-xs">
 									{validAttestations.length}
