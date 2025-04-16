@@ -64,14 +64,15 @@ const getMapDataFromHypercertCID = async (
 
 		const cid = match[1];
 		const geojsonURL = generateIPFSUrl(cid);
-		const mapPreviewURL = `https://legacy.gainforest.app/?shapefile=${geojsonURL}&showUI=false`;
+		const mapPreviewURL = `https://legacy.gainforest.app/?shapefile=https://gateway.pinata.cloud/ipfs/${cid}&showUI=false`;
 		const metadata = validationResult.data as HypercertMetadata;
 		return {
 			geojsonURL,
 			mapPreviewURL,
 			metadata,
 		};
-	} catch {
+	} catch (error) {
+		console.error("Error getting map data from hypercert CID", error);
 		return null;
 	}
 };
