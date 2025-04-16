@@ -77,7 +77,7 @@ const getMapDataFromHypercertCID = async (
 	}
 };
 
-const SiteBoundaries = async ({ hypercertCID }: { hypercertCID: string }) => {
+const SiteBoundaries = ({ hypercertCID }: { hypercertCID: string }) => {
 	const { data: mapData, isLoading } = useQuery({
 		queryKey: ["mapData", hypercertCID],
 		queryFn: () => getMapDataFromHypercertCID(hypercertCID),
