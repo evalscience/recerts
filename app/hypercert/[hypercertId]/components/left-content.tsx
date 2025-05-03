@@ -97,6 +97,7 @@ const LeftContent = ({ hypercert }: { hypercert: FullHypercert }) => {
 									markdown={hypercert.metadata.description ?? ""}
 									editorRef={null}
 									showToolbar={false}
+									readOnly
 								/>
 							</p>
 						</div>
