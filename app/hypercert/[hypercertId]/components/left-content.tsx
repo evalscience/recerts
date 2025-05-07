@@ -92,14 +92,14 @@ const LeftContent = ({ hypercert }: { hypercert: FullHypercert }) => {
 							<h2 className="font-baskerville font-bold text-muted-foreground text-xl">
 								Description
 							</h2>
-							<p className="text-justify leading-tight">
+							<div className="text-justify leading-tight">
 								<MarkdownEditor
 									markdown={hypercert.metadata.description ?? ""}
 									editorRef={null}
 									showToolbar={false}
 									readOnly
 								/>
-							</p>
+							</div>
 						</div>
 					</section>
 				</div>

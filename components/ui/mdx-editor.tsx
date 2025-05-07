@@ -23,7 +23,7 @@ import {
 	toolbarPlugin,
 } from "@mdxeditor/editor";
 import "@mdxeditor/editor/style.css";
-import React, { type ForwardedRef } from "react";
+import React, { useEffect, useState, type ForwardedRef } from "react";
 
 function MarkdownEditor({
 	editorRef,
@@ -32,6 +32,14 @@ function MarkdownEditor({
 }: { editorRef: ForwardedRef<MDXEditorMethods> | null } & MDXEditorProps & {
 		showToolbar?: boolean;
 	}) {
+	const [isMounted, setMounted] = useState(false);
+
+	useEffect(() => {
+		setMounted(true);
+	}, []);
+
+	if (!isMounted) return null;
+
 	const toolbar = toolbarPlugin({
 		toolbarContents: () => {
 			return (
