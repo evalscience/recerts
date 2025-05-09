@@ -53,8 +53,20 @@ import {
 	DropdownMenuItem,
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import MarkdownEditor from "@/components/ui/mdx-editor";
 import { BASE_URL } from "@/config/endpoint";
 import useMintHypercert from "@/hooks/use-mint-hypercert";
+import {
+	MDXEditor,
+	type MDXEditorMethods,
+	type MDXEditorProps,
+	headingsPlugin,
+	listsPlugin,
+	markdownShortcutPlugin,
+	quotePlugin,
+	thematicBreakPlugin,
+} from "@mdxeditor/editor";
+import "@mdxeditor/editor/style.css";
 import { domToPng } from "modern-screenshot";
 import { CollapsibleDeploymentInfo } from "./collapsible-deployment-info";
 import { DeploymentInfoBox } from "./deployment-info-box";
@@ -708,10 +720,12 @@ const HypercertForm = () => {
 												<FormItem>
 													<FormLabel>Description</FormLabel>
 													<FormControl>
-														<Textarea
-															className="bg-inherit"
+														<MarkdownEditor
+															markdown={field.value}
+															onChange={field.onChange}
+															className="rounded-lg border border-border bg-inherit"
 															placeholder="Ecocert description"
-															{...field}
+															editorRef={null}
 														/>
 													</FormControl>
 													<FormMessage />

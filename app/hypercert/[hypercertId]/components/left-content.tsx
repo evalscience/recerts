@@ -1,4 +1,5 @@
 import type { FullHypercert } from "@/app/graphql-queries/hypercerts";
+import MarkdownEditor from "@/components/ui/mdx-editor";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import UserChip from "@/components/user-chip";
 import { bigintToFormattedDate } from "@/lib/utils";
@@ -91,9 +92,14 @@ const LeftContent = ({ hypercert }: { hypercert: FullHypercert }) => {
 							<h2 className="font-baskerville font-bold text-muted-foreground text-xl">
 								Description
 							</h2>
-							<p className="text-justify leading-tight">
-								{hypercert.metadata.description}
-							</p>
+							<div className="text-justify leading-tight">
+								<MarkdownEditor
+									markdown={hypercert.metadata.description ?? ""}
+									editorRef={null}
+									showToolbar={false}
+									readOnly
+								/>
+							</div>
 						</div>
 					</section>
 				</div>
