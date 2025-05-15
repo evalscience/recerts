@@ -2,6 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { cn } from "@/lib/utils";
 import autoAnimate from "@formkit/auto-animate";
 import { AnimatePresence, LayoutGroup, motion } from "framer-motion";
 import {
@@ -85,9 +86,10 @@ const AllReviewsDialog = ({
 							{mode !== "w" && (
 								<AnimatedSplitSection position="left" key={"r-reviews"}>
 									<div
-										className={`flex h-full flex-col${
-											mode === "rw" ? "pt-16" : "pt-6"
-										}px-6`}
+										className={cn(
+											"flex h-full flex-col px-6",
+											mode === "rw" ? "pt-16" : "pt-6",
+										)}
 									>
 										<AnimatePresence>
 											{mode === "r" && (
@@ -115,11 +117,12 @@ const AllReviewsDialog = ({
 											</h2>
 										</div>
 										<div
-											className={`mt-3 space-y-2 overflow-y-auto rounded-xl border border-border bg-muted p-2${
+											className={cn(
+												"mt-3 space-y-2 overflow-y-auto rounded-xl border border-border bg-muted p-2",
 												mode === "r"
 													? "h-[calc(80vh-140px)]"
-													: "h-[calc(80vh-148px)]"
-											}`}
+													: "h-[calc(80vh-148px)]",
+											)}
 										>
 											{dummyReviews.map((review) => (
 												<ReviewCard key={review.id} review={review} />
@@ -133,9 +136,10 @@ const AllReviewsDialog = ({
 							{mode !== "r" && (
 								<AnimatedSplitSection position="right" key={"w-review"}>
 									<div
-										className={`flex h-full flex-col${
-											mode === "rw" ? "pt-16" : "pt-6"
-										}px-6`}
+										className={cn(
+											"flex h-full flex-col px-6",
+											mode === "rw" ? "pt-16" : "pt-6",
+										)}
 									>
 										<AnimatePresence>
 											{mode === "w" && (
