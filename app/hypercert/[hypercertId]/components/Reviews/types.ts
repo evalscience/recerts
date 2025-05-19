@@ -3,6 +3,6 @@ export type Review = {
 	text: string;
 	authorAddress: `0x${string}`;
 	likes: number;
-	timestamp: string;
+	timestamp: number;
 	hasLiked: boolean;
 };

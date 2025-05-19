@@ -1,5 +1,6 @@
 "use client";
 
+import useFullHypercert from "@/app/contexts/full-hypercert";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { cn } from "@/lib/utils";
@@ -57,16 +58,16 @@ const SplitControls = ({
 	);
 };
 
-const AllReviewsDialog = ({
+const ReviewsDialog = ({
 	open,
 	onOpenChange,
 	initialMode = "rw",
-	dummyReviews,
+	reviews,
 }: {
 	open: boolean;
 	onOpenChange: (open: boolean) => void;
 	initialMode: DialogMode;
-	dummyReviews: Review[];
+	reviews: Review[];
 }) => {
 	const [mode, setMode] = useState<DialogMode>(initialMode);
 
@@ -116,6 +117,7 @@ const AllReviewsDialog = ({
 												All Reviews
 											</h2>
 										</div>
+
 										<div
 											className={cn(
 												"mt-3 space-y-2 overflow-y-auto rounded-xl border border-border bg-muted p-2",
@@ -124,9 +126,15 @@ const AllReviewsDialog = ({
 													: "h-[calc(80vh-148px)]",
 											)}
 										>
-											{dummyReviews.map((review) => (
-												<ReviewCard key={review.id} review={review} />
-											))}
+											{reviews.length === 0 ? (
+												<div className="flex flex-col items-center justify-center text-center font-sans text-muted-foreground">
+													No reviews yet.
+												</div>
+											) : (
+												reviews.map((review) => (
+													<ReviewCard key={review.id} review={review} />
+												))
+											)}
 										</div>
 									</div>
 								</AnimatedSplitSection>
@@ -176,4 +184,4 @@ const AllReviewsDialog = ({
 	);
 };
 
-export default AllReviewsDialog;
+export default ReviewsDialog;

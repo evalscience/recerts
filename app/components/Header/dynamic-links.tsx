@@ -37,8 +37,6 @@ const useMyHypercertsLink = (): {
 	return { config, isActive };
 };
 
-// Random comment
-
 export const MyHypercerts: ClientLink = {
 	Desktop: () => {
 		const data = useMyHypercertsLink();

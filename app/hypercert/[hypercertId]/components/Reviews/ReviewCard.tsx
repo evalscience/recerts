@@ -1,11 +1,16 @@
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import EthAvatar from "@/components/ui/eth-avatar";
+import MarkdownEditor from "@/components/ui/mdx-editor";
 import UserChip from "@/components/user-chip";
+import { cn } from "@/lib/utils";
 import dayjs from "dayjs";
+import relativeTime from "dayjs/plugin/relativeTime";
 import { Heart } from "lucide-react";
 import { useState } from "react";
 import type { Review } from "./types";
+
+dayjs.extend(relativeTime);
 
 const ReviewCard = ({ review }: { review: Review }) => {
 	const [likes, setLikes] = useState(review.likes);
@@ -40,7 +45,13 @@ const ReviewCard = ({ review }: { review: Review }) => {
 				</div>
 
 				{/* Body */}
-				<div className="text-muted-foreground text-sm">{review.text}</div>
+				<MarkdownEditor
+					markdown={review.text}
+					className="text-muted-foreground text-sm"
+					editorRef={null}
+					showToolbar={false}
+					readOnly={true}
+				/>
 			</div>
 
 			{/* Footer */}
@@ -48,7 +59,10 @@ const ReviewCard = ({ review }: { review: Review }) => {
 				<Button
 					variant="ghost"
 					size="sm"
-					className={`flex items-center gap-1${hasLiked ? "text-red-500" : ""}`}
+					className={cn(
+						"flex items-center gap-1",
+						hasLiked ? "text-red-500" : "",
+					)}
 					onClick={handleLike}
 				>
 					<Heart size={16} className={hasLiked ? "fill-current" : ""} />
