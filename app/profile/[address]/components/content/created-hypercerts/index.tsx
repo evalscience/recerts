@@ -17,9 +17,12 @@ const NoCreatedHypercerts = () => {
 
 const CreatedHypercerts = ({ hypercerts }: { hypercerts: Hypercert[] }) => {
 	if (hypercerts.length === 0) return <NoCreatedHypercerts />;
+	const newestSortedHypercerts = hypercerts.sort((a, b) =>
+		Number(b.creationBlockTimestamp - a.creationBlockTimestamp),
+	);
 	return (
 		<div className="grid w-full grid-cols-1 gap-4 lg:grid-cols-2">
-			{hypercerts.map((hypercert) => {
+			{newestSortedHypercerts.map((hypercert) => {
 				return <Card key={hypercert.hypercertId} hypercert={hypercert} />;
 			})}
 		</div>

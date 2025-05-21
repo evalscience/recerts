@@ -24,6 +24,7 @@ export type CombinedSale = {
 	unitsBought: bigint;
 	hypercert: SaleByUserHypercert;
 	id: string;
+	lastSaleTimestamp: bigint;
 };
 
 const combineSales = async (sales: SaleByUser[]) => {
@@ -60,6 +61,7 @@ const combineSales = async (sales: SaleByUser[]) => {
 				unitsBought: sale.unitsBought,
 				hypercert: sale.hypercert,
 				id: sale.id,
+				lastSaleTimestamp: sale.saleTimestamp,
 			});
 			continue;
 		}
@@ -68,6 +70,12 @@ const combineSales = async (sales: SaleByUser[]) => {
 		if (index === undefined) continue; // This will never happen.
 		combinedSales[index].totalAmountInUSD += amountInUSD;
 		combinedSales[index].unitsBought += sale.unitsBought;
+		combinedSales[index].lastSaleTimestamp = BigInt(
+			Math.max(
+				Number(combinedSales[index].lastSaleTimestamp),
+				Number(sale.saleTimestamp),
+			),
+		);
 	}
 
 	return combinedSales;

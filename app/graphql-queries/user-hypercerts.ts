@@ -63,6 +63,7 @@ export const fetchHypercertsByUserId = async (
 
 		return {
 			hypercertId: hypercert.hypercert_id as string,
+			creatorAddress: hypercert.creator_address as string,
 			chainId: (hypercert.contract?.chain_id as string) ?? undefined,
 			name: hypercert.metadata?.name ?? undefined,
 			description: hypercert.metadata?.description ?? undefined,
@@ -72,6 +73,8 @@ export const fetchHypercertsByUserId = async (
 			),
 			pricePerPercentInUSD: pricePerPercentInUSDNumber,
 			buyerCount: uniqueBuyers.size,
+			creationBlockTimestamp:
+				typeCastApiResponseToBigInt(hypercert.creation_block_timestamp) ?? 0n,
 		} satisfies Hypercert;
 	});
 

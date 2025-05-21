@@ -2,6 +2,7 @@
 import useCopy from "@/hooks/use-copy";
 import { cn } from "@/lib/utils";
 import { Check, Copy } from "lucide-react";
+import { useEnsName } from "wagmi";
 import { Button } from "./ui/button";
 import ENSName from "./ui/ens-name";
 import EthAvatar from "./ui/eth-avatar";
@@ -9,6 +10,7 @@ import EthAvatar from "./ui/eth-avatar";
 const UserChip = ({
 	address,
 	avatarSize = 22,
+	showAvatar = true,
 	showCopyButton = "always",
 	className,
 	avatarAndLabelGap = 6,
@@ -16,10 +18,15 @@ const UserChip = ({
 	address: `0x${string}`;
 	className?: string;
 	avatarSize?: number;
+	showAvatar?: boolean;
 	showCopyButton?: "always" | "hover" | "never";
 	avatarAndLabelGap?: number;
 }) => {
 	const { copy, isCopied } = useCopy();
+	const { data: ensName } = useEnsName({
+		address,
+		chainId: 1,
+	});
 	return (
 		<li
 			className={cn(
@@ -28,20 +35,23 @@ const UserChip = ({
 			)}
 		>
 			<div
-				className="flex items-center justify-center"
+				className="flex flex-1 items-center justify-center"
 				style={{ gap: `${avatarAndLabelGap}px` }}
 			>
-				<EthAvatar address={address} size={avatarSize} />
-				<span>
-					<ENSName address={address} shortenedLength={8} />
-				</span>
+				{showAvatar && <EthAvatar address={address} size={avatarSize} />}
+				<input
+					className="flex-1 truncate bg-transparent"
+					value={ensName ?? address}
+					readOnly
+					disabled
+				/>
 			</div>
 			{showCopyButton !== "never" && (
 				<button
 					type="button"
 					className={cn(
 						showCopyButton === "hover" ? "opacity-0" : "opacity-50",
-						"flex items-center justify-center rounded-full p-0 focus:opacity-100 group-hover/user-chip:opacity-100",
+						"flex shrink-0 items-center justify-center rounded-full p-0 focus:opacity-100 group-hover/user-chip:opacity-100",
 					)}
 					style={{
 						height: `${avatarSize}px`,

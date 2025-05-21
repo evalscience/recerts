@@ -1,5 +1,6 @@
 import PageError from "@/app/components/shared/PageError";
 import Progress from "@/app/components/shared/progress";
+import { FullHypercertProvider } from "@/app/contexts/full-hypercert";
 import {
 	type FullHypercert,
 	fetchFullHypercertById,
@@ -17,28 +18,12 @@ import FundingView from "./components/FundingView";
 import CopyButton from "./components/copy-button";
 import LeftContent from "./components/left-content";
 import RightContent from "./components/right-content";
-import { FullHypercertProvider } from "./contexts/full-hypercert";
-
-export const dynamic = "force-dynamic";
-
-type PageProps = {
-	params: { hypercertId: string };
-};
-
-// const getCachedHypercert = unstable_cache(
-// 	async (hypercertId: string) => fetchFullHypercertById(hypercertId),
-// 	["full-hypercert"],
-// 	{
-// 		revalidate: 10,
-// 	},
-// );
 
 export default async function HypercertPage({
 	params: { hypercertId },
 }: {
 	params: { hypercertId: string };
 }) {
-	// Remove the error catching and let errors propagate up to the error boundary
 	const hypercert = await fetchFullHypercertById(hypercertId);
 
 	return (
@@ -71,7 +56,7 @@ export default async function HypercertPage({
 									</li>
 								))}
 							</ul>
-							<div className="mt-1 flex items-center gap-2 text-muted-foreground text-sm">
+							<div className="mt-3 flex flex-col items-start gap-2 text-muted-foreground text-sm md:flex-row md:items-center">
 								<CopyButton text={hypercertId} />
 								<Link
 									href={`https://app.hypercerts.org/hypercerts/${hypercertId}`}
@@ -84,7 +69,7 @@ export default async function HypercertPage({
 								</Link>
 							</div>
 						</div>
-						<FundingView hypercert={hypercert} />
+						<FundingView />
 					</div>
 					<div className="hidden w-full md:mt-1 md:block">
 						<Separator className="bg-beige-muted-foreground/20" />

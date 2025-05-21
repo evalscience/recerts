@@ -1,3 +1,4 @@
+import { getEASConfig } from "@/config/eas";
 import { hyperboardId } from "@/config/hypercerts";
 import { typeCastApiResponseToBigInt } from "@/lib/utils";
 import type { ApiError } from "@/types/api";
@@ -68,6 +69,7 @@ type HypercertByHypercertIdQueryResponse = ResultOf<
 
 export type Hypercert = {
 	hypercertId: string;
+	creatorAddress: string;
 	chainId?: string;
 	name?: string;
 	description?: string;
@@ -75,6 +77,7 @@ export type Hypercert = {
 	unitsForSale?: bigint;
 	pricePerPercentInUSD?: number;
 	buyerCount: number;
+	creationBlockTimestamp: bigint;
 };
 
 const fetchHypercertById = async (hypercertId: string): Promise<Hypercert> => {
@@ -112,6 +115,7 @@ const fetchHypercertById = async (hypercertId: string): Promise<Hypercert> => {
 
 	return {
 		hypercertId,
+		creatorAddress: hypercert.creator_address as string,
 		chainId: (hypercert.contract?.chain_id as string) ?? undefined,
 		name: hypercert.metadata?.name ?? undefined,
 		description: hypercert.metadata?.description ?? undefined,
@@ -121,6 +125,8 @@ const fetchHypercertById = async (hypercertId: string): Promise<Hypercert> => {
 		),
 		pricePerPercentInUSD: pricePerPercentInUSDNumber,
 		buyerCount: uniqueBuyers.size,
+		creationBlockTimestamp:
+			typeCastApiResponseToBigInt(hypercert.creation_block_timestamp) ?? 0n,
 	};
 };
 
@@ -181,10 +187,16 @@ const fullHypercertByHypercertIdQuery = graphql(`
         }
         attestations {
           data {
+            eas_schema {
+              chain_id
+              schema
+              uid
+            }
             attester
             creation_block_timestamp
             data
-            id
+            schema_uid
+            uid
           }
         }
         sales {
@@ -204,6 +216,31 @@ const fullHypercertByHypercertIdQuery = graphql(`
 type FullHypercertByHypercertIdQueryResponse = ResultOf<
 	typeof fullHypercertByHypercertIdQuery
 >;
+
+type AttestationDataResponse = {
+	title: string;
+	chain_id: string;
+	token_id: string;
+	description: string;
+	contract_address: string;
+	sources: string[];
+};
+
+type AttestationData = Omit<AttestationDataResponse, "sources"> & {
+	sources: {
+		type: string;
+		src: string;
+		description?: string;
+	}[];
+};
+
+export type EcocertAttestation = {
+	uid: string;
+	schema_uid: string;
+	data: AttestationData;
+	attester: string;
+	creationBlockTimestamp: bigint;
+};
 
 export type FullHypercert = {
 	hypercertId: string;
@@ -238,16 +275,7 @@ export type FullHypercert = {
 		pricePerPercentInUSD: number;
 		currency: string;
 	}[];
-	attestations: {
-		attester: string;
-		creationBlockTimestamp: bigint;
-		data: string;
-		id: string;
-		easSchema?: {
-			id: string;
-			schema: string;
-		};
-	}[];
+	attestations: EcocertAttestation[];
 	sales: {
 		unitsBought: bigint;
 		buyer: string;
@@ -337,14 +365,28 @@ export const fetchFullHypercertById = async (
 	const attestations = hypercert.attestations?.data ?? [];
 	const parsedAttestations = attestations
 		.map((attestation) => {
-			if (!attestation.attester) return null;
+			if (
+				attestation.schema_uid !==
+				"0x48e3e1be1e08084b408a7035ac889f2a840b440bbf10758d14fb722831a200c3"
+			)
+				return null;
+			const data = attestation.data as AttestationDataResponse;
+			const parsedData: AttestationData = {
+				...data,
+				sources: data.sources.map((source) => JSON.parse(source)) as {
+					type: string;
+					src: string;
+					description?: string;
+				}[],
+			};
 			return {
-				attester: attestation.attester.toLowerCase(),
+				uid: attestation.uid ?? "",
+				schema_uid: (attestation.schema_uid ?? "") as string,
+				data: parsedData,
+				attester: attestation.attester ?? "",
 				creationBlockTimestamp:
 					typeCastApiResponseToBigInt(attestation.creation_block_timestamp) ??
 					0n,
-				data: attestation.data as string,
-				id: attestation.id,
 			};
 		})
 		.filter((attestation) => attestation !== null);
@@ -378,7 +420,7 @@ export const fetchFullHypercertById = async (
 		orders: parsedOrders,
 		sales: parsedSales,
 		attestations: parsedAttestations,
-	};
+	} satisfies FullHypercert;
 	return fullHypercert;
 };
 

@@ -3,7 +3,7 @@ import getPriceFeed from "@/lib/pricefeed";
 
 import { cookieStorage, createStorage } from "wagmi";
 import { BASE_URL } from "./endpoint";
-import { sepolia, celo } from "viem/chains";
+import { sepolia, celo, mainnet } from "viem/chains";
 import { RAW_TOKENS_CONFIG, TokensConfig } from "./raw-tokens";
 
 // Get projectId at https://cloud.walletconnect.com
