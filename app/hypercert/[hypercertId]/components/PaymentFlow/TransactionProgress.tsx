@@ -265,8 +265,8 @@ const TransactionProgress = ({
 			const walletClient = createWalletClient({
 				chain: celo,
 				transport: custom(
-					// biome-ignore lint/suspicious/noExplicitAny: window.ethereum needs to be typed as any for viem
-					"ethereum" in window ? (window as any).ethereum : null,
+					// biome-ignore lint/suspicious/noExplicitAny: window.ethereum has to be any
+					"ethereum" in window ? (window.ethereum as any) : null,
 				),
 			});
 			const [account] = await walletClient.getAddresses();
