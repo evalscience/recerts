@@ -2,61 +2,7 @@ import type { ChangelogBlock } from "./config";
 
 const changelogBlocks: ChangelogBlock[] = [
 	{
-		date: "February 27th 2025",
-		title: "v1.0.0 - Initial Release",
-		contentSource: "!file1.md",
-		githubURL: "https://github.com/GainForest/ecocertain/pull/77",
-		versionMetadata: {
-			version: "1.0.0",
-		},
-	},
-	{
-		date: "February 26th 2025",
-		title: "v1.0.0 - Initial Release",
-		contentSource: "!file1.md",
-		githubURL: "https://github.com/GainForest/ecocertain/pull/68",
-		versionMetadata: {
-			version: "1.0.0",
-		},
-	},
-	{
-		date: "February 26th 2025",
-		title: "v1.0.0 - Initial Release",
-		contentSource: "!file1.md",
-		githubURL: "https://github.com/GainForest/ecocertain/pull/73",
-		versionMetadata: {
-			version: "1.0.0",
-		},
-	},
-	{
-		date: "February 13th 2025",
-		title: "v1.0.0 - Initial Release",
-		contentSource: "!file1.md",
-		githubURL: "https://github.com/GainForest/ecocertain/pull/63",
-		versionMetadata: {
-			version: "1.0.0",
-		},
-	},
-	{
-		date: "February 12th 2025",
-		title: "v1.0.0 - Initial Release",
-		contentSource: "!file1.md",
-		githubURL: "https://github.com/GainForest/ecocertain/pull/62",
-		versionMetadata: {
-			version: "1.0.0",
-		},
-	},
-	{
 		date: "February 10th 2025",
-		title: "v1.0.0 - Initial Release",
-		contentSource: "!file1.md",
-		githubURL: "https://github.com/GainForest/ecocertain/pull/62",
-		versionMetadata: {
-			version: "1.0.0",
-		},
-	},
-	{
-		date: "February 6th 2025",
 		title: "v1.0.0 - Initial Release",
 		contentSource: "!file1.md",
 		githubURL: "https://github.com/GainForest/ecocertain/pull/62",
