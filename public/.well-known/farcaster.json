@@ -1,0 +1,31 @@
+{
+  "frame": {
+    "version": "1",
+    "name": "Ecocertain",
+    "iconUrl": "https://ecocertain.xyz/farcaster/Logo.png",
+    "splashImageUrl": "https://ecocertain.xyz/farcaster/Splash.png",
+    "splashBackgroundColor": "#ffffff",
+    "homeUrl": "https://ecocertain.xyz",
+    "subtitle": "Fund impactful regenerative projects",
+    "description": "Ecocertain empowers nature-saving projects with Ecocerts, that are hypercerts enabling funders to own impact and communities to access direct funding.",
+    "screenshotUrls": [
+      "https://ecocertain.xyz/farcaster/Screenshot1.png",
+      "https://ecocertain.xyz/farcaster/Screenshot2.png",
+      "https://ecocertain.xyz/farcaster/Screenshot3.png"
+    ],
+    "primaryCategory": "social",
+    "tags": [
+      "ecocerts",
+      "hypercerts",
+      "environment",
+      "funding",
+      "sustainability"
+    ],
+    "heroImageUrl": "https://ecocertain.xyz/farcaster/Hero.png",
+    "tagline": "Fund impactful regenerative projects",
+    "ogTitle": "Ecocertain",
+    "ogDescription": "Ecocertain empowers nature-saving projects with Ecocerts, that are hypercerts enabling funders to own impact and communities to access direct funding.",
+    "ogImageUrl": "https://ecocertain.xyz/opengraph-image.png",
+    "requiredChains": ["eip155:42220"]
+  }
+}
