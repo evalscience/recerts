@@ -12,6 +12,7 @@ import { config } from "@/config/wagmi";
 import { WagmiContextProvider } from "@/contexts/wagmi";
 import { Libre_Baskerville } from "next/font/google";
 import { headers } from "next/headers";
+import FarcasterProvider from "./components/FarcasterProvider";
 import Footer from "./components/Footer";
 import Header from "./components/Header";
 
@@ -77,12 +78,14 @@ export default function RootLayout({
 					archia.variable,
 				)}
 			>
-				<Analytics />
-				<WagmiContextProvider initialState={initialState}>
-					<Header />
-					<div className="flex-1">{children}</div>
-					<Footer />
-				</WagmiContextProvider>
+				<FarcasterProvider>
+					<Analytics />
+					<WagmiContextProvider initialState={initialState}>
+						<Header />
+						<div className="flex-1">{children}</div>
+						<Footer />
+					</WagmiContextProvider>
+				</FarcasterProvider>
 			</body>
 		</html>
 	);
