@@ -2,6 +2,24 @@ import type { ChangelogBlock } from "./config";
 
 const changelogBlocks: ChangelogBlock[] = [
 	{
+		date: "May 26th 2025",
+		title: "v1.0.2 - Platform Fee",
+		contentSource: "!platform-fee.md",
+		versionMetadata: {
+			version: "1.0.2",
+			isMajorRelease: false,
+		},
+	},
+	{
+		date: "May 15th 2025",
+		title: "v1.0.1 - Proof of Impacts and Reviews",
+		contentSource: "!attestations.md",
+		versionMetadata: {
+			version: "1.0.1",
+			isMajorRelease: false,
+		},
+	},
+	{
 		date: "February 10th 2025",
 		title: "v1.0.0 - Initial Release",
 		contentSource: "!file1.md",

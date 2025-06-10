@@ -7,7 +7,6 @@ import styles from "./markdown.module.css";
 import preParse from "./pre-parse";
 export default function MarkdownPreview({ markdown }: { markdown: string }) {
 	const { cleanMarkdown, imagesMetadata } = preParse(markdown);
-	console.log({ markdown, cleanMarkdown });
 	let imageIndex = 0;
 
 	return (
