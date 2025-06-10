@@ -64,8 +64,8 @@ export const metadata: Metadata = {
 };
 
 const frame = {
-	version: "1",
-	imageUrl: "https://ecocertain.xyz/farcaster/Hero.png",
+	version: "next",
+	imageUrl: "https://ecocertain.xyz/farcaster/FarcasterEmbedThumbnail.png",
 	button: {
 		title: "Browse Ecocerts",
 		action: {
