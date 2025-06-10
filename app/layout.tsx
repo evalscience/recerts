@@ -63,6 +63,19 @@ export const metadata: Metadata = {
 	},
 };
 
+const frame = {
+	version: "1",
+	imageUrl: "https://ecocertain.xyz/farcaster/Hero.png",
+	button: {
+		title: "Browse Ecocerts",
+		action: {
+			type: "launch_frame",
+			url: "https://ecocertain.xyz",
+			name: "Ecocertain",
+		},
+	},
+};
+
 export default function RootLayout({
 	children,
 }: Readonly<{
@@ -71,6 +84,9 @@ export default function RootLayout({
 	const initialState = cookieToInitialState(config, headers().get("cookie"));
 	return (
 		<html lang="en">
+			<head>
+				<meta property="fc:frame" content={JSON.stringify(frame)} />
+			</head>
 			<body
 				className={cn(
 					"flex min-h-screen flex-col antialiased",
