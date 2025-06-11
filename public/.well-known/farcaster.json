@@ -1,4 +1,10 @@
 {
+  "accountAssociation": {
+    "header": "eyJmaWQiOjg2NTM3NSwidHlwZSI6ImN1c3RvZHkiLCJrZXkiOiIweDFGMzhmNWYwRDcwNDViNzU4NEUxQTlkMDU0RjY3NjQ2Y0U5YTYyRWMifQ",
+    "payload": "eyJkb21haW4iOiJlY29jZXJ0YWluLnh5eiJ9",
+    "signature": "MHgxMjg2MTdlMWYyOTBhOTFkOTNmMTcwMWY3ZDQyODFlMmE5MDVjMWVjYWJkZWI2Yzk2ZWExNjQ4ZGQ3MmUzYWU1MDBlMDRmZTQ3MjM1NWFlZjA2YjFlYTA0YmJiYjA4NmMxYjA1NTI5MDg5ODU4ZGU1ZmM4ZTFhMWRkYzhhODAwODFj"
+  },
+
   "frame": {
     "version": "1",
     "name": "Ecocertain",
