@@ -10,6 +10,7 @@ import EthAvatar from "./ui/eth-avatar";
 const UserChip = ({
 	address,
 	avatarSize = 22,
+	showAvatar = true,
 	showCopyButton = "always",
 	className,
 	avatarAndLabelGap = 6,
@@ -17,6 +18,7 @@ const UserChip = ({
 	address: `0x${string}`;
 	className?: string;
 	avatarSize?: number;
+	showAvatar?: boolean;
 	showCopyButton?: "always" | "hover" | "never";
 	avatarAndLabelGap?: number;
 }) => {
@@ -36,7 +38,7 @@ const UserChip = ({
 				className="flex flex-1 items-center justify-center"
 				style={{ gap: `${avatarAndLabelGap}px` }}
 			>
-				<EthAvatar address={address} size={avatarSize} />
+				{showAvatar && <EthAvatar address={address} size={avatarSize} />}
 				<input
 					className="flex-1 truncate bg-transparent"
 					value={ensName ?? address}

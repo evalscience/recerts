@@ -44,14 +44,14 @@ const Card = ({ hypercert }: { hypercert: Hypercert }) => {
 					</div>
 				</section>
 				<section
-					className="absolute bottom-0 w-full space-y-2 border-t border-t-border bg-background/90 p-4 backdrop-blur-md"
+					className="absolute bottom-0 flex w-full flex-col gap-2 border-t border-t-border bg-background/90 p-4 backdrop-blur-md"
 					style={{
 						boxShadow: "0 -10px 10px rgba(0, 0, 0, 0.1)",
 					}}
 				>
 					<p
 						className={cn(
-							"line-clamp-2 h-[2.56rem] flex-1 text-ellipsis break-words font-semibold text-lg leading-5",
+							"line-clamp-2 h-[2.56rem] text-ellipsis break-words font-semibold text-lg leading-5",
 							name
 								? "font-baskerville text-foreground"
 								: "text-muted-foreground",
@@ -60,19 +60,16 @@ const Card = ({ hypercert }: { hypercert: Hypercert }) => {
 						{name ?? "[Untitled]"}
 					</p>
 					<p
-						className={
-							"line-clamp-2 h-10 flex-1 text-ellipsis text-muted-foreground text-sm"
-						}
+						className={cn(
+							"text-ellipsis text-muted-foreground text-sm",
+							pricePerPercentInUSD === undefined
+								? "mb-2.5 line-clamp-5 h-auto min-h-[100px]"
+								: "line-clamp-2 h-10",
+						)}
 					>
 						{description ?? "..."}
 					</p>
-					{pricePerPercentInUSD === undefined ? (
-						<div className="flex w-full items-center justify-start text-muted-foreground text-sm">
-							<span className="inline-block rounded-full bg-beige-muted px-2 text-beige-muted-foreground">
-								Coming Soon...
-							</span>
-						</div>
-					) : unitsForSale === 0n ? (
+					{pricePerPercentInUSD === undefined ? null : unitsForSale === 0n ? ( // </div> // 	</span> // 		Not listed for sale // 	<span className="inline-block rounded-full bg-beige-muted px-2 text-beige-muted-foreground"> // <div className="flex w-full items-center justify-start text-muted-foreground text-sm">
 						<div className="flex w-full items-center justify-start text-muted-foreground text-sm">
 							<span className="inline-block rounded-full bg-destructive/20 px-2 text-destructive">
 								Sold

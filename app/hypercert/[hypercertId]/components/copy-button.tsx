@@ -20,7 +20,7 @@ const CopyButton = ({ text }: CopyButtonProps) => {
 			className="h-auto gap-2 rounded-full p-1 px-3"
 			onClick={() => copy(text)}
 		>
-			<span className="hidden md:inline">{truncateText}</span>
+			<span className="inline">{truncateText}</span>
 			{isCopied ? <Check size={12} /> : <Copy size={12} />}
 		</Button>
 	);

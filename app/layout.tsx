@@ -12,6 +12,7 @@ import { config } from "@/config/wagmi";
 import { WagmiContextProvider } from "@/contexts/wagmi";
 import { Libre_Baskerville } from "next/font/google";
 import { headers } from "next/headers";
+import FarcasterProvider from "./components/FarcasterProvider";
 import Footer from "./components/Footer";
 import Header from "./components/Header";
 
@@ -62,6 +63,19 @@ export const metadata: Metadata = {
 	},
 };
 
+const frame = {
+	version: "next",
+	imageUrl: "https://ecocertain.xyz/farcaster/FarcasterEmbedThumbnail.png",
+	button: {
+		title: "Browse Ecocerts",
+		action: {
+			type: "launch_frame",
+			url: "https://ecocertain.xyz",
+			name: "Ecocertain",
+		},
+	},
+};
+
 export default function RootLayout({
 	children,
 }: Readonly<{
@@ -70,6 +84,9 @@ export default function RootLayout({
 	const initialState = cookieToInitialState(config, headers().get("cookie"));
 	return (
 		<html lang="en">
+			<head>
+				<meta property="fc:frame" content={JSON.stringify(frame)} />
+			</head>
 			<body
 				className={cn(
 					"flex min-h-screen flex-col antialiased",
@@ -77,12 +94,14 @@ export default function RootLayout({
 					archia.variable,
 				)}
 			>
-				<Analytics />
-				<WagmiContextProvider initialState={initialState}>
-					<Header />
-					<div className="flex-1">{children}</div>
-					<Footer />
-				</WagmiContextProvider>
+				<FarcasterProvider>
+					<Analytics />
+					<WagmiContextProvider initialState={initialState}>
+						<Header />
+						<div className="flex-1">{children}</div>
+						<Footer />
+					</WagmiContextProvider>
+				</FarcasterProvider>
 			</body>
 		</html>
 	);

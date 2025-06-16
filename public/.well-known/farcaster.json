@@ -1,0 +1,38 @@
+{
+  "accountAssociation": {
+    "header": "eyJmaWQiOjg2NTM3NSwidHlwZSI6ImN1c3RvZHkiLCJrZXkiOiIweDFGMzhmNWYwRDcwNDViNzU4NEUxQTlkMDU0RjY3NjQ2Y0U5YTYyRWMifQ",
+    "payload": "eyJkb21haW4iOiJlY29jZXJ0YWluLnh5eiJ9",
+    "signature": "MHgxMjg2MTdlMWYyOTBhOTFkOTNmMTcwMWY3ZDQyODFlMmE5MDVjMWVjYWJkZWI2Yzk2ZWExNjQ4ZGQ3MmUzYWU1MDBlMDRmZTQ3MjM1NWFlZjA2YjFlYTA0YmJiYjA4NmMxYjA1NTI5MDg5ODU4ZGU1ZmM4ZTFhMWRkYzhhODAwODFj"
+  },
+
+  "frame": {
+    "version": "1",
+    "name": "Ecocertain",
+    "iconUrl": "https://ecocertain.xyz/f/l.png",
+    "splashImageUrl": "https://ecocertain.xyz/f/s.png",
+    "splashBackgroundColor": "#ffffff",
+    "homeUrl": "https://ecocertain.xyz",
+    "subtitle": "Create or fund ecocerts",
+    "description": "Ecocertain empowers nature-saving projects with Ecocerts that are hypercerts enabling funders to own impact and communities to access direct funding.",
+    "screenshotUrls": [
+      "https://ecocertain.xyz/farcaster/Screenshot1.png",
+      "https://ecocertain.xyz/farcaster/Screenshot2.png",
+      "https://ecocertain.xyz/farcaster/Screenshot3.png"
+    ],
+    "primaryCategory": "social",
+    "tags": [
+      "ecocerts",
+      "hypercerts",
+      "environment",
+      "funding",
+      "sustainability"
+    ],
+    "heroImageUrl": "https://ecocertain.xyz/farcaster/Hero.png",
+    "tagline": "Create or fund ecocerts",
+    "ogTitle": "Ecocertain",
+    "ogDescription": "We empower nature-saving projects enabling funders to own impact and communities to access funding.",
+    "ogImageUrl": "https://ecocertain.xyz/opengraph-image.png",
+    "requiredChains": ["eip155:42220"],
+    "requiredCapabilities": ["actions.ready"]
+  }
+}

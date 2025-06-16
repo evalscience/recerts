@@ -53,8 +53,20 @@ import {
 	DropdownMenuItem,
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import MarkdownEditor from "@/components/ui/mdx-editor";
 import { BASE_URL } from "@/config/endpoint";
 import useMintHypercert from "@/hooks/use-mint-hypercert";
+import {
+	MDXEditor,
+	type MDXEditorMethods,
+	type MDXEditorProps,
+	headingsPlugin,
+	listsPlugin,
+	markdownShortcutPlugin,
+	quotePlugin,
+	thematicBreakPlugin,
+} from "@mdxeditor/editor";
+import "@mdxeditor/editor/style.css";
 import { domToPng } from "modern-screenshot";
 import { CollapsibleDeploymentInfo } from "./collapsible-deployment-info";
 import { DeploymentInfoBox } from "./deployment-info-box";
@@ -113,16 +125,7 @@ const HypercertMintSchema = z
 			.refine((data) => {
 				return Boolean(data[0] || data[1]);
 			}, "Work date range is required"),
-		contributors: z.string().refine(
-			(value) => {
-				const addresses = value.split(", ").map((addr) => addr.trim());
-				return addresses.every((address) => isValidEthereumAddress(address));
-			},
-			{
-				message:
-					"Each value must be a valid Ethereum address separated by a comma and a space.",
-			},
-		),
+		contributors: z.string(),
 		contact: z
 			.string()
 			.refine(
@@ -444,7 +447,7 @@ const HypercertForm = () => {
 
 			// Encode the coordinates for the URL
 			const encodedPolygon = encodeURIComponent(JSON.stringify(coordinates));
-			return `https://gainforest.app/?shapefile=${encodedPolygon}&showUI=false`;
+			return `https://legacy.gainforest.app/?shapefile=${encodedPolygon}&showUI=false`;
 		} catch (error) {
 			console.error(
 				"Something went wrong while generating geojson preview:",
@@ -492,7 +495,7 @@ const HypercertForm = () => {
 				}
 
 				const data = await response.json();
-				if (!data.type || !data.features) {
+				if (!data.type || !(data.features || data.geometry)) {
 					form.setError("geojson", {
 						type: "manual",
 						message: "Invalid GeoJSON format",
@@ -717,10 +720,12 @@ const HypercertForm = () => {
 												<FormItem>
 													<FormLabel>Description</FormLabel>
 													<FormControl>
-														<Textarea
-															className="bg-inherit"
+														<MarkdownEditor
+															markdown={field.value}
+															onChange={field.onChange}
+															className="rounded-lg border border-border bg-inherit"
 															placeholder="Ecocert description"
-															{...field}
+															editorRef={null}
 														/>
 													</FormControl>
 													<FormMessage />
@@ -893,7 +898,7 @@ const HypercertForm = () => {
 													<FormControl>
 														<Textarea
 															className="bg-inherit"
-															placeholder="0xWalletAddress1, 0xWalletAddress2, ..."
+															placeholder="Add contributor addresses, names or pseudonyms, whose work is represented by the hypercert. Entries should be separated by a comma."
 															{...field}
 														/>
 													</FormControl>
@@ -942,7 +947,7 @@ const HypercertForm = () => {
 													{field.value && (
 														<div className="mt-4 aspect-video w-full rounded-lg border border-border">
 															<iframe
-																src={`https://gainforest.app/?shapefile=${encodeURIComponent(
+																src={`https://legacy.gainforest.app/?shapefile=${encodeURIComponent(
 																	field.value,
 																)}&showUI=false`}
 																className="h-full w-full rounded-lg"
