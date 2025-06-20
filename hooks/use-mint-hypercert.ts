@@ -55,7 +55,7 @@ const useMintHypercert = () => {
 			return client.mintClaim(
 				metaData,
 				100_000_000n,
-				TransferRestrictions.FromCreatorOnly,
+				TransferRestrictions.AllowAll,
 			);
 		},
 	});
