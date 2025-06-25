@@ -201,7 +201,7 @@ const ListingProgress = ({
 						hypercert.totalUnits, // price multiplied by decimals
 					itemIds: [fractionId + 1n], // fraction id being sold
 					minUnitAmount: 1n, // minimum amount of units to sell per sale
-					maxUnitAmount: 1_000_000n, // Maximum amount of units to sell per sale
+					maxUnitAmount: 1_00_000_000n, // Maximum amount of units to sell per sale (100M units - make it same as total units always)
 					minUnitsToKeep: 0n, // Minimum amount of units to keep after the sale
 					sellLeftoverFraction: true, // If you want to sell the leftover fraction
 					currency: values.currency.address,
