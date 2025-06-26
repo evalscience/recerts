@@ -1,3 +1,4 @@
+import InfoBox from "@/components/ui/info-box";
 import { MotionWrapper } from "@/components/ui/motion-wrapper";
 import { Loader2 } from "lucide-react";
 import { Suspense } from "react";
@@ -8,7 +9,13 @@ import PageError from "./components/shared/PageError";
 
 export default async function Home() {
 	return (
-		<main className="flex flex-col gap-4 pb-[64px] md:pb-0">
+		<main className="flex flex-col gap-4 pt-4 pb-[64px] md:pb-0">
+			<InfoBox>
+				<span className="text-base">🎉</span>
+				<p className="text-green-800 text-sm">
+					<b>Announcement:</b> Ecocertain rewards are starting June 30th!
+				</p>
+			</InfoBox>
 			<section className="flex flex-col items-center gap-4 p-8">
 				<div className="flex w-full flex-col items-center px-4">
 					<HeroSection />
