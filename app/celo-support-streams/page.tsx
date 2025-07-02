@@ -5,7 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import RoundData from "./RoundData";
 
-const ROUND_0_START = 1741564800;
+const ROUND_0_START = 1742169600; // 17 March
 const TOTAL_ROUNDS = 12;
 const ROUND_DURATION = 2 * 7 * 24 * 60 * 60; // Two weeks
 
