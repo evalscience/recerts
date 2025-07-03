@@ -26,7 +26,16 @@ type HypercertIdsByHyperboardIdResponse = ResultOf<
 	typeof hypercertIdsByHyperboardIdQuery
 >;
 
-export const fetchHypercertIDs = async () => {
+export const fetchHypercertIDs = async (): Promise<string[]> => {
+	try {
+		const hypercertIds =
+			process.env.NEXT_PUBLIC_HYPERCERT_IDS_IN_HYPERBOARD?.split(",");
+		if (hypercertIds) {
+			return new Promise((res) => res(hypercertIds));
+		}
+	} catch (error) {
+		console.error(error);
+	}
 	const [error, response] = await catchError<
 		HypercertIdsByHyperboardIdResponse,
 		ApiError
