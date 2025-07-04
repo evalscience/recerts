@@ -17,6 +17,8 @@ symbolToCurrencyAddressMap.forEach((value, key) => {
   currencyAddressToSymbolMap.set(value, key);
 });
 
+export { currencyAddressToSymbolMap };
+
 const currencyAddressToPriceFeedIdMap = new Map<string, number>([
   [symbolToCurrencyAddressMap.get("CELO") ?? "", 5567],
 ]);

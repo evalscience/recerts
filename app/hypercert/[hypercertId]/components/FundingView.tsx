@@ -1,17 +1,24 @@
 "use client";
 
+import usePriceFeed from "@/app/PriceFeedProvider";
 import CreateListingDialog from "@/app/components/create-listing-dialog";
 import Progress from "@/app/components/shared/progress";
 import useFullHypercert from "@/app/contexts/full-hypercert";
 import type { FullHypercert } from "@/app/graphql-queries/hypercerts";
 import { Button } from "@/components/ui/button";
 import QuickTooltip from "@/components/ui/quicktooltip";
+import { RAW_TOKENS_CONFIG } from "@/config/raw-tokens";
 import { calculateBigIntPercentage } from "@/lib/calculateBigIntPercentage";
 import { convertCurrencyPriceToUSD, formatDecimals } from "@/lib/utils";
 import { cn } from "@/lib/utils";
-import { useQuery } from "@tanstack/react-query";
-import { ArrowRight, BadgeDollarSign, CircleAlert, Clock } from "lucide-react";
-import React, { useEffect } from "react";
+import {
+	ArrowRight,
+	BadgeDollarSign,
+	CircleAlert,
+	Clock,
+	RefreshCcw,
+} from "lucide-react";
+import React from "react";
 import { useAccount } from "wagmi";
 import PaymentFlow from "./PaymentFlow";
 
@@ -61,6 +68,49 @@ const ProgressIndicator = ({
 						{tooltipText}
 					</div>
 				</div>
+			</div>
+		</div>
+	);
+};
+
+const LoadingVariant = () => {
+	return (
+		<div className="flex h-full w-full flex-col justify-between font-sans">
+			<div className="group flex w-full flex-col">
+				<div className="flex flex-col items-center gap-1">
+					<span className="h-10 w-40 animate-pulse rounded-lg bg-beige-muted" />
+					<span className="h-8 w-32 animate-pulse rounded-lg bg-beige-muted" />
+				</div>
+				<div className="mt-4 flex w-full flex-col items-center">
+					<div className="relative w-full">
+						<div className="h-6 animate-pulse rounded-sm bg-primary/20" />
+					</div>
+				</div>
+			</div>
+			<div className="mt-2 flex items-center justify-end">
+				<div className="h-8 w-20 animate-pulse rounded-lg bg-beige-muted" />
+			</div>
+		</div>
+	);
+};
+
+const ErrorVariant = () => {
+	return (
+		<div className="flex h-full w-full flex-col items-center justify-center gap-2">
+			<div className="flex flex-col items-center justify-center gap-2">
+				<CircleAlert size={40} className="text-muted-foreground opacity-50" />
+				<span className="font-bold text-lg text-muted-foreground">
+					Unable to load funding statistics.
+				</span>
+				<Button
+					variant={"outline"}
+					size={"sm"}
+					className="gap-2"
+					onClick={() => window?.location.reload()}
+				>
+					<RefreshCcw size={14} />
+					<span>Retry</span>
+				</Button>
 			</div>
 		</div>
 	);
@@ -188,25 +238,33 @@ const VariantSelector = () => {
 		sales,
 	} = hypercert;
 	const { address } = useAccount();
+	const priceFeed = usePriceFeed();
 
-	const { data: totalSalesInUSD, isLoading } = useQuery({
-		queryKey: ["totalSalesInUSD", sales],
-		queryFn: async (): Promise<number> => {
-			if (!sales || sales.length === 0) return 0;
-			const salesInUSDPromises = sales.map(async (sale) => {
-				return convertCurrencyPriceToUSD(sale.currency, sale.currencyAmount);
-			});
-			const salesInUSD = await Promise.all(salesInUSDPromises);
-			let total = 0;
-			for (const sale of salesInUSD) {
-				if (sale !== null) {
-					total += sale;
-				}
+	// Calculate total sales in USD synchronously
+	const totalSalesInUSD = React.useMemo(() => {
+		if (priceFeed.status !== "ready" || !sales || sales.length === 0) {
+			return 0;
+		}
+		let total = 0;
+		for (const sale of sales) {
+			const usd = priceFeed.toUSD(
+				sale.currency as `0x${string}`,
+				Number(sale.currencyAmount),
+			);
+			if (usd !== null) {
+				total += usd;
 			}
-			return total;
-		},
-		enabled: pricePerPercentInUSD !== undefined && unitsForSale > 0n,
-	});
+		}
+		return total;
+	}, [sales, priceFeed]);
+
+	if (priceFeed.status === "loading") {
+		return <LoadingVariant />;
+	}
+
+	if (priceFeed.status === "error") {
+		return <ErrorVariant />;
+	}
 
 	if (pricePerPercentInUSD === undefined) {
 		if (hypercert.creatorAddress.toLowerCase() === address?.toLowerCase()) {
@@ -218,10 +276,6 @@ const VariantSelector = () => {
 	const unitsSold = totalUnits - unitsForSale;
 	const percentCompleted = calculateBigIntPercentage(unitsSold, totalUnits);
 	if (percentCompleted === undefined) return <SoldVariant />;
-	if (isLoading || totalSalesInUSD === undefined) {
-		// Loading state, can show a spinner or just nothing
-		return null;
-	}
 	return (
 		<OpenVariant
 			percentageUnitsSold={percentCompleted}
