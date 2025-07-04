@@ -97,11 +97,12 @@ const Search = ({
 								variant={sortOptions.order === "asc" ? "secondary" : "ghost"}
 								size="sm"
 								onClick={() => setSortOptions({ ...sortOptions, order: "asc" })}
-								className={`rounded-none border-b-2${
+								className={cn(
+									"rounded-none border-b-2",
 									sortOptions.order === "asc"
 										? "border-primary"
-										: "border-transparent"
-								}`}
+										: "border-transparent",
+								)}
 								aria-pressed={sortOptions.order === "asc"}
 							>
 								<SortAsc className="h-4 w-4" />
@@ -112,11 +113,12 @@ const Search = ({
 								onClick={() =>
 									setSortOptions({ ...sortOptions, order: "desc" })
 								}
-								className={`rounded-none border-b-2${
+								className={cn(
+									"rounded-none border-b-2",
 									sortOptions.order === "desc"
 										? "border-primary"
-										: "border-transparent"
-								}`}
+										: "border-transparent",
+								)}
 								aria-pressed={sortOptions.order === "desc"}
 							>
 								<SortDesc className="h-4 w-4" />
