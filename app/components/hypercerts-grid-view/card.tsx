@@ -97,7 +97,7 @@ const Card = ({
 							<div className="flex items-center justify-between">
 								<div className="space-y-1">
 									<div className="font-semibold text-sm">
-										${totalSalesInUSD.toFixed(0)} USD raised
+										${totalSalesInUSD.toFixed(0)} raised
 									</div>
 									<div className="text-muted-foreground text-sm">
 										${Math.floor(pricePerPercentInUSD * 100).toFixed(0)} target
