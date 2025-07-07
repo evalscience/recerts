@@ -34,9 +34,10 @@ const archia = localFont({
 });
 
 export const metadata: Metadata = {
-	metadataBase: new URL("https://ecocertain.xyz/"),
-	title: { default: siteConfig.name, template: "%s | GainForest.Earth" },
+	metadataBase: new URL(siteConfig.url),
+	title: siteConfig.name,
 	description: siteConfig.description,
+	authors: [{ name: "GainForest", url: "https://gainforest.earth" }],
 	icons: [
 		{
 			rel: "icon",
@@ -48,18 +49,59 @@ export const metadata: Metadata = {
 			media: "(prefers-color-scheme: dark)",
 		},
 	],
+	alternates: {
+		canonical: "./",
+	},
+	robots: {
+		index: true,
+		follow: true,
+	},
+
+	applicationName: siteConfig.name,
+	keywords: [
+		"hypercerts",
+		"ecocerts",
+		"ecocertain",
+		"fund",
+		"impactful",
+		"regenerative",
+		"projects",
+		"forest",
+		"conservation",
+		"deforestation",
+		"gainforest",
+		"earth",
+		"green",
+	],
+	generator: "Next.js",
+	creator: "GainForest",
+	publisher: "GainForest",
+	referrer: "origin",
+	formatDetection: {
+		email: false,
+		address: false,
+		telephone: false,
+	},
 	openGraph: {
-		title: { default: "Ecocertain", template: "%s | GainForest.Earth" },
+		title: siteConfig.name,
+		siteName: siteConfig.name,
 		description: siteConfig.description,
 		type: "website",
-		images: [{ url: "/opengraph-image.png", alt: "GainForest.Earth" }],
+		url: siteConfig.url,
+		images: [{ url: "/opengraph-image.png", alt: siteConfig.name }],
 	},
 	twitter: {
 		card: "summary_large_image",
-		site: "@edge-esmeralda",
-		title: { default: "Ecocertain", template: "%s | GainForest.Earth" },
+		site: "@GainForestNow",
+		title: siteConfig.name,
 		description: siteConfig.description,
-		images: [{ url: "/opengraph-image.png", alt: "GainForest.Earth" }],
+		images: [{ url: "/opengraph-image.png", alt: siteConfig.name }],
+	},
+	viewport: {
+		width: "device-width",
+		initialScale: 1,
+		maximumScale: 1,
+		userScalable: false,
 	},
 };
 
@@ -71,7 +113,7 @@ const frame = {
 		action: {
 			type: "launch_frame",
 			url: "https://ecocertain.xyz",
-			name: "Ecocertain",
+			name: siteConfig.name,
 		},
 	},
 };
