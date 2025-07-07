@@ -36,8 +36,8 @@ export function GridView({ hypercerts }: { hypercerts: Hypercert[] }) {
 	const searchInputState = useState("");
 	const [searchInput, setSearchInput] = searchInputState;
 	const sortOptionsState = useState<SortOption>({
-		key: "totalSales",
-		order: "desc",
+		key: "date",
+		order: "asc",
 	});
 	const [sortOptions, setSortOptions] = sortOptionsState;
 

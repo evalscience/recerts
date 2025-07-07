@@ -23,8 +23,8 @@ export type SortOption = {
 
 const SORT_OPTIONS = [
 	{ value: "date", label: "By date created" },
-	{ value: "price", label: "By goal" },
-	{ value: "totalSales", label: "By fundings raised" },
+	{ value: "totalSales", label: "By funds raised" },
+	{ value: "price", label: "By funding goal" },
 ];
 
 const Search = ({
