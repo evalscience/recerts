@@ -7,6 +7,7 @@ interface SiteConfig {
   title: string;
   description: string;
   localeDefault: string;
+  url: string;
   links: {
     discord: string;
     twitter: string;
@@ -23,8 +24,10 @@ interface SiteConfig {
 export const siteConfig: SiteConfig = {
   name: "Ecocertain",
   title: "By GainForest.Earth",
-  description: "Fund impactful regenerative projects",
+  description:
+    "Ecocertain is a marketplace that uses blockchain to showcase verified conservation efforts through digital certificates called ecocerts.",
   localeDefault: "en",
+  url: "https://ecocertain.xyz",
   links: {
     discord: "https://discord.gg/reuvzTdVAU",
     twitter: "https://twitter.com/GainForestNow",

@@ -1,0 +1,3 @@
+User-agent: *
+Disallow: 
+Sitemap: https://ecocertain.xyz/sitemap.xml
