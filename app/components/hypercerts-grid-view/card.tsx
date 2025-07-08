@@ -106,10 +106,13 @@ const Card = ({
 								</div>
 								<CircularProgress
 									value={totalSalesInUSD / pricePerPercentInUSD}
-									text={`${Math.min(
-										Math.floor(totalSalesInUSD / pricePerPercentInUSD),
-										100,
-									).toFixed(0)}%`}
+									text={
+										Math.floor(totalSalesInUSD / pricePerPercentInUSD) > 999
+											? ">999%"
+											: `${Math.floor(
+													totalSalesInUSD / pricePerPercentInUSD,
+											  ).toFixed(0)}%`
+									}
 								/>
 							</div>
 						)
