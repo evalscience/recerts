@@ -14,12 +14,13 @@ type PriceFeedContextCatalog = {
 	};
 	ready: {
 		status: "ready";
-		toUSD: (currency: `0x${string}`, amount: number) => number | null;
-		fromUSD: (currency: `0x${string}`, amount: number) => number | null;
+		toUSD: (currency: `0x${string}`, amount: bigint) => number | null;
+		fromUSD: (currency: `0x${string}`, amount: number) => bigint | null;
 	};
 };
 
-type PriceFeedContext = PriceFeedContextCatalog[keyof PriceFeedContextCatalog];
+export type PriceFeedContext =
+	PriceFeedContextCatalog[keyof PriceFeedContextCatalog];
 
 const priceFeedContext = createContext<PriceFeedContext | null>(null);
 const currencies = Array.from(currencyAddressToSymbolMap.keys());
@@ -56,7 +57,9 @@ export const PriceFeedProvider = ({
 		providerValue = {
 			status: "ready",
 			toUSD: (currency, amount) => {
-				const currencyIndex = currencies.indexOf(currency);
+				const currencyIndex = currencies.indexOf(
+					currency.toLowerCase() as `0x${string}`,
+				);
 				if (currencyIndex === -1) {
 					return null;
 				}
@@ -72,9 +75,12 @@ export const PriceFeedProvider = ({
 					}
 				}
 				// amount is in raw units (wei), so convert to number of tokens
-				const amountInTokens = amount / 10 ** decimals;
+				const PRECISION = 2;
+				const amountInTokens = amount / BigInt(10 ** (decimals - PRECISION));
 				const priceInUSD = data[currencyIndex].usdPrice;
-				return priceInUSD === null ? null : priceInUSD * amountInTokens;
+				return priceInUSD === null
+					? null
+					: (priceInUSD * Number(amountInTokens)) / 10 ** PRECISION;
 			},
 			fromUSD: (currency, amount) => {
 				const currencyIndex = currencies.indexOf(currency);
@@ -96,7 +102,7 @@ export const PriceFeedProvider = ({
 				if (priceInUSD === null) return null;
 				// amount is in USD, so convert to number of tokens, then to raw units
 				const amountInTokens = amount / priceInUSD;
-				return amountInTokens * 10 ** decimals;
+				return BigInt(amountInTokens * 10 ** decimals);
 			},
 		};
 	}

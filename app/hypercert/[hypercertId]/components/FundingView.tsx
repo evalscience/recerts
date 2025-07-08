@@ -239,6 +239,7 @@ const VariantSelector = () => {
 	} = hypercert;
 	const { address } = useAccount();
 	const priceFeed = usePriceFeed();
+	console.log(hypercert);
 
 	// Calculate total sales in USD synchronously
 	const totalSalesInUSD = React.useMemo(() => {
@@ -249,7 +250,7 @@ const VariantSelector = () => {
 		for (const sale of sales) {
 			const usd = priceFeed.toUSD(
 				sale.currency as `0x${string}`,
-				Number(sale.currencyAmount),
+				BigInt(sale.currencyAmount),
 			);
 			if (usd !== null) {
 				total += usd;

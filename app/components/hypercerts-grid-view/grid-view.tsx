@@ -1,10 +1,8 @@
 "use client";
 
-import { usePagination } from "@/hooks/use-pagination";
-
 import { Button } from "@/components/ui/button";
 
-import usePriceFeed from "@/app/PriceFeedProvider";
+import usePriceFeed, { type PriceFeedContext } from "@/app/PriceFeedProvider";
 import type { Hypercert } from "@/app/graphql-queries/hypercerts";
 import { ShowingDisplay, VDPaginator } from "@/components/global/vd-paginator";
 import autoAnimate from "@formkit/auto-animate";
@@ -14,8 +12,10 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Card from "./card";
 import Search, { type SortOption, type SortKey } from "./search";
 
-const calculateHypercertTotalSalesInUSD = (hypercert: Hypercert) => {
-	const priceFeed = usePriceFeed();
+const calculateHypercertTotalSalesInUSD = (
+	hypercert: Hypercert,
+	priceFeed: PriceFeedContext,
+) => {
 	const { sales } = hypercert;
 	const totalSalesInUSD =
 		priceFeed.status === "ready"
@@ -24,7 +24,7 @@ const calculateHypercertTotalSalesInUSD = (hypercert: Hypercert) => {
 						acc +
 						(priceFeed.toUSD(
 							sale.currency as `0x${string}`,
-							Number(sale.currencyAmount),
+							BigInt(sale.currencyAmount),
 						) ?? 0)
 					);
 			  }, 0)
@@ -40,7 +40,7 @@ export function GridView({ hypercerts }: { hypercerts: Hypercert[] }) {
 		order: "asc",
 	});
 	const [sortOptions, setSortOptions] = sortOptionsState;
-
+	const priceFeed = usePriceFeed();
 	const filteredHypercerts = useMemo(() => {
 		if (searchInput === "") {
 			return hypercerts;
@@ -84,13 +84,13 @@ export function GridView({ hypercerts }: { hypercerts: Hypercert[] }) {
 			});
 		} else if (key === "totalSales") {
 			arr.sort((a, b) => {
-				const aSales = calculateHypercertTotalSalesInUSD(a) ?? 0;
-				const bSales = calculateHypercertTotalSalesInUSD(b) ?? 0;
+				const aSales = calculateHypercertTotalSalesInUSD(a, priceFeed) ?? 0;
+				const bSales = calculateHypercertTotalSalesInUSD(b, priceFeed) ?? 0;
 				return order === "asc" ? aSales - bSales : bSales - aSales;
 			});
 		}
 		return arr;
-	}, [filteredHypercerts, sortOptions]);
+	}, [filteredHypercerts, sortOptions, priceFeed]);
 
 	return (
 		<section
@@ -114,7 +114,10 @@ export function GridView({ hypercerts }: { hypercerts: Hypercert[] }) {
 							<Card
 								hypercert={hypercert}
 								key={hypercert.hypercertId}
-								totalSalesInUSD={calculateHypercertTotalSalesInUSD(hypercert)}
+								totalSalesInUSD={calculateHypercertTotalSalesInUSD(
+									hypercert,
+									priceFeed,
+								)}
 							/>
 						))}
 					</div>
