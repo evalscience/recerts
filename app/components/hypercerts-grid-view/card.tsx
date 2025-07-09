@@ -1,5 +1,3 @@
-"use client";
-import usePriceFeed from "@/app/PriceFeedProvider";
 import type { Hypercert } from "@/app/graphql-queries/hypercerts";
 import CircularProgress from "@/components/ui/circular-progress";
 import { SUPPORTED_CHAINS } from "@/config/wagmi";
