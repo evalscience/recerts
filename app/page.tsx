@@ -13,8 +13,11 @@ export default async function Home() {
 			<InfoBox>
 				<span className="text-base">🎉</span>
 				<p className="text-green-800 text-sm">
-					<b>Announcement:</b> Ecocertain rewards are starting on July 7th.{" "}
-					<a href="https://gainforest.notion.site/Ecocertain-Rewards-Info-Page-21e94a2f76b3801582e9e84057ee16bc">
+					<b>Announcement:</b> Ecocertain rewards started on July 7th!{" "}
+					<a
+						href="https://gainforest.notion.site/Ecocertain-Rewards-Info-Page-21e94a2f76b3801582e9e84057ee16bc"
+						className="underline"
+					>
 						Learn more.
 					</a>
 				</p>
