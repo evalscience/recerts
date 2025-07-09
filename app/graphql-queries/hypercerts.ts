@@ -29,7 +29,9 @@ type HypercertIdsByHyperboardIdResponse = ResultOf<
 export const fetchHypercertIDs = async (): Promise<string[]> => {
 	try {
 		const hypercertIds =
-			process.env.NEXT_PUBLIC_HYPERCERT_IDS_IN_HYPERBOARD?.split(",");
+			process.env.NEXT_PUBLIC_TEMP_HYPERCERT_IDS_IN_HYPERBOARD?.split(",").map(
+				(id) => id.trim(),
+			);
 		if (hypercertIds) {
 			return new Promise((res) => res(hypercertIds));
 		}
