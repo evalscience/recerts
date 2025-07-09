@@ -7,7 +7,7 @@ for (const chainId in RAW_TOKENS_CONFIG) {
   for (const token of tokens) {
     symbolToCurrencyAddressMap.set(
       token.symbol,
-      token.address.toLowerCase() as `0x${string}`
+      token.address as `0x${string}`
     );
   }
 }
@@ -47,8 +47,7 @@ type ApiResponse<Symbol extends string> = {
 };
 
 const getPriceFeed = async (currencyAddress: `0x${string}`) => {
-  const normalizedCurrencyAddress =
-    currencyAddress.toLowerCase() as `0x${string}`;
+  const normalizedCurrencyAddress = currencyAddress as `0x${string}`;
   const priceFeedId = currencyAddressToPriceFeedIdMap.get(
     normalizedCurrencyAddress
   );

@@ -65,7 +65,7 @@ export const fetchHypercertsByUserId = async (
 		const sales = hypercert.sales?.data ?? [];
 		const parsedSales = sales.map((sale) => {
 			return {
-				currency: sale.currency.toLowerCase(),
+				currency: sale.currency,
 				currencyAmount: typeCastApiResponseToBigInt(sale.currency_amount) ?? 0n,
 			};
 		});

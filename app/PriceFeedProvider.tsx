@@ -1,7 +1,7 @@
 "use client";
 
 import { RAW_TOKENS_CONFIG } from "@/config/raw-tokens";
-import getPriceFeed, { currencyAddressToSymbolMap } from "@/lib/pricefeed";
+import { TOKENS_CONFIG } from "@/config/wagmi";
 import { useQuery } from "@tanstack/react-query";
 import { createContext, useContext, useState } from "react";
 
@@ -14,8 +14,8 @@ type PriceFeedContextCatalog = {
 	};
 	ready: {
 		status: "ready";
-		toUSD: (currency: `0x${string}`, amount: bigint) => number | null;
-		fromUSD: (currency: `0x${string}`, amount: number) => bigint | null;
+		toUSD: (currencyAddress: `0x${string}`, amount: bigint) => number | null;
+		fromUSD: (currencyAddress: `0x${string}`, amount: number) => bigint | null;
 	};
 };
 
@@ -23,7 +23,23 @@ export type PriceFeedContext =
 	PriceFeedContextCatalog[keyof PriceFeedContextCatalog];
 
 const priceFeedContext = createContext<PriceFeedContext | null>(null);
-const currencies = Array.from(currencyAddressToSymbolMap.keys());
+const priceFeedConfigs = Object.values(TOKENS_CONFIG).flatMap((chain) =>
+	chain.map((token) => {
+		return {
+			address: token.address as `0x${string}`,
+			decimals: token.decimals,
+			usdPriceFetcher: new Promise<number | null>((res) => {
+				try {
+					token.usdPriceFetcher().then((priceInUSD) => {
+						res(priceInUSD);
+					});
+				} catch (error) {
+					res(null);
+				}
+			}),
+		};
+	}),
+);
 
 export const PriceFeedProvider = ({
 	children,
@@ -33,7 +49,9 @@ export const PriceFeedProvider = ({
 	const { data, isLoading, error } = useQuery({
 		queryKey: ["price-feed"],
 		queryFn: () => {
-			return Promise.all(currencies.map((c) => getPriceFeed(c)));
+			return Promise.all(
+				priceFeedConfigs.map((config) => config.usdPriceFetcher),
+			);
 		},
 	});
 
@@ -56,49 +74,42 @@ export const PriceFeedProvider = ({
 	} else {
 		providerValue = {
 			status: "ready",
-			toUSD: (currency, amount) => {
-				const currencyIndex = currencies.indexOf(
-					currency.toLowerCase() as `0x${string}`,
+			toUSD: (currencyAddress, amount) => {
+				const priceFeedConfigIndex = priceFeedConfigs.findIndex(
+					(config) => config.address === currencyAddress,
 				);
-				if (currencyIndex === -1) {
+				if (priceFeedConfigIndex === -1) {
 					return null;
 				}
-				// Find decimals for this currency
-				let decimals = 18; // default
-				for (const chainId in RAW_TOKENS_CONFIG) {
-					const token = RAW_TOKENS_CONFIG[chainId].find(
-						(t) => t.address.toLowerCase() === currency.toLowerCase(),
-					);
-					if (token) {
-						decimals = token.decimals;
-						break;
-					}
-				}
+
+				const priceFeedConfig = priceFeedConfigs[priceFeedConfigIndex];
+				const { decimals } = priceFeedConfig;
 				// amount is in raw units (wei), so convert to number of tokens
 				const PRECISION = 2;
 				const amountInTokens = amount / BigInt(10 ** (decimals - PRECISION));
-				const priceInUSD = data[currencyIndex].usdPrice;
+				const priceInUSD = data[priceFeedConfigIndex];
+				console.log(
+					"amount, amountInTokens, decimals, data ===>",
+					amount,
+					amountInTokens,
+					decimals,
+					data,
+				);
 				return priceInUSD === null
 					? null
 					: (priceInUSD * Number(amountInTokens)) / 10 ** PRECISION;
 			},
-			fromUSD: (currency, amount) => {
-				const currencyIndex = currencies.indexOf(currency);
-				if (currencyIndex === -1) {
+			fromUSD: (currencyAddress, amount) => {
+				const priceFeedConfigIndex = priceFeedConfigs.findIndex(
+					(config) => config.address === currencyAddress,
+				);
+				if (priceFeedConfigIndex === -1) {
 					return null;
 				}
-				// Find decimals for this currency
-				let decimals = 18; // default
-				for (const chainId in RAW_TOKENS_CONFIG) {
-					const token = RAW_TOKENS_CONFIG[chainId].find(
-						(t) => t.address.toLowerCase() === currency.toLowerCase(),
-					);
-					if (token) {
-						decimals = token.decimals;
-						break;
-					}
-				}
-				const priceInUSD = data[currencyIndex].usdPrice;
+
+				const priceFeedConfig = priceFeedConfigs[priceFeedConfigIndex];
+				const { decimals } = priceFeedConfig;
+				const priceInUSD = data[priceFeedConfigIndex];
 				if (priceInUSD === null) return null;
 				// amount is in USD, so convert to number of tokens, then to raw units
 				const amountInTokens = amount / priceInUSD;

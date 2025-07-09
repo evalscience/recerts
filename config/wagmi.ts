@@ -37,11 +37,11 @@ const normalizeTokensConfig = (
       return [
         chainId,
         tokens.map((token) => {
-          const address = token.address.toLowerCase() as `0x${string}`;
+          const address = token.address as `0x${string}`;
           const isUSDPegged = token.isUSDPegged ?? true;
           return {
             ...token,
-            address: token.address.toLowerCase(),
+            address: token.address,
             usdPriceFetcher:
               token.usdPriceFetcher ?? isUSDPegged
                 ? getUSDPeggedValue

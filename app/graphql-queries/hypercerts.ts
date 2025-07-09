@@ -137,7 +137,7 @@ export const fetchHypercertById = async (
 	const sales = hypercert.sales?.data ?? [];
 	const parsedSales = sales.map((sale) => {
 		return {
-			currency: sale.currency.toLowerCase(),
+			currency: sale.currency,
 			currencyAmount: typeCastApiResponseToBigInt(sale.currency_amount) ?? 0n,
 		};
 	});
@@ -387,7 +387,7 @@ export const fetchFullHypercertById = async (
 			price: typeCastApiResponseToBigInt(order.price) ?? 0n,
 			pricePerPercentInToken: Number(order.pricePerPercentInToken),
 			pricePerPercentInUSD: Number(order.pricePerPercentInUSD),
-			currency: order.currency.toLowerCase() as string,
+			currency: order.currency as string,
 			chainId: order.chainId as string,
 		};
 	});
@@ -396,8 +396,8 @@ export const fetchFullHypercertById = async (
 	const parsedSales = sales.map((sale) => {
 		return {
 			unitsBought: typeCastApiResponseToBigInt(sale.amounts?.[0] ?? 0) ?? 0n,
-			buyer: sale.buyer.toLowerCase(),
-			currency: sale.currency.toLowerCase(),
+			buyer: sale.buyer,
+			currency: sale.currency,
 			currencyAmount:
 				typeCastApiResponseToBigInt(sale.currency_amount ?? 0) ?? 0n,
 			creationBlockTimestamp:
@@ -448,7 +448,7 @@ export const fetchFullHypercertById = async (
 			creationBlockTimestamp: 1743699409n,
 			transactionHash:
 				"0xb596d456c3c84beb1d2d80f49b1898fae9511cd0eb7d420ba63a4868924f45c3",
-			currency: "0x471EcE3750Da237f93B8E339c536989b8978a438".toLowerCase(), // CELO,
+			currency: "0x471EcE3750Da237f93B8E339c536989b8978a438", // CELO,
 			currencyAmount: BigInt(2175 * 10 ** 18),
 		});
 	}
