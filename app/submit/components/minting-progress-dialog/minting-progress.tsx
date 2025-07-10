@@ -272,7 +272,7 @@ const MintingProgress = ({
 			client.mintClaim(
 				metadataPayload,
 				100_000_000n,
-				TransferRestrictions.FromCreatorOnly,
+				TransferRestrictions.AllowAll,
 			),
 		);
 		if (mintingError) {
