@@ -1,3 +1,4 @@
+import { formatTokens } from "@/lib/format-tokens";
 import React, { useEffect, useState } from "react";
 import { erc20Abi } from "viem";
 import { formatUnits } from "viem";
@@ -15,13 +16,18 @@ export type UserFunds = {
 };
 
 // Add decimals parameter to the hook
-const useUserFunds = (
-	tokenAddress: `0x${string}`,
-	decimals: number = OrderInfoConstants.DECIMALS,
-): UserFunds => {
+const useUserFunds = (tokenAddress: `0x${string}`): UserFunds => {
 	const { address } = useAccount();
 	const [isLoading, setIsLoading] = useState(true);
 	const [error, setError] = useState<Error | null>(null);
+
+	const {
+		data: decimals, // renamed to rawBalance since it's the big number
+	} = useReadContract({
+		address: tokenAddress,
+		abi: erc20Abi,
+		functionName: "decimals",
+	});
 
 	const {
 		data: rawBalance, // renamed to rawBalance since it's the big number
@@ -37,7 +43,9 @@ const useUserFunds = (
 
 	// Format the balance with proper decimals
 	const formattedBalance =
-		rawBalance !== undefined ? formatUnits(rawBalance, decimals) : undefined;
+		rawBalance !== undefined && decimals !== undefined
+			? formatTokens(rawBalance, decimals, 2)
+			: undefined;
 
 	// Rest of the hook implementation stays the same
 	// biome-ignore lint/correctness/useExhaustiveDependencies(wagmiRefetch, setIsLoading): We don't want the useEffect block to run when these two functions change.
