@@ -34,7 +34,8 @@ const CardOptions = () => {
 			{hasOrderListings ? (
 				<div className="flex items-center justify-between gap-2">
 					<div>
-						<CircularProgress value={100 - (percentAvailable ?? 0)} />
+						<CircularProgress value={100 - (percentAvailable ?? 0)}
+						text={`${percentAvailable}%`}/>
 					</div>
 					<UnlistDialog hypercertId={hypercert.hypercertId}>
 						<Button variant={"secondary"} className="gap-2">
