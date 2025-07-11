@@ -101,6 +101,12 @@ const CreateListingDialog = ({
 	});
 
 	const [isProgressVisible, setIsProgressVisible] = useState(false);
+	const [isListingComplete, setIsListingComplete] = useState(false);
+	useEffect(() => {
+		if (!isProgressVisible) {
+			setIsListingComplete(false);
+		}
+	}, [isProgressVisible]);
 
 	const [price, setPrice] = useState(1);
 	const [priceValidityError, setPriceValidityError] = useState<string | null>(
@@ -194,6 +200,7 @@ const CreateListingDialog = ({
 								visible={isProgressVisible}
 								setVisible={setIsProgressVisible}
 								hypercertExchangeClient={hcExchangeClient}
+								setIsListingComplete={setIsListingComplete}
 							/>
 						)
 					) : (
@@ -211,7 +218,7 @@ const CreateListingDialog = ({
 							setIsProgressVisible(false);
 						}}
 					>
-						Cancel
+						{isListingComplete ? "Close" : "Cancel"}
 					</DialogCancel>
 					{shouldDisplayForm ? (
 						<Button
