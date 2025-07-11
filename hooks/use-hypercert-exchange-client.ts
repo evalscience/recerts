@@ -20,16 +20,18 @@ export const useHypercertExchangeClient = () => {
       return null;
     }
 
-    return new HypercertExchangeClient(
-      chainId,
-      // @ts-expect-error - wagmi and viem have different typing
-      provider,
-      signer,
-      {
-        apiEndpoint: restEndpoint,
-      },
-      walletClient
-    );
+    return null;
+
+    // return new HypercertExchangeClient(
+    //   chainId,
+    //   // @ts-expect-error - wagmi and viem have different typing
+    //   provider,
+    //   signer,
+    //   {
+    //     apiEndpoint: restEndpoint,
+    //   },
+    //   walletClient
+    // );
   }, [walletClient, chainId, provider, signer]);
 
   return { client };
