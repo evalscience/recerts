@@ -110,9 +110,10 @@ const CreateListingDialog = ({
 	const currencyOptions = getCurrenciesSupportedOnChainByHypercerts(
 		currentChain?.id,
 	);
+	const usdgloCurrency = currencyOptions.find((c) => c.symbol === "USDGLO");
 	const [selectedCurrency, setSelectedCurrency] = useState<
 		Currency | undefined
-	>(currencyOptions.length > 0 ? currencyOptions[0] : undefined);
+	>(usdgloCurrency ? usdgloCurrency : currencyOptions[0]);
 
 	const shouldDisplayForm =
 		isCurrentChainSupported &&
