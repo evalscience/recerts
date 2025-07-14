@@ -145,6 +145,7 @@ const OpenVariant = ({
 			},
 			true,
 		);
+		show();
 	};
 	return (
 		<div className="flex h-full w-full flex-col justify-between font-sans">
