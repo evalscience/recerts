@@ -13,14 +13,24 @@ const quickAmounts = [
 	{ usd: 500, emojis: "🌱⭐✨💕💚🤟" },
 ];
 
-const getInitialAmounts = (pricePerPercentInUSD: number): number => {
+const getInitialAmounts = (
+	pricePerPercentInUSD: number,
+	totalUnitsInOrder: bigint,
+	userFundsInUnits: bigint,
+): number => {
 	const totalPrice = pricePerPercentInUSD * 100;
 	for (let i = quickAmounts.length / 2; i >= 0; i--) {
-		if (totalPrice >= quickAmounts[i].usd) {
+		if (
+			totalPrice >= quickAmounts[i].usd &&
+			calcUnitsFromUSD(
+				quickAmounts[i].usd,
+				totalUnitsInOrder,
+				pricePerPercentInUSD,
+			) <= userFundsInUnits
+		)
 			return quickAmounts[i].usd;
-		}
 	}
-	return 0;
+	return quickAmounts[0].usd;
 };
 
 const BasicTab = ({
@@ -46,7 +56,11 @@ const BasicTab = ({
 		setAmountSelectedInUnits({
 			...amountSelectedInUnits,
 			basic: calcUnitsFromUSD(
-				getInitialAmounts(selectedOrder.pricePerPercentInUSD),
+				getInitialAmounts(
+					selectedOrder.pricePerPercentInUSD,
+					totalUnitsInOrder,
+					fundsByUserInUnits,
+				),
 				totalUnitsInOrder,
 				selectedOrder.pricePerPercentInUSD,
 			),
