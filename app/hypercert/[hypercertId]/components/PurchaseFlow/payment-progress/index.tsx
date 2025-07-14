@@ -126,23 +126,29 @@ const PaymentProgressBody = ({
 	const { status, errorState, currentStepIndex, start } =
 		usePaymentProgressStore();
 
-	const { hide } = useModal();
+	const { hide, popModal, clear } = useModal();
 
 	const handleStart = useCallback(() => {
 		start(
 			hypercertExchangeClient,
 			hypercert.hypercertId,
 			selectedOrder.id,
+			selectedOrder.pricePerPercentInToken,
+			currency,
 			userAddress,
 			unitsToPurchase,
+			totalUnitsInOrder,
 		);
 	}, [
 		start,
 		hypercertExchangeClient,
 		hypercert.hypercertId,
 		selectedOrder.id,
+		selectedOrder.pricePerPercentInToken,
+		currency,
 		userAddress,
 		unitsToPurchase,
+		totalUnitsInOrder,
 	]);
 
 	useEffect(() => {
@@ -254,8 +260,20 @@ const PaymentProgressBody = ({
 				</div>
 			)}
 			<ModalFooter>
-				<Button variant={"secondary"} onClick={() => hide()}>
-					{" "}
+				{status !== "pending" && (
+					<Button variant={"secondary"} onClick={() => popModal()}>
+						Go Back
+					</Button>
+				)}
+				<Button
+					variant={"secondary"}
+					onClick={() => {
+						hide();
+						if (status === "success") {
+							clear();
+						}
+					}}
+				>
 					{status === "pending" ? "Continue in background" : "Close"}
 				</Button>
 			</ModalFooter>
