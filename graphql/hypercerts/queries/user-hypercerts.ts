@@ -8,7 +8,7 @@ const hypercertsByUserIdQuery = graphql(`
     query GetHypercertsByUserId($address: String!) {
       hypercerts(
         where: { creator_address: { contains: $address } }
-        sort: { by: { attestations_count: descending } }
+        sortBy: { attestations_count: descending }
       ) {
         count
         ${hypercert}
