@@ -176,7 +176,7 @@ const usePaymentProgressStore = create<
 				order, // The order you want to buy retreived from the graphQL API
 				address, // Recipient address of the taker (if none, it will use the sender)
 				unitsToBuy, // Number of units to buy.
-				order.price, // Price per unit, in wei. In this example, we will end up with a total price of 1000 wei.
+				order.price, // Price per unit, in wei.
 			);
 			const overrides =
 				order.currency === "0x0000000000000000000000000000000000000000"
