@@ -2,7 +2,11 @@ import { DIVVI_DATA_SUFFIX } from "@/config/divvi";
 import { GAINFOREST_TIP_ADDRESS, GAINFOREST_TIP_AMOUNT } from "@/config/tip";
 import { tryCatch } from "@/lib/tryCatch";
 import { submitReferral } from "@divvi/referral-sdk";
-import type { HypercertExchangeClient } from "@hypercerts-org/marketplace-sdk";
+import type {
+	Currency,
+	HypercertExchangeClient,
+} from "@hypercerts-org/marketplace-sdk";
+import { BigNumber } from "bignumber.js";
 import {
 	BadgeDollarSign,
 	CheckCircle,
@@ -86,8 +90,11 @@ type PaymentProgressActions = {
 		hcExchangeClient: HypercertExchangeClient,
 		hypercertId: string,
 		orderId: string,
+		pricePerPercentInToken: number,
+		currency: Currency,
 		address: string,
 		unitsToBuy: bigint,
+		totalUnitsInOrder: bigint,
 	) => Promise<void>;
 };
 
@@ -99,11 +106,14 @@ const usePaymentProgressStore = create<
 		status: "pending",
 		errorState: null,
 		start: async (
-			hcExchangeClient: HypercertExchangeClient,
-			hypercertId: string,
-			orderId: string,
-			address: string,
-			unitsToBuy: bigint,
+			hcExchangeClient,
+			hypercertId,
+			orderId,
+			pricePerPercentInToken,
+			currency,
+			address,
+			unitsToBuy,
+			totalUnitsInOrder,
 		) => {
 			set({ status: "pending" });
 			let errorTitle = "";
@@ -132,11 +142,21 @@ const usePaymentProgressStore = create<
 			set({ currentStepIndex: 2 });
 			errorTitle = "Approval not confirmed";
 			errorDescription = "The spending cap could not be approved.";
-			const totalPrice = unitsToBuy * BigInt(order.price);
+			const percentToBuyBn = BigNumber(unitsToBuy)
+				.div(BigNumber(totalUnitsInOrder))
+				.multipliedBy(100);
+			const tokensToPayBn = percentToBuyBn.multipliedBy(
+				BigNumber(pricePerPercentInToken),
+			);
+			const tokensToPayInWei = BigInt(
+				tokensToPayBn
+					.multipliedBy((10n ** BigInt(currency.decimals)).toString())
+					.toFixed(0),
+			);
 			const [, approveTxError] = await tryCatch(() =>
 				hcExchangeClient.approveErc20(
 					order.currency as `0x${string}`,
-					totalPrice,
+					tokensToPayInWei,
 				),
 			);
 			if (approveTxError) {
@@ -161,7 +181,7 @@ const usePaymentProgressStore = create<
 			const overrides =
 				order.currency === "0x0000000000000000000000000000000000000000"
 					? {
-							value: totalPrice,
+							value: tokensToPayInWei,
 					  }
 					: undefined;
 			const [executeTx, executeTxError] = await tryCatch(() =>
@@ -181,6 +201,10 @@ const usePaymentProgressStore = create<
 					errorState: { title: errorTitle, description: errorDescription },
 				});
 				console.error("Error executing order:", executeTxError);
+				console.error(
+					"Hypercert Exchange Client for debugging:",
+					JSON.stringify(hcExchangeClient),
+				);
 				return;
 			}
 
