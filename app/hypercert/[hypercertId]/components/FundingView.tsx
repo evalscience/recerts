@@ -21,7 +21,9 @@ import {
 } from "lucide-react";
 import React from "react";
 import { useAccount } from "wagmi";
+import SelectAmount from "./PurchaseFlow/select-amount";
 import SelectOrder from "./PurchaseFlow/select-order";
+import usePurchaseFlowStore from "./PurchaseFlow/store";
 
 const ProgressIndicator = ({
 	percentage,
@@ -130,6 +132,10 @@ const OpenVariant = ({
 		totalSalesInUSD <= goalInUSD ? 100 : (goalInUSD / totalSalesInUSD) * 100;
 	const { show, pushModalByVariant, stack } = useModal();
 	const hypercert = useFullHypercert();
+	const setHypercert = usePurchaseFlowStore((state) => state.setHypercert);
+	const setSelectedOrder = usePurchaseFlowStore(
+		(state) => state.setSelectedOrder,
+	);
 	const handleShowPurchaseFlow = () => {
 		if (
 			stack.length > 0 &&
@@ -145,6 +151,17 @@ const OpenVariant = ({
 			},
 			true,
 		);
+		const validOrders = hypercert.orders.filter(
+			(order) => order.invalidated === false,
+		);
+		if (validOrders.length === 1) {
+			setHypercert(hypercert);
+			setSelectedOrder(validOrders[0]);
+			pushModalByVariant({
+				id: "purchase-flow-select-amount",
+				content: <SelectAmount />,
+			});
+		}
 		show();
 	};
 	return (
