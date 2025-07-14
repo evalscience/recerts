@@ -1,0 +1,327 @@
+"use client";
+
+import { fetchFractionById } from "@/app/graphql-queries/fractions";
+import type { FullHypercert } from "@/app/graphql-queries/hypercerts";
+import ErrorModalBody from "@/components/modals/error-body";
+import { useModal } from "@/components/ui/modal/context";
+import { cn } from "@/lib/utils";
+import type { Currency } from "@hypercerts-org/marketplace-sdk";
+import { useQuery } from "@tanstack/react-query";
+import { AnimatePresence, motion } from "framer-motion";
+import { ChevronLeft, Info, Loader2, Percent, RefreshCcw } from "lucide-react";
+import { useEffect, useState } from "react";
+import { useAccount } from "wagmi";
+import { Button } from "../../../../../../components/ui/button";
+import {
+	ModalContent,
+	ModalDescription,
+	ModalFooter,
+	ModalHeader,
+	ModalTitle,
+} from "../../../../../../components/ui/modal/modal";
+import useUserFunds from "../../PaymentFlow/hooks/useUserFunds";
+import Paymentprogress from "../payment-progress";
+import usePurchaseFlowStore from "../store";
+import { calcUnitsFromTokens } from "../utils/calcUnitsFromTokens";
+import BasicTab from "./BasicTab";
+import CustomTab from "./CustomTab";
+import PercentageTab from "./PercentageTab";
+
+const AnimatedTabContent = ({ children }: { children: React.ReactNode }) => {
+	return (
+		<motion.div
+			className="w-full"
+			initial={{ opacity: 0, scale: 1.2, filter: "blur(10px)" }}
+			animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
+			exit={{ opacity: 0, scale: 0.8, filter: "blur(10px)" }}
+			transition={{ duration: 0.2 }}
+		>
+			{children}
+		</motion.div>
+	);
+};
+
+const SelectAmount = () => {
+	const hypercert = usePurchaseFlowStore((state) => state.hypercert);
+	const selectedOrder = usePurchaseFlowStore((state) => state.selectedOrder);
+	const currency = usePurchaseFlowStore((state) => state.currency);
+	const { popModal } = useModal();
+	return (
+		<ModalContent dismissible={false} className="font-sans">
+			<ModalHeader className="flex items-center gap-4">
+				<Button
+					variant={"secondary"}
+					size={"sm"}
+					className="h-6 w-6 rounded-full p-0.5"
+					onClick={() => popModal()}
+				>
+					<ChevronLeft />
+				</Button>
+				<div>
+					<ModalTitle>Purchase Ecocert</ModalTitle>
+					<ModalDescription>Select the amount to purchase</ModalDescription>
+				</div>
+			</ModalHeader>
+			{!hypercert || !selectedOrder || !currency ? (
+				<ErrorModalBody ctaText="Go back" ctaAction={() => popModal()} />
+			) : (
+				<SelectAmountBody
+					hypercert={hypercert}
+					selectedOrder={selectedOrder}
+					currency={currency}
+				/>
+			)}
+		</ModalContent>
+	);
+};
+
+const TABS = ["basic", "custom", "percentage"] as const;
+type TabType = (typeof TABS)[number];
+
+const SelectAmountBody = ({
+	hypercert,
+	selectedOrder,
+	currency,
+}: {
+	hypercert: FullHypercert;
+	selectedOrder: FullHypercert["orders"][number];
+	currency: Currency;
+}) => {
+	const { hide, pushModalByVariant } = useModal();
+	const tokenIds = selectedOrder.itemIds;
+	const fractionIds = tokenIds.map((tokenId) => {
+		const [chainId, contractAddress] = hypercert.hypercertId.split("-");
+		return `${chainId}-${contractAddress}-${tokenId}`;
+	});
+
+	const selectedTab: TabType = usePurchaseFlowStore(
+		(state) => state.amountSelectionCurrentTab,
+	);
+	const setSelectedTab: (tab: TabType) => void = usePurchaseFlowStore(
+		(state) => state.setAmountSelectionCurrentTab,
+	);
+	const totalUnitsInOrder = usePurchaseFlowStore(
+		(state) => state.totalUnitsInOrder,
+	);
+	const amountSelectedInUnits = usePurchaseFlowStore(
+		(state) => state.amountSelectedInUnits,
+	);
+
+	// --- User Balance ---
+	const userFunds = useUserFunds(selectedOrder?.currency as `0x${string}`);
+	const balance = userFunds.data.formatted ?? "-";
+	const isBalanceLoading = userFunds.isLoading;
+	const handleBalanceRefresh = () => userFunds.refetch();
+	const handleContinue = () => {
+		pushModalByVariant({
+			id: "purchase-flow-payment-progress",
+			content: <Paymentprogress />,
+		});
+	};
+
+	if (totalUnitsInOrder === null) {
+		return <TotalUnitsHandlerUI fractionIds={fractionIds} />;
+	}
+	const fundsByUserInUnits = calcUnitsFromTokens(
+		Number(userFunds.data.formatted ?? "0"),
+		totalUnitsInOrder,
+		selectedOrder.pricePerPercentInToken,
+	);
+
+	// --- UI ---
+	return (
+		<>
+			<div className="my-6 flex flex-col gap-2">
+				{/* Tab Group */}
+				<div className="mb-2 flex items-center gap-2">
+					<div className="flex flex-1 gap-0.5 rounded-lg border border-border/30 bg-muted/20 p-0.5">
+						{(["basic", "custom"] satisfies TabType[]).map((tab) => (
+							<Button
+								key={tab}
+								size={"sm"}
+								variant={selectedTab === tab ? "secondary" : "ghost"}
+								className={cn(
+									"flex-1 px-2 py-1 font-semibold text-sm capitalize",
+									selectedTab === tab
+										? "bg-primary/10 text-primary"
+										: "text-muted-foreground",
+								)}
+								onClick={() => setSelectedTab(tab)}
+							>
+								{tab}
+							</Button>
+						))}
+					</div>
+					<div className="flex gap-0.5 rounded-lg border border-border/30 bg-muted/20 p-0.5">
+						<Button
+							size={"sm"}
+							variant={selectedTab === "percentage" ? "secondary" : "ghost"}
+							className={cn(
+								"px-2 py-1 font-semibold text-sm capitalize",
+								selectedTab === "percentage"
+									? "bg-primary/10 text-primary"
+									: "text-muted-foreground",
+							)}
+							onClick={() => setSelectedTab("percentage")}
+						>
+							<Percent className="size-4" />
+						</Button>
+					</div>
+				</div>
+				{/* Choose an amount label and balance */}
+				<div className="flex items-center justify-between">
+					<span className="mb-1 font-bold text-sm">Choose an amount</span>
+					<div className="flex items-center gap-1">
+						<span className="text-muted-foreground text-xs">
+							Balance: {isBalanceLoading ? "..." : balance} {currency?.symbol}
+						</span>
+						<Button
+							variant={"ghost"}
+							size={"sm"}
+							className="h-auto w-8 p-1"
+							onClick={handleBalanceRefresh}
+							disabled={isBalanceLoading}
+						>
+							<RefreshCcw
+								className={cn("size-3", isBalanceLoading && "animate-spin")}
+							/>
+						</Button>
+					</div>
+				</div>
+				<AnimatePresence mode="wait">
+					{selectedTab === "basic" && (
+						<AnimatedTabContent key="basic">
+							<BasicTab
+								totalUnitsInOrder={totalUnitsInOrder}
+								fundsByUserInUnits={fundsByUserInUnits}
+							/>
+						</AnimatedTabContent>
+					)}
+					{selectedTab === "custom" && (
+						<AnimatedTabContent key="custom">
+							<CustomTab
+								totalUnitsInOrder={totalUnitsInOrder}
+								fundsByUserInUnits={fundsByUserInUnits}
+							/>
+						</AnimatedTabContent>
+					)}
+					{selectedTab === "percentage" && (
+						<AnimatedTabContent key="percentage">
+							<PercentageTab
+								totalUnitsInOrder={totalUnitsInOrder}
+								fundsByUserInUnits={fundsByUserInUnits}
+							/>
+						</AnimatedTabContent>
+					)}
+				</AnimatePresence>
+				{/* Info Box */}
+				<div className="mt-2 flex items-start gap-2 rounded-lg border bg-muted/50 p-3 font-sans text-muted-foreground text-xs">
+					<Info className="mt-0.5 h-4 w-4 shrink-0" />
+					<p>
+						All proceeds from the purchase of this ecocert go directly to the
+						creator of the ecocert minus a small platform fee worth{" "}
+						<span className="font-bold text-foreground">0.1 Celo</span>.
+					</p>
+				</div>
+			</div>
+			<ModalFooter className="flex flex-row items-center gap-2">
+				<Button variant={"secondary"} className="flex-1" onClick={() => hide()}>
+					Cancel
+				</Button>
+				<Button
+					onClick={handleContinue}
+					className="flex-1"
+					disabled={
+						amountSelectedInUnits[selectedTab] === null ||
+						amountSelectedInUnits[selectedTab] <= 0 ||
+						amountSelectedInUnits[selectedTab] > totalUnitsInOrder ||
+						amountSelectedInUnits[selectedTab] > fundsByUserInUnits
+					}
+				>
+					Continue
+				</Button>
+			</ModalFooter>
+		</>
+	);
+};
+
+const TotalUnitsHandlerUI = ({ fractionIds }: { fractionIds: string[] }) => {
+	const { hide } = useModal();
+	const totalUnitsInOrder = usePurchaseFlowStore(
+		(state) => state.totalUnitsInOrder,
+	);
+	const setTotalUnitsInOrder: (units: bigint) => void = usePurchaseFlowStore(
+		(state) => state.setTotalUnitsInOrder,
+	);
+
+	const {
+		data: fetchedFractionUnits,
+		isPending: isFetchedFractionUnitsPending,
+		isError: isFetchedFractionUnitsError,
+		refetch: refetchFetchedFractionUnits,
+	} = useQuery({
+		queryKey: ["fraction-units", fractionIds],
+		queryFn: async () => {
+			const fractionIdPromises = fractionIds.map((fractionId) => {
+				return fetchFractionById(fractionId);
+			});
+			const fractions = await Promise.all(fractionIdPromises);
+			const fractionUnits = fractions.map((fraction) => {
+				const units = fraction.units;
+				if (
+					typeof units === "bigint" ||
+					typeof units === "number" ||
+					typeof units === "string"
+				) {
+					return BigInt(units);
+				}
+				throw new Error("Units is not a bigint or number");
+			});
+			return fractionUnits.reduce((acc, units) => acc + units, 0n);
+		},
+	});
+
+	// biome-ignore lint/correctness/useExhaustiveDependencies(setTotalUnitsInOrder): setTotalUnitsInOrder should not be a trigger for this side effect.
+	useEffect(() => {
+		if (totalUnitsInOrder !== null) return;
+		if (fetchedFractionUnits === undefined) return;
+
+		setTotalUnitsInOrder(fetchedFractionUnits);
+	}, [totalUnitsInOrder, fetchedFractionUnits]);
+
+	if (isFetchedFractionUnitsPending) {
+		return (
+			<>
+				<div className="my-6 flex flex-col items-center gap-2 rounded-lg bg-muted/50 p-4">
+					<Loader2 className="size-6 animate-spin text-primary" />
+					<span className="animate-pulse text-muted-foreground">
+						Gathering purchase info...
+					</span>
+				</div>
+				<ModalFooter>
+					<Button
+						variant={"secondary"}
+						className="flex-1"
+						onClick={() => hide()}
+					>
+						Cancel
+					</Button>
+				</ModalFooter>
+			</>
+		);
+	}
+	if (isFetchedFractionUnitsError || fetchedFractionUnits === undefined) {
+		return (
+			<ErrorModalBody
+				errorMessage="Unable to gather info"
+				errorDescription="We couldn't gather the information for this purchase. Please try again."
+				ctaText="Try again"
+				ctaAction={() => refetchFetchedFractionUnits()}
+			/>
+		);
+	}
+
+	return null;
+};
+
+export default SelectAmount;
