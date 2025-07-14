@@ -21,7 +21,6 @@ import {
 } from "lucide-react";
 import React from "react";
 import { useAccount } from "wagmi";
-import PaymentFlow from "./PaymentFlow";
 import SelectOrder from "./PurchaseFlow/select-order";
 
 const ProgressIndicator = ({
@@ -184,11 +183,6 @@ const OpenVariant = ({
 				</div>
 			</div>
 			<div className="mt-2 flex items-center justify-end">
-				{/* <PaymentFlow>
-					<Button className="gap-2" size={"sm"}>
-						Buy <ArrowRight size={16} />
-					</Button>
-				</PaymentFlow> */}
 				<Button onClick={handleShowPurchaseFlow}>
 					Buy <ArrowRight size={16} />
 				</Button>
