@@ -4,13 +4,13 @@ import { fetchFractionById } from "@/app/graphql-queries/fractions";
 import type { FullHypercert } from "@/app/graphql-queries/hypercerts";
 import ErrorModalBody from "@/components/modals/error-body";
 import { useModal } from "@/components/ui/modal/context";
+import useUserFunds from "@/hooks/use-user-funds";
 import { cn } from "@/lib/utils";
 import type { Currency } from "@hypercerts-org/marketplace-sdk";
 import { useQuery } from "@tanstack/react-query";
 import { AnimatePresence, motion } from "framer-motion";
 import { ChevronLeft, Info, Loader2, Percent, RefreshCcw } from "lucide-react";
-import { useEffect, useState } from "react";
-import { useAccount } from "wagmi";
+import { useEffect } from "react";
 import { Button } from "../../../../../../components/ui/button";
 import {
 	ModalContent,
@@ -19,7 +19,6 @@ import {
 	ModalHeader,
 	ModalTitle,
 } from "../../../../../../components/ui/modal/modal";
-import useUserFunds from "../../PaymentFlow/hooks/useUserFunds";
 import Paymentprogress from "../payment-progress";
 import usePurchaseFlowStore from "../store";
 import { calcUnitsFromTokens } from "../utils/calcUnitsFromTokens";

@@ -113,25 +113,22 @@ const usePaymentProgressStore = create<
 			set({ currentStepIndex: 1 });
 			errorTitle = "Invalid Order";
 			errorDescription = "The order seems to be invalid. Please try again.";
-			console.log("Fetching orders...");
 			const [orders, ordersFetchError] = await tryCatch(() =>
 				hcExchangeClient.api.fetchOrdersByHypercertId({
 					hypercertId,
 				}),
 			);
-			console.log("Orders fetched:", orders);
 			const order = orders?.data?.find((order) => order.id === orderId);
 			if (ordersFetchError || !order) {
-				console.log("Error fetching orders:", ordersFetchError);
 				set({
 					status: "error",
 					errorState: { title: errorTitle, description: errorDescription },
 				});
+				console.error("Error fetching orders:", ordersFetchError);
 				return;
 			}
 
 			// =========== STEP 2
-			console.log("Step2...");
 			set({ currentStepIndex: 2 });
 			errorTitle = "Approval not confirmed";
 			errorDescription = "The spending cap could not be approved.";
@@ -147,6 +144,7 @@ const usePaymentProgressStore = create<
 					status: "error",
 					errorState: { title: errorTitle, description: errorDescription },
 				});
+				console.error("Error approving spending cap:", approveTxError);
 				return;
 			}
 
@@ -182,6 +180,7 @@ const usePaymentProgressStore = create<
 					status: "error",
 					errorState: { title: errorTitle, description: errorDescription },
 				});
+				console.error("Error executing order:", executeTxError);
 				return;
 			}
 
@@ -195,6 +194,7 @@ const usePaymentProgressStore = create<
 					status: "error",
 					errorState: { title: errorTitle, description: errorDescription },
 				});
+				console.error("Error getting receipt:", receiptError);
 				return;
 			}
 
