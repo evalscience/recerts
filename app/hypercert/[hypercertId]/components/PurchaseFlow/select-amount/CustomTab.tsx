@@ -1,4 +1,4 @@
-import type { FullHypercert } from "@/app/graphql-queries/hypercerts";
+import type { FullHypercert } from "@/graphql/hypercerts/queries/hypercerts";
 import BigNumber from "bignumber.js";
 import { useEffect, useMemo, useState } from "react";
 import { Button } from "../../../../../../components/ui/button";

@@ -1,7 +1,7 @@
 "use client";
 
-import type { FullHypercert } from "@/app/graphql-queries/hypercerts";
 import { useModal } from "@/components/ui/modal/context";
+import type { FullHypercert } from "@/graphql/hypercerts/queries/hypercerts";
 import { formatCurrency } from "@/lib/utils";
 import { useWeb3Modal } from "@web3modal/wagmi/react";
 import { CheckCircle, Circle, CircleAlert } from "lucide-react";

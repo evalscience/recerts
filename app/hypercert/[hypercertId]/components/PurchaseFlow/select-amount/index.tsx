@@ -1,9 +1,9 @@
 "use client";
 
-import { fetchFractionById } from "@/app/graphql-queries/fractions";
-import type { FullHypercert } from "@/app/graphql-queries/hypercerts";
 import ErrorModalBody from "@/components/modals/error-body";
 import { useModal } from "@/components/ui/modal/context";
+import { fetchFractionById } from "@/graphql/hypercerts/queries/fractions";
+import type { FullHypercert } from "@/graphql/hypercerts/queries/hypercerts";
 import useUserFunds from "@/hooks/use-user-funds";
 import { cn } from "@/lib/utils";
 import type { Currency } from "@hypercerts-org/marketplace-sdk";

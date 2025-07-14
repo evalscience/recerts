@@ -1,8 +1,8 @@
-import type { FullHypercert } from "@/app/graphql-queries/hypercerts";
 import EthAddress from "@/components/eth-address";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import EthAvatar from "@/components/ui/eth-avatar";
 import { TOKENS_CONFIG } from "@/config/wagmi";
+import type { FullHypercert } from "@/graphql/hypercerts/queries/hypercerts";
 import { formatTokens } from "@/lib/format-tokens";
 import { bigintToFormattedDate } from "@/lib/utils";
 import { Calendar, HandHeart } from "lucide-react";

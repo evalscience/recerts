@@ -1,4 +1,3 @@
-import type { FullHypercert } from "@/app/graphql-queries/hypercerts";
 import ErrorModalBody from "@/components/modals/error-body";
 import { useHypercertExchangeClient } from "@/components/providers/HypercertExchangeClientProvider";
 import { Button } from "@/components/ui/button";
@@ -10,6 +9,7 @@ import {
 	ModalHeader,
 	ModalTitle,
 } from "@/components/ui/modal/modal";
+import type { FullHypercert } from "@/graphql/hypercerts/queries/hypercerts";
 import { cn } from "@/lib/utils";
 import type {
 	Currency,
