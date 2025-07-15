@@ -90,11 +90,8 @@ type PaymentProgressActions = {
 		hcExchangeClient: HypercertExchangeClient,
 		hypercertId: string,
 		orderId: string,
-		pricePerPercentInToken: number,
-		currency: Currency,
 		address: string,
 		unitsToBuy: bigint,
-		totalUnitsInOrder: bigint,
 	) => Promise<void>;
 };
 
@@ -109,11 +106,8 @@ const usePaymentProgressStore = create<
 			hcExchangeClient,
 			hypercertId,
 			orderId,
-			pricePerPercentInToken,
-			currency,
 			address,
 			unitsToBuy,
-			totalUnitsInOrder,
 		) => {
 			set({ status: "pending" });
 			let errorTitle = "";
@@ -142,23 +136,14 @@ const usePaymentProgressStore = create<
 			set({ currentStepIndex: 2 });
 			errorTitle = "Approval not confirmed";
 			errorDescription = "The spending cap could not be approved.";
-			const percentToBuyBn = BigNumber(unitsToBuy)
-				.div(BigNumber(totalUnitsInOrder))
-				.multipliedBy(100);
-			const tokensToPayBn = percentToBuyBn.multipliedBy(
-				BigNumber(pricePerPercentInToken),
-			);
-			const tokensToPayInWei = BigInt(
-				tokensToPayBn
-					.multipliedBy((10n ** BigInt(currency.decimals)).toString())
-					.toFixed(0),
-			);
+			const tokensToPayInWei = unitsToBuy * BigInt(order.price);
 			const [, approveTxError] = await tryCatch(() =>
 				hcExchangeClient.approveErc20(
 					order.currency as `0x${string}`,
 					tokensToPayInWei,
 				),
 			);
+			console.log(unitsToBuy, order.price);
 			if (approveTxError) {
 				set({
 					status: "error",

@@ -96,9 +96,7 @@ const Paymentprogress = () => {
 			<PaymentProgressBody
 				hypercert={hypercert}
 				selectedOrder={selectedOrder}
-				currency={currency}
 				userAddress={address}
-				totalUnitsInOrder={totalUnitsInOrder}
 				unitsToPurchase={amountSelectedInUnits[currentAmountSelectionTab]}
 				hypercertExchangeClient={hypercertExchangeClient}
 			/>
@@ -109,17 +107,13 @@ const Paymentprogress = () => {
 const PaymentProgressBody = ({
 	hypercert,
 	selectedOrder,
-	currency,
 	userAddress,
-	totalUnitsInOrder,
 	unitsToPurchase,
 	hypercertExchangeClient,
 }: {
 	hypercert: FullHypercert;
 	selectedOrder: FullHypercert["orders"][number];
-	currency: Currency;
 	userAddress: string;
-	totalUnitsInOrder: bigint;
 	unitsToPurchase: bigint;
 	hypercertExchangeClient: HypercertExchangeClient;
 }) => {
@@ -133,22 +127,16 @@ const PaymentProgressBody = ({
 			hypercertExchangeClient,
 			hypercert.hypercertId,
 			selectedOrder.id,
-			selectedOrder.pricePerPercentInToken,
-			currency,
 			userAddress,
 			unitsToPurchase,
-			totalUnitsInOrder,
 		);
 	}, [
 		start,
 		hypercertExchangeClient,
 		hypercert.hypercertId,
 		selectedOrder.id,
-		selectedOrder.pricePerPercentInToken,
-		currency,
 		userAddress,
 		unitsToPurchase,
-		totalUnitsInOrder,
 	]);
 
 	useEffect(() => {
