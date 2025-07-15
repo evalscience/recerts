@@ -19,7 +19,7 @@ type PurchaseFlowState = {
 
 type PurchaseFlowActions = {
 	setHypercert: (hypercert: FullHypercert) => void;
-	setSelectedOrder: (order: FullHypercert["orders"][number]) => void;
+	setSelectedOrder: (order: FullHypercert["orders"][number] | null) => void;
 	setTotalUnitsInOrder: (totalUnitsInOrder: bigint) => void;
 	setAmountSelectedInUnits: (amountSelectedInUnits: {
 		basic: bigint | null;
@@ -54,10 +54,12 @@ const usePurchaseFlowStore = create<PurchaseFlowState & PurchaseFlowActions>(
 			set(() => {
 				return {
 					selectedOrder,
-					currency: getCurrencyFromAddress(
-						Number.parseInt(selectedOrder.chainId),
-						selectedOrder.currency,
-					),
+					currency: selectedOrder
+						? getCurrencyFromAddress(
+								Number.parseInt(selectedOrder.chainId),
+								selectedOrder.currency,
+						  )
+						: null,
 				};
 			}),
 		setTotalUnitsInOrder: (totalUnitsInOrder) => set({ totalUnitsInOrder }),
