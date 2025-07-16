@@ -125,7 +125,7 @@ const ProfileCard = ({
 						>
 							<span className="flex items-center justify-start gap-2 text-left">
 								<Sparkle size={16} className="text-primary" />
-								Created Hypercerts
+								My Hypercerts
 							</span>
 							<span className="flex items-center justify-end gap-1 text-right text-muted-foreground">
 								<span>{stats.hypercertsCreated}</span>

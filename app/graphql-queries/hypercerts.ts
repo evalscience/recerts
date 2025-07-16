@@ -227,6 +227,8 @@ const fullHypercertByHypercertIdQuery = graphql(`
             pricePerPercentInToken
             pricePerPercentInUSD
             currency
+            invalidated
+            itemIds
           }
         }
         attestations {
@@ -318,6 +320,8 @@ export type FullHypercert = {
 		pricePerPercentInToken: number;
 		pricePerPercentInUSD: number;
 		currency: string;
+		invalidated: boolean;
+		itemIds: string[];
 	}[];
 	attestations: EcocertAttestation[];
 	sales: {
@@ -389,6 +393,8 @@ export const fetchFullHypercertById = async (
 			pricePerPercentInUSD: Number(order.pricePerPercentInUSD),
 			currency: order.currency as string,
 			chainId: order.chainId as string,
+			invalidated: order.invalidated,
+			itemIds: order.itemIds,
 		};
 	});
 

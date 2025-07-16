@@ -69,6 +69,16 @@ const PriceForm = ({
 	return (
 		<div className="flex flex-1 flex-col gap-4">
 			<div className="flex flex-col gap-2">
+				{selectedCurrency?.decimals !== undefined &&
+					selectedCurrency.decimals < 8 && ( // Max units of a hypercert is 10^8, so we check for decimals < 8
+						<div className="flex items-start gap-2 rounded-lg border bg-muted/50 p-3 font-sans text-muted-foreground text-xs">
+							<Info className="mt-0.5 h-4 w-4 shrink-0" />
+							<p>
+								Due to restrictions with this currency, you can only list in
+								multiples of {10 ** (8 - selectedCurrency.decimals)}.
+							</p>
+						</div>
+					)}
 				<div className="flex items-center gap-2">
 					<Input
 						placeholder="Enter a price"

@@ -1,21 +1,12 @@
 import type { FullHypercert } from "@/app/graphql-queries/hypercerts";
 import EthAddress from "@/components/eth-address";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
 import EthAvatar from "@/components/ui/eth-avatar";
 import { TOKENS_CONFIG } from "@/config/wagmi";
-import { calculateBigIntPercentage } from "@/lib/calculateBigIntPercentage";
 import { formatTokens } from "@/lib/format-tokens";
-import {
-	bigintToFormattedDate,
-	convertCurrencyPriceToUSD,
-	formatDecimals,
-} from "@/lib/utils";
-import { blo } from "blo";
-import { Calendar, HandHeart, UserCircle2 } from "lucide-react";
+import { bigintToFormattedDate } from "@/lib/utils";
+import { Calendar, HandHeart } from "lucide-react";
 import type React from "react";
-import BuyButton from "./BuyButtonWrapper";
-import PaymentFlow from "./PaymentFlow";
 
 const BuyFraction = ({
 	text,

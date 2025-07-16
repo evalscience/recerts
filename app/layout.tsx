@@ -7,6 +7,8 @@ import "./globals.css";
 import { Analytics } from "@vercel/analytics/react";
 import { cookieToInitialState } from "wagmi";
 
+import HypercertExchangeClientProvider from "@/components/providers/HypercertExchangeClientProvider";
+import { ModalProvider } from "@/components/ui/modal/context";
 import { siteConfig } from "@/config/site";
 import { config } from "@/config/wagmi";
 import { WagmiContextProvider } from "@/contexts/wagmi";
@@ -124,7 +126,6 @@ export default function RootLayout({
 }: Readonly<{
 	children: React.ReactNode;
 }>) {
-	const initialState = cookieToInitialState(config, headers().get("cookie"));
 	return (
 		<html lang="en">
 			<head>
@@ -139,12 +140,16 @@ export default function RootLayout({
 			>
 				<FarcasterProvider>
 					<Analytics />
-					<WagmiContextProvider initialState={initialState}>
-						<PriceFeedProvider>
-							<Header />
-							<div className="flex-1">{children}</div>
-							<Footer />
-						</PriceFeedProvider>
+					<WagmiContextProvider>
+						<HypercertExchangeClientProvider>
+							<PriceFeedProvider>
+								<ModalProvider modalVariants={[]}>
+									<Header />
+									<div className="flex-1">{children}</div>
+									<Footer />
+								</ModalProvider>
+							</PriceFeedProvider>
+						</HypercertExchangeClientProvider>
 					</WagmiContextProvider>
 				</FarcasterProvider>
 			</body>
