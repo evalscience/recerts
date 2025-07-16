@@ -21,6 +21,7 @@ import {
 } from "lucide-react";
 import React from "react";
 import { useAccount } from "wagmi";
+import usePaymentProgressStore from "./PurchaseFlow/payment-progress/store";
 import SelectAmount from "./PurchaseFlow/select-amount";
 import SelectOrder from "./PurchaseFlow/select-order";
 import usePurchaseFlowStore from "./PurchaseFlow/store";
@@ -131,22 +132,31 @@ const OpenVariant = ({
 	const goalPercentageOnBar =
 		totalSalesInUSD <= goalInUSD ? 100 : (goalInUSD / totalSalesInUSD) * 100;
 	const { show, pushModalByVariant, stack } = useModal();
+	const purchasePaymentStatus = usePaymentProgressStore(
+		(state) => state.status,
+	);
+	const resetPaymentProgress = usePaymentProgressStore((state) => state.reset);
+
 	const hypercert = useFullHypercert();
+
 	const handleShowPurchaseFlow = () => {
+		const lastModalId = stack.length > 0 ? stack[stack.length - 1] : null;
 		if (
-			stack.length > 0 &&
-			stack[stack.length - 1].startsWith("purchase-flow")
+			!lastModalId ||
+			!lastModalId.startsWith("purchase-flow") ||
+			purchasePaymentStatus === "success"
 		) {
+			resetPaymentProgress();
+			pushModalByVariant(
+				{
+					id: "purchase-flow-select-order",
+					content: <SelectOrder hypercert={hypercert} />,
+				},
+				true,
+			);
 			show();
 			return;
 		}
-		pushModalByVariant(
-			{
-				id: "purchase-flow-select-order",
-				content: <SelectOrder hypercert={hypercert} />,
-			},
-			true,
-		);
 		show();
 	};
 	return (
