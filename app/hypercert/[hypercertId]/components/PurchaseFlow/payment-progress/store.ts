@@ -93,6 +93,7 @@ type PaymentProgressActions = {
 		address: string,
 		unitsToBuy: bigint,
 	) => Promise<void>;
+	reset: () => void;
 };
 
 const usePaymentProgressStore = create<
@@ -238,6 +239,13 @@ const usePaymentProgressStore = create<
 			// =========== STEP 6
 			set({ currentStepIndex: 6 });
 			set({ status: "success" });
+		},
+		reset: () => {
+			set({
+				currentStepIndex: 0,
+				status: "pending",
+				errorState: null,
+			} satisfies PaymentProgressState);
 		},
 	};
 });
