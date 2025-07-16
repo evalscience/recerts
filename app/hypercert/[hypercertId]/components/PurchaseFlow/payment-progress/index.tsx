@@ -117,7 +117,7 @@ const PaymentProgressBody = ({
 	unitsToPurchase: bigint;
 	hypercertExchangeClient: HypercertExchangeClient;
 }) => {
-	const { status, errorState, currentStepIndex, start } =
+	const { status, errorState, currentStepIndex, start, reset } =
 		usePaymentProgressStore();
 
 	const { hide, popModal, clear } = useModal();
@@ -138,6 +138,13 @@ const PaymentProgressBody = ({
 		userAddress,
 		unitsToPurchase,
 	]);
+
+	const handleBack = useCallback(() => {
+		if (status === "success") {
+			reset();
+		}
+		popModal();
+	}, [status, reset, popModal]);
 
 	useEffect(() => {
 		if (currentStepIndex !== 0 || status !== "pending") return;
@@ -249,7 +256,7 @@ const PaymentProgressBody = ({
 			)}
 			<ModalFooter>
 				{status !== "pending" && (
-					<Button variant={"secondary"} onClick={() => popModal()}>
+					<Button variant={"secondary"} onClick={() => handleBack()}>
 						Go Back
 					</Button>
 				)}
