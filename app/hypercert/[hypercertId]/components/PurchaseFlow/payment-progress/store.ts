@@ -209,7 +209,7 @@ const usePaymentProgressStore = create<
 
 			// =========== STEP 5
 			set({ currentStepIndex: 5 });
-			await tryCatch(async () => {
+			const [, tipTxError] = await tryCatch(async () => {
 				const walletClient = createWalletClient({
 					chain: celo,
 					transport: custom(
@@ -231,6 +231,9 @@ const usePaymentProgressStore = create<
 				});
 				return new Promise<boolean>((res) => res(true));
 			});
+			if (tipTxError) {
+				console.error("Tipping error:", tipTxError);
+			}
 
 			// =========== STEP 6
 			set({ currentStepIndex: 6 });
