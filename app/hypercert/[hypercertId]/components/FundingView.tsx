@@ -6,6 +6,7 @@ import Progress from "@/app/components/shared/progress";
 import useFullHypercert from "@/app/contexts/full-hypercert";
 import type { FullHypercert } from "@/app/graphql-queries/hypercerts";
 import { Button } from "@/components/ui/button";
+import { useModal } from "@/components/ui/modal/context";
 import QuickTooltip from "@/components/ui/quicktooltip";
 import { RAW_TOKENS_CONFIG } from "@/config/raw-tokens";
 import { calculateBigIntPercentage } from "@/lib/calculateBigIntPercentage";
@@ -20,7 +21,9 @@ import {
 } from "lucide-react";
 import React from "react";
 import { useAccount } from "wagmi";
-import PaymentFlow from "./PaymentFlow";
+import SelectAmount from "./PurchaseFlow/select-amount";
+import SelectOrder from "./PurchaseFlow/select-order";
+import usePurchaseFlowStore from "./PurchaseFlow/store";
 
 const ProgressIndicator = ({
 	percentage,
@@ -127,7 +130,25 @@ const OpenVariant = ({
 }) => {
 	const goalPercentageOnBar =
 		totalSalesInUSD <= goalInUSD ? 100 : (goalInUSD / totalSalesInUSD) * 100;
-
+	const { show, pushModalByVariant, stack } = useModal();
+	const hypercert = useFullHypercert();
+	const handleShowPurchaseFlow = () => {
+		if (
+			stack.length > 0 &&
+			stack[stack.length - 1].startsWith("purchase-flow")
+		) {
+			show();
+			return;
+		}
+		pushModalByVariant(
+			{
+				id: "purchase-flow-select-order",
+				content: <SelectOrder hypercert={hypercert} />,
+			},
+			true,
+		);
+		show();
+	};
 	return (
 		<div className="flex h-full w-full flex-col justify-between font-sans">
 			<div className="group flex w-full flex-col">
@@ -165,11 +186,9 @@ const OpenVariant = ({
 				</div>
 			</div>
 			<div className="mt-2 flex items-center justify-end">
-				<PaymentFlow>
-					<Button className="gap-2" size={"sm"}>
-						Buy <ArrowRight size={16} />
-					</Button>
-				</PaymentFlow>
+				<Button onClick={handleShowPurchaseFlow}>
+					Buy <ArrowRight size={16} />
+				</Button>
 			</div>
 		</div>
 	);
@@ -239,7 +258,6 @@ const VariantSelector = () => {
 	} = hypercert;
 	const { address } = useAccount();
 	const priceFeed = usePriceFeed();
-	console.log(hypercert);
 
 	// Calculate total sales in USD synchronously
 	const totalSalesInUSD = React.useMemo(() => {
