@@ -5,7 +5,7 @@ import {
 } from "@/app/utils/graphql";
 import { typeCastApiResponseToBigInt } from "@/lib/utils";
 import { type ResultOf, graphql } from "gql.tada";
-import { fetchHypercertIDs } from "../graphql-queries/hypercerts";
+import { fetchHypercertIDs } from "../../graphql/hypercerts/queries/hypercerts";
 
 const salesByHypercertByPeriod = graphql(`
   query SalesByHypercertByPeriod(

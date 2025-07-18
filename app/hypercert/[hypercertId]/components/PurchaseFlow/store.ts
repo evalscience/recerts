@@ -1,4 +1,4 @@
-import type { FullHypercert } from "@/app/graphql-queries/hypercerts";
+import type { FullHypercert } from "@/graphql/hypercerts/queries/hypercerts";
 import type { Currency } from "@hypercerts-org/marketplace-sdk";
 import { create } from "zustand";
 import { getCurrencyFromAddress } from "./utils/getCurrencyFromAddress";

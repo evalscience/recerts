@@ -3,8 +3,8 @@
 import { Button } from "@/components/ui/button";
 
 import usePriceFeed, { type PriceFeedContext } from "@/app/PriceFeedProvider";
-import type { Hypercert } from "@/app/graphql-queries/hypercerts";
 import { ShowingDisplay, VDPaginator } from "@/components/global/vd-paginator";
+import type { Hypercert } from "@/graphql/hypercerts/queries/hypercerts";
 import autoAnimate from "@formkit/auto-animate";
 import Fuse from "fuse.js";
 import { TriangleAlert } from "lucide-react";
