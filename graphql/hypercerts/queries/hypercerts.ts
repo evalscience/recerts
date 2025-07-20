@@ -393,7 +393,7 @@ export const fetchFullHypercertById = async (
   const parsedAttestations = attestations
     .map((attestation) => {
       if (
-        attestation.schema_uid !==
+        attestation.eas_schema.uid !==
         "0x48e3e1be1e08084b408a7035ac889f2a840b440bbf10758d14fb722831a200c3"
       )
         return null;
