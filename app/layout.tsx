@@ -1,17 +1,18 @@
 import { cn } from "@/lib/utils";
 import type { Metadata } from "next";
 import localFont from "next/font/local";
-import "vaul/dist/index.css";
 import "./globals.css";
 
 import { Analytics } from "@vercel/analytics/react";
 import { cookieToInitialState } from "wagmi";
 
 import HypercertExchangeClientProvider from "@/components/providers/HypercertExchangeClientProvider";
+import PrivyConfigProvider from "@/components/providers/Privy";
 import { ModalProvider } from "@/components/ui/modal/context";
 import { siteConfig } from "@/config/site";
 import { config } from "@/config/wagmi";
 import { WagmiContextProvider } from "@/contexts/wagmi";
+import { PrivyProvider } from "@privy-io/react-auth";
 import { Libre_Baskerville } from "next/font/google";
 import { headers } from "next/headers";
 import { PriceFeedProvider } from "./PriceFeedProvider";
@@ -140,7 +141,7 @@ export default function RootLayout({
 			>
 				<FarcasterProvider>
 					<Analytics />
-					<WagmiContextProvider>
+					<PrivyConfigProvider>
 						<HypercertExchangeClientProvider>
 							<PriceFeedProvider>
 								<ModalProvider modalVariants={[]}>
@@ -150,7 +151,7 @@ export default function RootLayout({
 								</ModalProvider>
 							</PriceFeedProvider>
 						</HypercertExchangeClientProvider>
-					</WagmiContextProvider>
+					</PrivyConfigProvider>
 				</FarcasterProvider>
 			</body>
 		</html>

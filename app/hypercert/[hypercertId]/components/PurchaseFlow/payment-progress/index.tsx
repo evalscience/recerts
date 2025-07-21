@@ -10,17 +10,18 @@ import {
 	ModalTitle,
 } from "@/components/ui/modal/modal";
 import type { FullHypercert } from "@/graphql/hypercerts/queries/hypercerts";
+import useAccount from "@/hooks/use-account";
 import { cn } from "@/lib/utils";
 import type {
 	Currency,
 	HypercertExchangeClient,
 } from "@hypercerts-org/marketplace-sdk";
+import { useLogin } from "@privy-io/react-auth";
 import { useWeb3Modal } from "@web3modal/wagmi/react";
 import { motion } from "framer-motion";
 import { CircleAlert, RefreshCcw } from "lucide-react";
 import type React from "react";
 import { useCallback, useEffect, useState } from "react";
-import { useAccount } from "wagmi";
 import usePurchaseFlowStore from "../store";
 import usePaymentProgressStore, { PAYMENT_PROGRESS_STEPS } from "./store";
 
@@ -56,7 +57,7 @@ const Paymentprogress = () => {
 		(state) => state.totalUnitsInOrder,
 	);
 	const hypercertExchangeClient = useHypercertExchangeClient();
-	const { open } = useWeb3Modal();
+	const { login } = useLogin();
 	const { address } = useAccount();
 
 	if (
@@ -84,7 +85,7 @@ const Paymentprogress = () => {
 				<ErrorModalBody
 					errorMessage="Wallet not connected"
 					errorDescription="Please connect your wallet to continue"
-					ctaAction={() => open()}
+					ctaAction={() => login()}
 					ctaText="Connect Wallet"
 				/>
 			</PaymentProgressModalWrapper>

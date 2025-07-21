@@ -1,8 +1,24 @@
 "use client";
 
+import { SUPPORTED_CHAINS, config } from "@/config/wagmi";
 import { PrivyProvider } from "@privy-io/react-auth";
+import { WagmiProvider } from "@privy-io/wagmi";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { celo } from "viem/chains";
 
-export default function Providers({ children }: { children: React.ReactNode }) {
+const queryClient = new QueryClient({
+	defaultOptions: {
+		queries: {
+			refetchOnWindowFocus: false,
+		},
+	},
+});
+
+export default function PrivyConfigProvider({
+	children,
+}: {
+	children: React.ReactNode;
+}) {
 	return (
 		<PrivyProvider
 			appId={process.env.NEXT_PUBLIC_PRIVY_APP_ID ?? ""}
@@ -14,9 +30,13 @@ export default function Providers({ children }: { children: React.ReactNode }) {
 						createOnLogin: "users-without-wallets",
 					},
 				},
+				supportedChains: [celo],
+				defaultChain: celo,
 			}}
 		>
-			{children}
+			<QueryClientProvider client={queryClient}>
+				<WagmiProvider config={config}>{children}</WagmiProvider>
+			</QueryClientProvider>
 		</PrivyProvider>
 	);
 }

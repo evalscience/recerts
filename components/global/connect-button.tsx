@@ -1,11 +1,18 @@
 "use client";
-import { useWeb3Modal } from "@web3modal/wagmi/react";
 
 import { Button } from "@/components/ui/button";
+import useAccount from "@/hooks/use-account";
+import { useLogin } from "@privy-io/react-auth";
 
 const ConnectButton = () => {
-	const { open } = useWeb3Modal();
-	return <Button onClick={() => open()}>Connect Wallet</Button>;
+	const { isConnected } = useAccount();
+	const { login } = useLogin();
+
+	return (
+		<Button disabled={isConnected} onClick={() => login()}>
+			Connect Wallet
+		</Button>
+	);
 };
 ConnectButton.displayName = "ConnectButton";
 

@@ -43,4 +43,5 @@ next-env.d.ts
 /.vscode/
 
 # bun
+bun.lock
 bun.lockb
