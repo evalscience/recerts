@@ -73,7 +73,7 @@ const UnlistDialog = ({
 		setStatus({ type: "loading", message: "Preparing to unlist..." });
 		if (!hypercert)
 			throw new Error("Error gathering information about the ecocert.");
-		if (!hypercert.orderNonce || !hypercert.orderId)
+		if (hypercert.orderNonce === undefined || !hypercert.orderId)
 			throw new Error("This ecocert is not yet listed on marketplace.");
 		if (!isConnected || !address)
 			throw new Error("Please connect your wallet to authorize this action.");
@@ -149,7 +149,7 @@ const UnlistDialog = ({
 				) : hypercert ? (
 					isConnected &&
 					address?.toLowerCase() === hypercert?.creatorAddress.toLowerCase() ? (
-						hypercert.orderId && hypercert.orderNonce ? (
+						hypercert.orderId && hypercert.orderNonce !== undefined ? (
 							<div className="flex flex-col gap-2">
 								<span>
 									Are you sure to unlist the Ecocert,{" "}
