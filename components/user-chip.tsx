@@ -42,6 +42,7 @@ const UserChip = ({
 				<input
 					className="flex-1 truncate bg-transparent"
 					value={ensName ?? address}
+					size={12}
 					readOnly
 					disabled
 				/>
