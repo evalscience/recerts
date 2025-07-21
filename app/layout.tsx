@@ -1,7 +1,6 @@
 import { cn } from "@/lib/utils";
 import type { Metadata } from "next";
 import localFont from "next/font/local";
-import "vaul/dist/index.css";
 import "./globals.css";
 
 import { Analytics } from "@vercel/analytics/react";
