@@ -1,4 +1,4 @@
-import { usePrivy } from "@privy-io/react-auth";
+import { useActiveWallet, usePrivy, useWallets } from "@privy-io/react-auth";
 import React from "react";
 import { useAccount as useWagmiAccount } from "wagmi";
 
@@ -7,11 +7,11 @@ type Account = {
   chainId: number | undefined;
   isConnected: boolean;
   isConnecting: boolean;
+  authenticated: boolean;
 };
 
 const useAccount = (): Account => {
   const { authenticated, ready } = usePrivy();
-
   const { address, chainId, isConnected, isConnecting } = useWagmiAccount();
 
   if (!ready)
@@ -20,6 +20,7 @@ const useAccount = (): Account => {
       chainId: undefined,
       isConnected: false,
       isConnecting: true,
+      authenticated: false,
     };
 
   return {
@@ -27,6 +28,7 @@ const useAccount = (): Account => {
     chainId: authenticated ? chainId : undefined,
     isConnected: authenticated && isConnected,
     isConnecting,
+    authenticated,
   };
 };
 

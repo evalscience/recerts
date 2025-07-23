@@ -6,7 +6,8 @@ import "./globals.css";
 import { Analytics } from "@vercel/analytics/react";
 import { cookieToInitialState } from "wagmi";
 
-import HypercertExchangeClientProvider from "@/components/providers/HypercertExchangeClientProvider";
+import ChainSwitchProvider from "@/components/providers/ChainSwitch";
+import HypercertExchangeClientProvider from "@/components/providers/HypercertExchangeClient";
 import PrivyConfigProvider from "@/components/providers/Privy";
 import { ModalProvider } from "@/components/ui/modal/context";
 import { siteConfig } from "@/config/site";
@@ -145,9 +146,11 @@ export default function RootLayout({
 						<HypercertExchangeClientProvider>
 							<PriceFeedProvider>
 								<ModalProvider modalVariants={[]}>
-									<Header />
-									<div className="flex-1">{children}</div>
-									<Footer />
+									<ChainSwitchProvider>
+										<Header />
+										<div className="flex-1">{children}</div>
+										<Footer />
+									</ChainSwitchProvider>
 								</ModalProvider>
 							</PriceFeedProvider>
 						</HypercertExchangeClientProvider>

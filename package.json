@@ -54,6 +54,7 @@
     "@types/geojson": "^7946.0.16",
     "@vercel/analytics": "^1.4.1",
     "@wagmi/core": "^2.14.1",
+    "@web3icons/react": "^4.0.19",
     "@web3modal/wagmi": "^4.0.13",
     "abitype": "^1.0.6",
     "async-mutex": "^0.4.1",

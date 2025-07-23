@@ -30,8 +30,8 @@ export default function PrivyConfigProvider({
 						createOnLogin: "users-without-wallets",
 					},
 				},
-				supportedChains: [celo],
-				defaultChain: celo,
+				supportedChains: [...SUPPORTED_CHAINS],
+				defaultChain: SUPPORTED_CHAINS[0],
 			}}
 		>
 			<QueryClientProvider client={queryClient}>

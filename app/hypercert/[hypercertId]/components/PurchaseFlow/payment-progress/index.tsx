@@ -1,5 +1,5 @@
 import ErrorModalBody from "@/components/modals/error-body";
-import { useHypercertExchangeClient } from "@/components/providers/HypercertExchangeClientProvider";
+import { useHypercertExchangeClient } from "@/components/providers/HypercertExchangeClient";
 import { Button } from "@/components/ui/button";
 import { useModal } from "@/components/ui/modal/context";
 import {

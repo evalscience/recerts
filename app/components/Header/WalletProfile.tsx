@@ -1,5 +1,6 @@
 "use client";
 import { ConnectButton } from "@/components/global/connect-button";
+import { SignInButton } from "@/components/global/signin-button";
 import UserSheet from "@/components/global/user-sheet";
 import EthAvatar from "@/components/ui/eth-avatar";
 import { SUPPORTED_CHAINS } from "@/config/wagmi";
@@ -8,10 +9,12 @@ import { cn } from "@/lib/utils";
 import { Loader2 } from "lucide-react";
 
 const WalletProfile = () => {
-	const { address, isConnecting, isConnected, chainId } = useAccount();
+	const { address, isConnecting, isConnected, authenticated, chainId } =
+		useAccount();
 
 	if (isConnecting)
 		return <Loader2 className="mr-2 animate-spin text-primary" />;
+	if (!authenticated) return <SignInButton />;
 	if (!isConnected) return <ConnectButton />;
 
 	const chain = SUPPORTED_CHAINS.find(
