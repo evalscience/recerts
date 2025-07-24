@@ -4,7 +4,15 @@ import EthAvatar from "@/components/ui/eth-avatar";
 import { TOKENS_CONFIG } from "@/config/wagmi";
 import type { FullHypercert } from "@/graphql/hypercerts/queries/hypercerts";
 import { formatTokens } from "@/lib/format-tokens";
+import { tryCatch } from "@/lib/tryCatch";
 import { bigintToFormattedDate } from "@/lib/utils";
+import {
+	ChainId,
+	ChainInfo,
+	Currency,
+	chainInfo,
+	currenciesByNetwork,
+} from "@hypercerts-org/marketplace-sdk";
 import { Calendar, HandHeart } from "lucide-react";
 import type React from "react";
 
@@ -75,27 +83,12 @@ const Support = ({ hypercert }: { hypercert: FullHypercert }) => {
 		);
 	}
 
-	const addressToSymbol: Record<
-		string,
-		{
-			symbol: string;
-			decimals: number;
-		}
-	> = {};
-
-	for (const chainId in TOKENS_CONFIG) {
-		const tokens = TOKENS_CONFIG[chainId];
-		for (const token of tokens) {
-			addressToSymbol[token.address] = {
-				symbol: token.symbol,
-				decimals: token.decimals,
-			};
-		}
-	}
-
 	const newestToOldestSales = hypercert.sales.sort((a, b) => {
 		return Number(b.creationBlockTimestamp - a.creationBlockTimestamp);
 	});
+
+	const currenciesObj = currenciesByNetwork[42220];
+	const currencies = Object.values(currenciesObj);
 
 	return (
 		<Wrapper
@@ -118,21 +111,16 @@ const Support = ({ hypercert }: { hypercert: FullHypercert }) => {
 					{newestToOldestSales
 						.map((sale) => {
 							const saleCurrency = sale.currency;
-							let currencySymbol: string;
-							let currencyDecimals: number;
-							if (
-								saleCurrency in addressToSymbol &&
-								addressToSymbol[saleCurrency]
-							) {
-								currencySymbol = addressToSymbol[saleCurrency].symbol;
-								currencyDecimals = addressToSymbol[saleCurrency].decimals;
-							} else {
+							const currency = currencies.find(
+								(currency) => currency.address === saleCurrency,
+							);
+							if (!currency) {
 								return null;
 							}
 
 							const saleAmount = formatTokens(
 								sale.currencyAmount,
-								currencyDecimals,
+								currency.decimals,
 							);
 
 							return (
@@ -156,7 +144,7 @@ const Support = ({ hypercert }: { hypercert: FullHypercert }) => {
 										</div>
 									</div>
 									<span className="text-right font-bold text-lg text-primary">
-										<b>{saleAmount}</b> {currencySymbol}
+										<b>{saleAmount}</b> {currency.symbol}
 									</span>
 								</li>
 							);

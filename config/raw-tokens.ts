@@ -41,7 +41,7 @@ export const RAW_TOKENS_CONFIG: TokensConfig<"raw"> = {
     },
     {
       symbol: "USDT",
-      address: "0xb020D981420744F6b0FedD22bB67cd37Ce18a1d5",
+      address: "0x48065fbBE25f71C9282ddf5e1cD6D6A887483D5e",
       decimals: 6,
     },
     {
