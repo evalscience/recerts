@@ -137,7 +137,7 @@ const UserChip = ({
 				<Link
 					href={`/profile/${address}`}
 					style={{ flex: 1, minWidth: 0 }}
-					className="focus:outline-none"
+					className="group/user-chip-link focus:outline-none"
 					tabIndex={0}
 				>
 					<input
@@ -145,6 +145,7 @@ const UserChip = ({
 						className={cn(
 							"min-w-0 flex-1 cursor-pointer border-none bg-transparent outline-none focus:outline-none focus:ring-0",
 							ellipsisLocation === "end" ? "truncate" : "",
+							"group-focus/user-chip-link:text-primary group-hover/user-chip-link:text-primary group-focus/user-chip-link:underline group-hover/user-chip-link:underline",
 						)}
 						value={displayValue}
 						size={ellipsisLocation === "middle" ? 16 : 12}
