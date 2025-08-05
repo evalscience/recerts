@@ -30,19 +30,19 @@ type Step = {
 
 export const PAYMENT_PROGRESS_STEPS: Step[] = [
 	{
-		title: "Initializing...",
-		description: "Starting the payment process...",
+		title: "Initializing",
+		description: "Starting the payment process.",
 		Icon: Flame,
 		index: 0,
 	},
 	{
-		title: "Preparing...",
-		description: "Please wait while we gather some necessary information...",
+		title: "Preparing",
+		description: "Please wait while we gather some necessary information.",
 		Icon: ChefHat,
 		index: 1,
 	},
 	{
-		title: "Approve spending cap...",
+		title: "Approve spending cap",
 		description:
 			"Please approve the spending cap for the transaction. This doesn't cost you anything.",
 		Icon: FileSignature,
@@ -50,13 +50,13 @@ export const PAYMENT_PROGRESS_STEPS: Step[] = [
 	},
 	{
 		title: "Sign the transaction",
-		description: "Waiting for you to sign the transaction...",
+		description: "Waiting for you to sign the transaction.",
 		Icon: BadgeDollarSign,
 		index: 3,
 	},
 	{
 		title: "Waiting for confirmation",
-		description: "Please wait while the transaction is confirmed...",
+		description: "Please wait while the transaction is confirmed.",
 		Icon: Hourglass,
 		index: 4,
 	},
@@ -64,13 +64,13 @@ export const PAYMENT_PROGRESS_STEPS: Step[] = [
 		title: "Pay the platform fee",
 		description: `Please sign the platform fee transaction worth ${formatEther(
 			GAINFOREST_TIP_AMOUNT,
-		)} CELO...`,
+		)} CELO.`,
 		Icon: FileSignature,
 		index: 5,
 	},
 	{
-		title: "Order completed...",
-		description: "Your order has been completed successfully...",
+		title: "Order completed",
+		description: "Your order has been completed successfully.",
 		Icon: CheckCircle,
 		index: 6,
 	},
