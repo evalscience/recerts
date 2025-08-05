@@ -19,7 +19,8 @@ export default async function Home() {
 					</p> */}
 					<span className="text-base">🎉</span>
 					<p className="text-green-800 text-sm">
-						<b>Announcement:</b> Ecocertain Reward Round 0 has ended! Payouts are currently being calculated.{" "}
+						<b>Announcement:</b> Ecocertain Reward Round 0 has ended! Payouts
+						are currently being calculated.{" "}
 						<a
 							href="https://gainforest.notion.site/Ecocertain-Rewards-Info-Page-21e94a2f76b3801582e9e84057ee16bc"
 							className="underline"
