@@ -1,6 +1,6 @@
-import type { Hypercert } from "@/app/graphql-queries/hypercerts";
 import CircularProgress from "@/components/ui/circular-progress";
 import { SUPPORTED_CHAINS } from "@/config/wagmi";
+import type { Hypercert } from "@/graphql/hypercerts/queries/hypercerts";
 import { calculateBigIntPercentage } from "@/lib/calculateBigIntPercentage";
 import { cn } from "@/lib/utils";
 import { Calendar } from "lucide-react";

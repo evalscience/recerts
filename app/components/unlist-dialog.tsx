@@ -16,7 +16,7 @@ import { CircleAlert, CircleCheck, Loader2 } from "lucide-react";
 import type React from "react";
 import { useCallback, useMemo, useState } from "react";
 import { useAccount } from "wagmi";
-import { fetchHypercertById } from "../graphql-queries/hypercerts";
+import { fetchHypercertById } from "../../graphql/hypercerts/queries/hypercerts";
 import { catchError } from "../utils";
 
 // Status type definition
@@ -73,18 +73,18 @@ const UnlistDialog = ({
 		setStatus({ type: "loading", message: "Preparing to unlist..." });
 		if (!hypercert)
 			throw new Error("Error gathering information about the ecocert.");
-		if (!hypercert.orderNonce || !hypercert.orderId)
+		if (hypercert.orderNonce === undefined || !hypercert.orderId)
 			throw new Error("This ecocert is not yet listed on marketplace.");
 		if (!isConnected || !address)
 			throw new Error("Please connect your wallet to authorize this action.");
 		if (address.toLowerCase() !== hypercert.creatorAddress.toLowerCase())
 			throw new Error("You are not authorized for this action.");
 		if (!hcExchangeClient)
-			throw new Error("Something went wrong. Please try again...");
+			throw new Error("Something went wrong. Please try again.");
 
 		setStatus({
 			type: "loading",
-			message: "Please sign the transaction to unlist the ecocert...",
+			message: "Please sign the transaction to unlist the ecocert.",
 		});
 		const [unlistTxError, unlistTx] = await catchError(
 			hcExchangeClient.deleteOrder(hypercert.orderId),
@@ -93,7 +93,7 @@ const UnlistDialog = ({
 
 		if (!unlistTx)
 			throw new Error(
-				"The ecocert could not be listed because transaction failed. Please try again...",
+				"The ecocert could not be listed because transaction failed. Please try again.",
 			);
 	}, [hcExchangeClient, hypercert, isConnected, address]);
 
@@ -144,12 +144,12 @@ const UnlistDialog = ({
 				) : hypercertError ? (
 					<StatusBox
 						variant="error"
-						text="Unable to get ecocert info... Please retry."
+						text="Unable to get ecocert info. Please retry."
 					/>
 				) : hypercert ? (
 					isConnected &&
 					address?.toLowerCase() === hypercert?.creatorAddress.toLowerCase() ? (
-						hypercert.orderId && hypercert.orderNonce ? (
+						hypercert.orderId && hypercert.orderNonce !== undefined ? (
 							<div className="flex flex-col gap-2">
 								<span>
 									Are you sure to unlist the Ecocert,{" "}
@@ -175,7 +175,7 @@ const UnlistDialog = ({
 				) : (
 					<StatusBox
 						variant="error"
-						text="Something went wrong... Please retry."
+						text="Something went wrong. Please retry."
 					/>
 				)}
 

@@ -1,4 +1,4 @@
-import type { Hypercert } from "@/app/graphql-queries/hypercerts";
+import type { Hypercert } from "@/graphql/hypercerts/queries/hypercerts";
 import { HeartHandshake, Sparkle } from "lucide-react";
 import React from "react";
 import type { CombinedSale } from "../../page";
@@ -22,7 +22,7 @@ const Content = ({
 				) : (
 					<HeartHandshake className="text-primary" size={36} />
 				)}
-				<span>{view === "created" ? "Created" : "Supported"} Hypercerts</span>
+				<span>{view === "created" ? "My" : "Supported"} Hypercerts</span>
 			</span>
 			{view === "created" ? (
 				<CreatedHypercerts hypercerts={createdHypercerts} />

@@ -3,9 +3,9 @@ import {
 	type ApiError,
 	fetchHypercertsGraphQL as fetchGraphQL,
 } from "@/app/utils/graphql";
-import { typeCastApiResponseToBigInt } from "@/lib/utils";
-import { type ResultOf, graphql } from "gql.tada";
-import { fetchHypercertIDs } from "../graphql-queries/hypercerts";
+import { graphql } from "@/graphql/hypercerts";
+import type { ResultOf } from "gql.tada";
+import { fetchHypercertIDs } from "../../graphql/hypercerts/queries/hypercerts";
 
 const salesByHypercertByPeriod = graphql(`
   query SalesByHypercertByPeriod(
@@ -29,7 +29,7 @@ const salesByHypercertByPeriod = graphql(`
           metadata {
             name
           }
-          id
+          hypercert_id
         }
       }
     }
@@ -84,8 +84,10 @@ export const fetchSalesDataByPeriod = async (
 		const sales = hypercertSales.sales.data;
 		if (sales === null || sales.length === 0) continue;
 
-		const hypercertId = sales[0].hypercert?.id;
+		const hypercertId = sales[0].hypercert?.hypercert_id;
 		if (!hypercertId) continue;
+
+		console.log(JSON.stringify(sales[0]));
 
 		result.push({
 			hypercertId,

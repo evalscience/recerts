@@ -1,21 +1,28 @@
-import type { FullHypercert } from "@/app/graphql-queries/hypercerts";
 import EthAddress from "@/components/eth-address";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import EthAvatar from "@/components/ui/eth-avatar";
+import UserChip from "@/components/user-chip";
 import { TOKENS_CONFIG } from "@/config/wagmi";
-import { calculateBigIntPercentage } from "@/lib/calculateBigIntPercentage";
+import type { FullHypercert } from "@/graphql/hypercerts/queries/hypercerts";
 import { formatTokens } from "@/lib/format-tokens";
+import { tryCatch } from "@/lib/tryCatch";
+import { bigintToFormattedDate } from "@/lib/utils";
 import {
-	bigintToFormattedDate,
-	convertCurrencyPriceToUSD,
-	formatDecimals,
-} from "@/lib/utils";
-import { blo } from "blo";
-import { Calendar, HandHeart, UserCircle2 } from "lucide-react";
+	type ChainId,
+	type ChainInfo,
+	type Currency,
+	chainInfo,
+	currenciesByNetwork,
+} from "@hypercerts-org/marketplace-sdk";
+import {
+	ArrowUpRight,
+	ArrowUpRightFromSquare,
+	Calendar,
+	HandHeart,
+} from "lucide-react";
+import Link from "next/link";
 import type React from "react";
-import BuyButton from "./BuyButtonWrapper";
-import PaymentFlow from "./PaymentFlow";
 
 const BuyFraction = ({
 	text,
@@ -84,25 +91,48 @@ const Support = ({ hypercert }: { hypercert: FullHypercert }) => {
 		);
 	}
 
-	const addressToSymbol: Record<
-		string,
-		{
-			symbol: string;
-			decimals: number;
-		}
-	> = {};
+	type CurrencyWithExplorerBaseURL = Currency & {
+		explorerBaseURL: string;
+	};
 
-	for (const chainId in TOKENS_CONFIG) {
-		const tokens = TOKENS_CONFIG[chainId];
-		for (const token of tokens) {
-			addressToSymbol[token.address] = {
-				symbol: token.symbol,
-				decimals: token.decimals,
+	const allCurrencies: Array<CurrencyWithExplorerBaseURL> = Object.entries(
+		currenciesByNetwork,
+	).reduce((acc, [chainId, currencies]) => {
+		let chain: ChainInfo;
+		try {
+			chain = chainInfo[Number.parseInt(chainId) as ChainId];
+		} catch {
+			return acc;
+		}
+		acc.push(
+			...Object.values(currencies).map((currency) => ({
+				...currency,
+				explorerBaseURL: `${chain.explorer}`,
+			})),
+		);
+		return acc;
+	}, [] as CurrencyWithExplorerBaseURL[]);
+
+	type SaleWithCurrencyInfo = FullHypercert["sales"][number] & {
+		currencyInfo: CurrencyWithExplorerBaseURL;
+	};
+
+	const salesWithCurrencyInfo: SaleWithCurrencyInfo[] = hypercert.sales
+		.map((sale) => {
+			const currency = allCurrencies.find(
+				(currency) => currency.address === sale.currency,
+			);
+			if (!currency) {
+				return null;
+			}
+			return {
+				...sale,
+				currencyInfo: currency,
 			};
-		}
-	}
+		})
+		.filter((sale) => sale !== null);
 
-	const newestToOldestSales = hypercert.sales.sort((a, b) => {
+	const newestToOldestSales = salesWithCurrencyInfo.sort((a, b) => {
 		return Number(b.creationBlockTimestamp - a.creationBlockTimestamp);
 	});
 
@@ -122,57 +152,64 @@ const Support = ({ hypercert }: { hypercert: FullHypercert }) => {
 				/>
 			}
 		>
-			<div className="flex w-full flex-col gap-2">
-				<ul className="flex w-full flex-col gap-1">
+			<table className="w-full font-sans">
+				<tbody>
 					{newestToOldestSales
-						.map((sale) => {
-							const saleCurrency = sale.currency;
-							let currencySymbol: string;
-							let currencyDecimals: number;
-							if (
-								saleCurrency in addressToSymbol &&
-								addressToSymbol[saleCurrency]
-							) {
-								currencySymbol = addressToSymbol[saleCurrency].symbol;
-								currencyDecimals = addressToSymbol[saleCurrency].decimals;
-							} else {
-								return null;
-							}
+						.map((sale, index) => {
+							const currency = sale.currencyInfo;
 
 							const saleAmount = formatTokens(
 								sale.currencyAmount,
-								currencyDecimals,
+								currency.decimals,
 							);
 
 							return (
-								<li
+								<tr
 									key={sale.transactionHash}
-									className="flex items-center justify-between rounded-2xl border border-border bg-background px-4 py-2"
+									className={
+										index === 0 ? undefined : "border-t border-t-border"
+									}
 								>
-									<div className="flex items-center gap-4">
-										<EthAvatar
+									<td>
+										<UserChip
 											address={sale.buyer as `0x${string}`}
-											size={40}
+											className="border-none bg-transparent hover:bg-transparent"
+											showCopyButton="hover"
 										/>
-										<div className="flex h-full flex-col items-start gap-1">
-											<EthAddress address={sale.buyer} />
-											<span className="flex items-center text-muted-foreground text-sm">
-												<Calendar size={14} className="mr-2" />
-												<span>
-													{bigintToFormattedDate(sale.creationBlockTimestamp)}
-												</span>
+									</td>
+									<td
+										className="table-cell whitespace-nowrap pr-4 [@media(max-width:36rem)]:hidden"
+										width={"1px"}
+									>
+										<span className="flex items-center text-muted-foreground text-sm">
+											<Calendar className="mr-2 size-3" />
+											<span>
+												{bigintToFormattedDate(sale.creationBlockTimestamp)}
 											</span>
-										</div>
-									</div>
-									<span className="text-right font-bold text-lg text-primary">
-										<b>{saleAmount}</b> {currencySymbol}
-									</span>
-								</li>
+										</span>
+									</td>
+									<td
+										className="whitespace-nowrap text-right text-base text-primary [@media(max-width:30rem)]:whitespace-normal [@media(max-width:30rem)]:text-xs"
+										width={"1px"}
+									>
+										<b>{saleAmount}</b> {currency.symbol}
+									</td>
+									<td width={"1px"}>
+										<Link
+											href={`${currency.explorerBaseURL}/tx/${sale.transactionHash}`}
+											target="_blank"
+										>
+											<Button variant="link" size={"icon"} className="p-0">
+												<ArrowUpRightFromSquare className="size-[0.85rem]" />
+											</Button>
+										</Link>
+									</td>
+								</tr>
 							);
 						})
 						?.filter((sale) => sale !== null)}
-				</ul>
-			</div>
+				</tbody>
+			</table>
 		</Wrapper>
 	);
 };
