@@ -52,6 +52,12 @@ import {
 	SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
+import {
+	Tooltip,
+	TooltipContent,
+	TooltipProvider,
+	TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 import { Dialog } from "@/components/ui/dialog";
 import {
@@ -97,6 +103,10 @@ const AREA_ACTIVITIES = [
 ] as const;
 
 const HypercertMintSchema = z.object({
+	articleType: z.enum(
+		["Research", "Exposition", "Commentary", "Datasets & Benchmarks"],
+		{ errorMap: () => ({ message: "Please select an article type" }) },
+	),
 	title: z
 		.string()
 		.min(1, { message: "Hypercert Name is required" })
@@ -159,6 +169,7 @@ const HypercertForm = () => {
 	const form = useForm<MintingFormValues>({
 		resolver: zodResolver(HypercertMintSchema),
 		defaultValues: {
+			articleType: undefined as unknown as MintingFormValues["articleType"],
 			title: "",
 			description: "",
 			styleVariant: "style2",
@@ -178,6 +189,7 @@ const HypercertForm = () => {
 	});
 
 	const tags = form.watch("tags") || "";
+	const selectedArticleType = form.watch("articleType");
 	const geojsonValue = form.watch("geojson");
 	const areaActivity = form.getValues("areaActivity");
 
@@ -187,6 +199,7 @@ const HypercertForm = () => {
 
 		const params = new URLSearchParams(window.location.search);
 		const formFields: Array<keyof MintingFormValues> = [
+			"articleType",
 			"title",
 			"description",
 			"styleVariant",
@@ -223,6 +236,19 @@ const HypercertForm = () => {
 								"styleVariant",
 								value as MintingFormValues["styleVariant"],
 							);
+						}
+						break;
+					}
+					case "articleType": {
+						if (
+							[
+								"Research",
+								"Exposition",
+								"Commentary",
+								"Datasets & Benchmarks",
+							].includes(value)
+						) {
+							form.setValue(key, value as MintingFormValues["articleType"]);
 						}
 						break;
 					}
@@ -333,15 +359,19 @@ const HypercertForm = () => {
 	}, [geoJSONFile, geojsonValue]);
 
 	useEffect(() => {
-		// For paper layout, badges are topics only
+		// Derive badges from required article type + optional topics
 		const topicBadges = tags
 			? tags
 					.split(",")
 					.map((tag) => tag.trim())
 					.filter((tag) => tag !== "")
 			: [];
-		setBadges(topicBadges);
-	}, [tags]);
+		const combined = [
+			...(selectedArticleType ? [selectedArticleType] : []),
+			...topicBadges,
+		];
+		setBadges(combined);
+	}, [tags, selectedArticleType]);
 
 	const generateImage = async () => {
 		if (imageRef.current === null) return;
@@ -504,6 +534,92 @@ const HypercertForm = () => {
 									<div className="flex flex-col gap-4 rounded-2xl bg-background p-4">
 										<FormField
 											control={form.control}
+											name="articleType"
+											render={({ field }) => (
+												<FormItem>
+													<FormLabel>Article Type</FormLabel>
+													<FormControl>
+														<Select
+															onValueChange={field.onChange}
+															value={field.value}
+														>
+															<SelectTrigger className="bg-inherit">
+																<SelectValue placeholder="Select an article type" />
+															</SelectTrigger>
+															<SelectContent className="bg-background">
+																<TooltipProvider>
+																	<Tooltip>
+																		<TooltipTrigger asChild>
+																			<SelectItem
+																				value="Research"
+																				className="hover:bg-accent"
+																			>
+																				Research
+																			</SelectItem>
+																		</TooltipTrigger>
+																		<TooltipContent side="right" align="start">
+																			Recerts publishes novel research results
+																			of significant interest to the community.
+																		</TooltipContent>
+																	</Tooltip>
+																	<Tooltip>
+																		<TooltipTrigger asChild>
+																			<SelectItem
+																				value="Exposition"
+																				className="hover:bg-accent"
+																			>
+																				Exposition
+																			</SelectItem>
+																		</TooltipTrigger>
+																		<TooltipContent side="right" align="start">
+																			Explains, synthesizes, and reviews
+																			existing research. Includes Reviews,
+																			Tutorials, Primers, and Perspectives. We
+																			are especially interested in explorable
+																			explanations.
+																		</TooltipContent>
+																	</Tooltip>
+																	<Tooltip>
+																		<TooltipTrigger asChild>
+																			<SelectItem
+																				value="Commentary"
+																				className="hover:bg-accent"
+																			>
+																				Commentary
+																			</SelectItem>
+																		</TooltipTrigger>
+																		<TooltipContent side="right" align="start">
+																			Non‑technical essays on topics like public
+																			policy or meta‑discussion of science.
+																			Please contact editors@recerts.org prior
+																			to submission.
+																		</TooltipContent>
+																	</Tooltip>
+																	<Tooltip>
+																		<TooltipTrigger asChild>
+																			<SelectItem
+																				value="Datasets & Benchmarks"
+																				className="hover:bg-accent"
+																			>
+																				Datasets &amp; Benchmarks
+																			</SelectItem>
+																		</TooltipTrigger>
+																		<TooltipContent side="right" align="start">
+																			Datasets and benchmarks that support
+																			research and evaluation. Please contact
+																			editors@recerts.org prior to submission.
+																		</TooltipContent>
+																	</Tooltip>
+																</TooltipProvider>
+															</SelectContent>
+														</Select>
+													</FormControl>
+													<FormMessage />
+												</FormItem>
+											)}
+										/>
+										<FormField
+											control={form.control}
 											name="styleVariant"
 											render={({ field }) => (
 												<FormItem>
@@ -535,7 +651,7 @@ const HypercertForm = () => {
 																	value="style3"
 																	className="hover:bg-accent"
 																>
-																	Style 3 – Recerts header, two-column abstract
+																	Style 3 – Recerts (two-column abstract)
 																</SelectItem>
 															</SelectContent>
 														</Select>
