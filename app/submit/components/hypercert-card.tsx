@@ -80,7 +80,10 @@ const HypercertCard = forwardRef<HTMLDivElement, HypercertCardProps>(
 						? Math.max(1, baseAdjusted - 1)
 						: baseAdjusted;
 				setAbstractClamp(styleAdjusted);
-				setAbstractMaxHeightPx(Math.max(40, availablePx));
+				// For style3 (two-column abstract), cut off a little earlier to avoid overflow at max size
+				const extraStyle3BufferPx =
+					styleVariant === "style3" ? Math.ceil(lineHeightPx) : 0;
+				setAbstractMaxHeightPx(Math.max(40, availablePx - extraStyle3BufferPx));
 			};
 			recalc();
 			window.addEventListener("resize", recalc);

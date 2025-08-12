@@ -43,6 +43,48 @@ export default function TableView({
 		</span>
 	);
 
+	const SubjectTagsCompact = ({
+		topics,
+		idPrefix,
+	}: { topics: string[]; idPrefix: string }) => {
+		if (!topics.length) return <span className="text-muted-foreground">—</span>;
+
+		const first = topics[0];
+		const overflow = Math.max(0, topics.length - 1);
+
+		const allTags = (
+			<div className="flex max-w-[480px] flex-wrap items-center">
+				{topics.map((t) => (
+					<span
+						key={`${idPrefix}-topic-full-${t}`}
+						className="mr-1 mb-1 inline-flex items-center rounded-full border px-2 py-[2px] text-[11px] text-muted-foreground leading-4"
+						data-chip="tag"
+					>
+						{t}
+					</span>
+				))}
+			</div>
+		);
+
+		return (
+			<TooltipProvider>
+				<Tooltip>
+					<TooltipTrigger asChild>
+						<div className="flex flex-wrap items-center">
+							<SubjectBadge text={first} />
+							{overflow > 0 ? (
+								<span className="mr-1 mb-1 inline-flex items-center rounded-full border px-2 py-[2px] text-[11px] text-muted-foreground leading-4">
+									+{overflow}
+								</span>
+							) : null}
+						</div>
+					</TooltipTrigger>
+					{overflow > 0 ? <TooltipContent>{allTags}</TooltipContent> : null}
+				</Tooltip>
+			</TooltipProvider>
+		);
+	};
+
 	return (
 		<div className="w-full overflow-x-auto">
 			<table
@@ -53,8 +95,8 @@ export default function TableView({
 					<col className="w-[8%]" />
 					<col className="w-[36%]" />
 					<col className="w-[18%]" />
-					<col className="w-[24%]" />
-					<col className="w-[6%]" />
+					<col className="w-[22%]" />
+					<col className="w-[8%]" />
 					<col className="w-[8%]" />
 				</colgroup>
 				<thead className="text-muted-foreground text-xs">
@@ -128,14 +170,10 @@ export default function TableView({
 									</td>
 									<td className="py-3 pr-0 align-top">
 										{Array.isArray(h.topics) && h.topics.length ? (
-											h.topics
-												.slice(0, 10)
-												.map((t, i) => (
-													<SubjectBadge
-														key={`${h.hypercertId}-topic-${i}`}
-														text={t}
-													/>
-												))
+											<SubjectTagsCompact
+												topics={h.topics}
+												idPrefix={String(h.hypercertId)}
+											/>
 										) : (
 											<span className="text-muted-foreground">—</span>
 										)}
