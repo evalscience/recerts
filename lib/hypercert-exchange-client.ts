@@ -27,8 +27,8 @@ export const getHypercertExchangeClient = (): HypercertExchangeClient => {
 		return hypercertExchangeClient;
 	}
 
-	hypercertExchangeClient = new HypercertExchangeClient(
-		SUPPORTED_CHAINS[0].id,
+  hypercertExchangeClient = new HypercertExchangeClient(
+    SUPPORTED_CHAINS[0].id,
 		// @ts-ignore
 		provider as unknown as Provider,
 		// @ts-ignore

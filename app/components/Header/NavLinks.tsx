@@ -87,6 +87,16 @@ const navLinks: NavLinkConfig<"dynamic" | "static">[] = [
 	},
 	{
 		type: "static",
+		id: "about",
+		href: "/about",
+		text: "About",
+		Icon: Sparkle,
+		pathCheck: {
+			equals: "/about",
+		},
+	},
+	{
+		type: "static",
 		id: "faqs",
 		href: "/faqs",
 		text: "FAQs",
@@ -109,8 +119,8 @@ export const DesktopNavLink = ({
 			href={link.href}
 			className={cn(
 				buttonVariants({ variant: "ghost" }),
-				"group rounded-md font-semibold",
-				isActive ? "bg-beige" : "",
+				"group rounded-md font-medium focus:outline-none focus-visible:ring-0 focus-visible:ring-offset-0",
+				isActive ? "bg-muted" : "",
 				link.href === "#" ? "opacity-50 hover:opacity-50" : "",
 			)}
 			{...(link.openInNewTab && {
@@ -118,7 +128,20 @@ export const DesktopNavLink = ({
 				rel: "noopener noreferrer",
 			})}
 		>
-			{link.showIconOnlyOnDesktop === false ? (
+			{link.id === "home" ? (
+				<div className="flex items-center gap-2">
+					<Image
+						src="/assets/media/images/logo.svg"
+						alt="Recerts"
+						width={100}
+						height={100}
+						className="h-5 w-5"
+					/>
+					<span className="font-baskerville text-base text-black leading-none">
+						Recerts
+					</span>
+				</div>
+			) : link.showIconOnlyOnDesktop === false ? (
 				<link.Icon size={18} />
 			) : (
 				link.text
@@ -146,7 +169,7 @@ export const PhoneNavLink = ({
 			href={link.href}
 			className={cn(
 				buttonVariants({ variant: "ghost" }),
-				"justify-start text-left",
+				"justify-start text-left text-black focus:outline-none focus-visible:ring-0 focus-visible:ring-offset-0",
 				isActive ? "bg-beige" : "",
 				link.href === "#" ? "opacity-50 hover:opacity-50" : "",
 			)}
@@ -155,8 +178,18 @@ export const PhoneNavLink = ({
 				rel: "noopener noreferrer",
 			})}
 		>
-			{link.Icon && (
-				<link.Icon size={18} className="mr-2 text-muted-foreground" />
+			{link.id === "home" ? (
+				<Image
+					src="/assets/media/images/logo.svg"
+					alt="Recerts"
+					width={20}
+					height={20}
+					className="mr-2 h-5 w-5"
+				/>
+			) : (
+				link.Icon && (
+					<link.Icon size={18} className="mr-2 text-muted-foreground" />
+				)
 			)}
 			{link.text}
 			{link.openInNewTab && (
@@ -189,9 +222,9 @@ const NavLinks = () => {
 	);
 
 	return (
-		<div className="relative z-10">
+		<div className="relative z-10 flex items-center gap-2">
 			{/* On Large Devices: */}
-			<ul className="hidden gap-0.5 md:flex">
+			<ul className="hidden gap-0.5 text-black md:flex">
 				{navLinks.map((link) => {
 					const isActive = getIsActive(link);
 					if (link.type === "dynamic") {
@@ -208,34 +241,52 @@ const NavLinks = () => {
 			</ul>
 
 			{/* On Small Devices: */}
+			<Link
+				href="/"
+				className="flex items-center gap-2 md:hidden focus:outline-none focus-visible:ring-0 focus-visible:ring-offset-0"
+			>
+				<Image
+					src="/assets/media/images/logo.svg"
+					alt="Recerts"
+					width={20}
+					height={20}
+					className="h-5 w-5"
+				/>
+				<span className="font-baskerville text-base text-black leading-none">
+					Recerts
+				</span>
+			</Link>
 			<Drawer>
 				<DrawerTrigger asChild>
-					<Button variant="ghost" className="flex items-center gap-2 md:hidden">
+					<Button
+						variant="ghost"
+						className="flex items-center gap-2 md:hidden focus:outline-none focus-visible:ring-0 focus-visible:ring-offset-0"
+					>
 						<Menu />
 					</Button>
 				</DrawerTrigger>
 				<DrawerContent>
-					<div className="-top-4 absolute left-[50%] h-24 w-24 translate-x-[-50%] rounded-full bg-primary/20 blur-xl" />
+					<div className="hidden" />
 					<DrawerHeader>
 						<div className="flex flex-col items-center justify-center gap-2 px-4">
 							<Image
 								src="/assets/media/images/logo.svg"
 								className="h-14 w-auto"
-								alt="Gainforest"
+								alt="Recerts"
 								width={500}
 								height={500}
 							/>
-							<DrawerTitle className="text-center font-baskerville font-bold text-2xl">
-								Ecocertain
+							<DrawerTitle className="text-center font-baskerville font-bold text-2xl text-black leading-none">
+								Recerts
 							</DrawerTitle>
 						</div>
 						<div className="flex w-full items-center justify-center px-4">
 							<DrawerDescription className="w-[80%] text-balance text-center font-baskerville text-lg">
-								Fund impactful regenerative projects.
+								Journal of Decentralized Funding Research.
 							</DrawerDescription>
 						</div>
 					</DrawerHeader>
-					<ul className="flex flex-col gap-1 p-4">
+					<ul className="flex flex-col gap-1 p-4 text-black">
 						{navLinks.map((link) => {
 							const isActive = getIsActive(link);
 							if (link.type === "dynamic") {

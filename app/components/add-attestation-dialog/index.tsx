@@ -146,13 +146,11 @@ const AddAttestationDialog = ({
 			<DialogContent className="font-sans" sidebarChildren={<Sidebar />}>
 				<DialogHeader>
 					<DialogTitle className="font-baskerville">
-						Add Proof of Impact
+						Add Supplementary Material
 					</DialogTitle>
 					<DialogDescription className="font-sans text-xs">
-						Share concrete evidence of your project's impact. This can include
-						impact reports, visual documentation, video testimonials,
-						data-driven insights, or any other external links that verify the
-						project's success and substantiate its claims.
+						Attach supplementary material for this work (datasets, reports,
+						media, links, etc.).
 					</DialogDescription>
 				</DialogHeader>
 				{attestationProgressVisible ? (
@@ -178,7 +176,7 @@ const AddAttestationDialog = ({
 								onChange={(e) =>
 									setFormData({ ...formData, title: e.target.value })
 								}
-								placeholder="Impact Report"
+								placeholder="Supplementary Material"
 							/>
 							{errors.title && (
 								<p className="text-red-500 text-sm">{errors.title}</p>
@@ -191,7 +189,7 @@ const AddAttestationDialog = ({
 								onChange={(e) =>
 									setFormData({ ...formData, description: e.target.value })
 								}
-								placeholder="This attached PDF contains the impact report for the ecocert."
+								placeholder="This file/link is supplementary material for the recert."
 							/>
 							{errors.description && (
 								<p className="text-red-500 text-sm">{errors.description}</p>

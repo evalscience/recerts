@@ -3,28 +3,34 @@ import type { MetadataRoute } from "next";
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 	return [
 		{
-			url: "https://ecocertain.xyz/",
+			url: "https://recerts.org/",
 			lastModified: new Date(),
 			changeFrequency: "monthly",
 			priority: 1,
 		},
 		{
-			url: "https://ecocertain.xyz/submit",
+			url: "https://recerts.org/submit",
 			lastModified: new Date(),
 			changeFrequency: "yearly",
 			priority: 0.8,
 		},
 		{
-			url: "https://ecocertain.xyz/changelog",
+			url: "https://recerts.org/changelog",
 			lastModified: new Date(),
 			changeFrequency: "weekly",
 			priority: 0.5,
 		},
 		{
-			url: "https://ecocertain.xyz/faqs",
+			url: "https://recerts.org/faqs",
 			lastModified: new Date(),
 			changeFrequency: "monthly",
 			priority: 0.8,
+		},
+		{
+			url: "https://recerts.org/about",
+			lastModified: new Date(),
+			changeFrequency: "yearly",
+			priority: 0.6,
 		},
 	];
 }

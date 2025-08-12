@@ -40,6 +40,10 @@ const EnsAvatar = ({
 	size?: number;
 	className?: string;
 }) => {
+	const dicebearUrl = (seed: string) =>
+		`https://api.dicebear.com/7.x/notionists/svg?seed=${encodeURIComponent(
+			seed,
+		)}`;
 	const { data: ensAvatar, isLoading: ensAvatarLoading } = useEnsAvatar({
 		name: ensName ?? "",
 		chainId: 1,
@@ -48,7 +52,7 @@ const EnsAvatar = ({
 	if (!ensName || ensAvatarLoading || !ensAvatar)
 		return (
 			<GenericAvatar
-				src={blo(address)}
+				src={dicebearUrl(address)}
 				alt={address}
 				size={size}
 				className={className}

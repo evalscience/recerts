@@ -112,9 +112,9 @@ const PriceForm = ({
 			<div className="flex items-start gap-2 rounded-lg border bg-muted/50 p-3 font-sans text-muted-foreground text-xs">
 				<Info className="mt-0.5 h-4 w-4 shrink-0" />
 				<p>
-					The price of an ecocert represents an estimate of all the costs
-					required to create the specified environmental impact in your region
-					and within the outlined timeframes.
+					The price of a recert represents an estimate of all the costs required
+					to create the specified environmental impact in your region and within
+					the outlined timeframes.
 				</p>
 			</div>
 		</div>

@@ -19,11 +19,11 @@ const Contributors = ({ hypercert }: { hypercert: FullHypercert }) => {
 	}, []);
 
 	return (
-		<SectionWrapper title="Contributors">
+		<SectionWrapper title="Authors">
 			{!contributors || contributors.length === 0 ? (
 				<div className="flex items-center justify-center">
 					<div className="my-2 flex w-[80%] items-center justify-center text-balance text-center text-muted-foreground text-sm">
-						Contributors of this hypercert would appear here.
+						Authors of this recert would appear here.
 					</div>
 				</div>
 			) : (

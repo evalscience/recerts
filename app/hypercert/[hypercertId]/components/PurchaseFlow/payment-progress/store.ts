@@ -1,5 +1,6 @@
 import { DIVVI_DATA_SUFFIX } from "@/config/divvi";
 import { GAINFOREST_TIP_ADDRESS, GAINFOREST_TIP_AMOUNT } from "@/config/tip";
+import { SUPPORTED_CHAINS } from "@/config/wagmi";
 import { tryCatch } from "@/lib/tryCatch";
 import { submitReferral } from "@divvi/referral-sdk";
 import type {
@@ -18,7 +19,6 @@ import {
 	type LucideProps,
 } from "lucide-react";
 import { createWalletClient, custom, formatEther } from "viem";
-import { celo } from "viem/chains";
 import { create } from "zustand";
 
 type Step = {
@@ -70,7 +70,7 @@ export const PAYMENT_PROGRESS_STEPS: Step[] = [
 		title: "Pay the platform fee",
 		description: `Please sign the platform fee transaction worth ${formatEther(
 			GAINFOREST_TIP_AMOUNT,
-		)} CELO.`,
+		)} (native token).`,
 		Icon: FileSignature,
 		index: 6,
 	},
@@ -98,6 +98,7 @@ type PaymentProgressActions = {
 		orderId: string,
 		address: string,
 		unitsToBuy: bigint,
+		chainId: number,
 	) => Promise<void>;
 	reset: () => void;
 };
@@ -115,6 +116,7 @@ const usePaymentProgressStore = create<
 			orderId,
 			address,
 			unitsToBuy,
+			chainId,
 		) => {
 			set({ status: "pending" });
 			let errorTitle = "";
@@ -239,8 +241,10 @@ const usePaymentProgressStore = create<
 			// =========== STEP 6
 			set({ currentStepIndex: 6 });
 			const [, tipTxError] = await tryCatch(async () => {
+				const selectedChain =
+					SUPPORTED_CHAINS.find((c) => c.id === chainId) ?? SUPPORTED_CHAINS[0];
 				const walletClient = createWalletClient({
-					chain: celo,
+					chain: selectedChain,
 					transport: custom(
 						// biome-ignore lint/suspicious/noExplicitAny: window.ethereum has to be any
 						"ethereum" in window ? (window.ethereum as any) : null,
@@ -256,7 +260,7 @@ const usePaymentProgressStore = create<
 				// We don't wait for confirmation as per requirements
 				submitReferral({
 					txHash: txhash as `0x${string}`,
-					chainId: celo.id,
+					chainId: selectedChain.id,
 				});
 				return new Promise<boolean>((res) => res(true));
 			});

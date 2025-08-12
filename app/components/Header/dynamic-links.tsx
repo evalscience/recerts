@@ -46,8 +46,8 @@ export const MyHypercerts: ClientLink = {
 				content={
 					data.config.href === "#" ? (
 						<div className="flex flex-col items-center gap-2">
-							<div className="flex h-10 w-10 items-center justify-center rounded-full bg-destructive/20">
-								<CircleAlert className="text-destructive" size={22} />
+							<div className="flex h-10 w-10 items-center justify-center rounded-full bg-black/20">
+								<CircleAlert className="text-black" size={22} />
 							</div>
 							<span className="text-center">
 								Please connect your wallet
@@ -69,8 +69,8 @@ export const MyHypercerts: ClientLink = {
 			<div className="flex items-center justify-between gap-2">
 				<PhoneNavLink link={data.config} isActive={data.isActive} />
 				<QuickTooltip content="Please connect your wallet." openOnClick>
-					<span className="flex h-6 w-6 items-center justify-center rounded-full bg-destructive/20">
-						<CircleAlert className="text-destructive" size={16} />
+					<span className="flex h-6 w-6 items-center justify-center rounded-full bg-black/20">
+						<CircleAlert className="text-black" size={16} />
 					</span>
 				</QuickTooltip>
 			</div>

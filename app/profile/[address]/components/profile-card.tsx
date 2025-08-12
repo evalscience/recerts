@@ -110,7 +110,7 @@ const ProfileCard = ({
 					)}
 					{stats.hypercertsCreated + stats.salesMadeCount >= 0 && (
 						<span className="flex h-6 items-center justify-center rounded-full bg-beige-muted px-2 text-center text-beige-muted-foreground text-sm">
-							{stats.hypercertsCreated > 0 ? "Community Member" : "Contributor"}
+							{stats.hypercertsCreated > 0 ? "Community Member" : "Author"}
 						</span>
 					)}
 				</div>

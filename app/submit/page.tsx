@@ -8,11 +8,11 @@ function SubmitPage() {
 			{/* <section className="flex flex-col items-center p-4 md:p-8 gap-4"> */}
 			<header className="flex w-full flex-col gap-2 py-4">
 				<h1 className="text-balance font-baskerville font-bold text-4xl md:text-5xl">
-					Create an ecocert
+					Submission
 				</h1>
 				<p className="text-beige-muted-foreground">
-					An ecocert is a verifiable record of your environmental work. Share
-					its impact with the world.
+					A recert is a verifiable record of your scholarly work. Share its
+					impact with the world.
 				</p>
 			</header>
 			<section>

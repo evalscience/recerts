@@ -1,8 +1,8 @@
-# Ecocertain: Fund and proof impactful regenerative work
+# Recerts.org: An impact mechanism design journal
 
 The goal of this hypercerts platform is to enable continuous funding for all of our project partners. Funders will be able to fund any of our partner projects' impact work, and receive a fraction of that hypercert (proportional to the amount that they have funded) in return.
 
-The (beta) app is accessible on [ecocertain.vercel.app](https://ecocertain.vercel.app/).
+Visit the journal at [recerts.org](https://recerts.org).
 
 Partner projects define their work scope, cost and timeline, and funders anywhere in the world can fund this project at any time.
 
@@ -34,7 +34,7 @@ We recommend [direnv](https://direnv.net/) for managing your environment variabl
 
 Node.js: this project requires installation of Node.js 18.17 or later. [Next Documentation](https://nextjs.org/docs/getting-started/installation)
 
-Ethereum Sepolia: The Hypercert Marketplace is currently deployed on Sepolia Testnet. To interact with Ecocertain's impact Hypercerts, you'll need to connect to Sepolia Testnet and obtain SepoliaETH from a [testnet token faucet](https://faucetlink.to/sepolia).
+Ethereum Sepolia: The Hypercert Marketplace is currently deployed on Sepolia Testnet. To interact with recerts, you'll need to connect to Sepolia Testnet and obtain SepoliaETH from a [testnet token faucet](https://faucetlink.to/sepolia).
 
 ### Network Configuration
 

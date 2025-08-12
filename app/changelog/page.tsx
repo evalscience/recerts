@@ -57,7 +57,7 @@ const Page = () => {
 						Changelog
 					</h1>
 					<p className="mt-1 text-center text-muted-foreground text-sm">
-						The latest updates and improvements to Ecocertain.
+						The latest updates and improvements to Recerts.org.
 					</p>
 				</header>
 				<div className="flex flex-wrap items-center justify-center gap-4">

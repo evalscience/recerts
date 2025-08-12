@@ -14,14 +14,12 @@ import MintingProgress from "./minting-progress";
 const MintingProgressDialog = ({
 	mintingFormValues,
 	generateImage,
-	geoJSONFile,
 	badges,
 	visible,
 	setVisible,
 }: {
 	mintingFormValues: MintingFormValues | undefined;
 	generateImage: () => Promise<string | undefined>;
-	geoJSONFile: File | null;
 	badges: string[];
 	visible?: boolean;
 	setVisible: (visible: boolean) => void;
@@ -126,7 +124,6 @@ const MintingProgressDialog = ({
 						{...{
 							mintingFormValues,
 							generateImage,
-							geoJSONFile,
 							badges,
 							visible,
 							setVisible,

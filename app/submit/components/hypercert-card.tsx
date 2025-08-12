@@ -1,142 +1,227 @@
-import { ArrowRight, Sparkle } from "lucide-react";
-import Image from "next/image";
-import { forwardRef, memo } from "react";
+import { forwardRef, memo, useEffect, useRef, useState } from "react";
 
 export interface HypercertCardProps {
 	title?: string;
-	banner?: string;
-	logo?: string;
 	workStartDate?: Date;
 	workEndDate?: Date;
 	badges?: string[];
 	displayOnly?: boolean;
 	hypercertId?: string;
 	contributors?: string[];
+	abstract?: string;
+	styleVariant?: "style1" | "style2" | "style3";
 }
 
 const HypercertCard = forwardRef<HTMLDivElement, HypercertCardProps>(
 	(
 		{
 			title = "Your title here",
-			banner,
-			logo,
 			workStartDate,
 			workEndDate,
 			badges = [],
 			displayOnly = false,
+			contributors = [],
+			abstract = "",
+			styleVariant = "style1",
 		}: HypercertCardProps,
 		ref,
 	) => {
-		const formattedDateRange =
-			workStartDate && workEndDate ? (
-				workStartDate === workEndDate ? (
-					workStartDate.toLocaleDateString("en-US", {
-						year: "numeric",
-						month: "short",
-						day: "numeric",
-					})
-				) : (
-					<span className="flex items-center">
-						{workStartDate.toLocaleDateString("en-US", {
-							year: "numeric",
-							month: "short",
-							day: "numeric",
-						})}
-						<ArrowRight size={12} className="mx-1 inline" />
-						{workEndDate.toLocaleDateString("en-US", {
-							year: "numeric",
-							month: "short",
-							day: "numeric",
-						})}
-					</span>
-				)
-			) : null;
+		// Build a contributors display that trims before breaking a name and appends "et al." when too long
+		const buildContributorsDisplay = (contributorsList: string[]): string => {
+			if (!contributorsList || contributorsList.length === 0) return "";
+			const MAX_LENGTH = 68; // heuristic fit for card width at current font size
+			const displayParts: string[] = [];
+			let currentLength = 0;
+			for (const [index, name] of contributorsList.entries()) {
+				const separator = index === 0 ? "" : ", ";
+				const addition = separator + name.trim();
+				if (currentLength + addition.length <= MAX_LENGTH) {
+					displayParts.push(index === 0 ? name.trim() : name.trim());
+					currentLength += addition.length;
+				} else {
+					// cannot fit this name fully; append et al. if there are remaining authors
+					if (index < contributorsList.length) {
+						return `${displayParts.join(", ")}, et al.`;
+					}
+					break;
+				}
+			}
+			// If all names fit exactly
+			return displayParts.join(", ");
+		};
 
-		const maxVisibleTags = 6;
-		const maxBadgeLength = 18;
+		const contributorsDisplay = buildContributorsDisplay(contributors);
 
-		const clipBadge = (badge: string) =>
-			badge.length > maxBadgeLength
-				? `${badge.slice(0, maxBadgeLength - 3)}...`
-				: badge;
+		// date range intentionally hidden in preview
 
-		const visibleBadges = badges.slice(0, maxVisibleTags).map(clipBadge);
-		const hiddenBadgesCount = badges.length - visibleBadges.length;
+		// Dynamically compute how many lines of abstract can fit
+		const sectionRef = useRef<HTMLDivElement>(null);
+		const abstractRef = useRef<HTMLParagraphElement>(null);
+		// topics removed
+		const [abstractClamp, setAbstractClamp] = useState<number>(6);
+		const [abstractMaxHeightPx, setAbstractMaxHeightPx] = useState<number>(120);
+
+		useEffect(() => {
+			const recalc = () => {
+				if (!sectionRef.current || !abstractRef.current) return;
+				const abstractEl = abstractRef.current;
+				const containerEl = sectionRef.current;
+				const lineHeightPx = Number.parseFloat(
+					getComputedStyle(abstractEl).lineHeight || "20",
+				);
+				// Reserve space to bottom; no topics
+				const bufferPx = 16;
+				const availablePx =
+					containerEl.clientHeight - abstractEl.offsetTop - bufferPx;
+				const lines = Math.max(1, Math.floor(availablePx / lineHeightPx));
+				const baseAdjusted = Math.max(1, lines - 1);
+				const styleAdjusted =
+					styleVariant === "style1"
+						? Math.max(1, baseAdjusted - 1)
+						: baseAdjusted;
+				setAbstractClamp(styleAdjusted);
+				setAbstractMaxHeightPx(Math.max(40, availablePx));
+			};
+			recalc();
+			window.addEventListener("resize", recalc);
+			return () => window.removeEventListener("resize", recalc);
+		}, [styleVariant]);
+
+		// Topics rendering removed
+
+		// removed topics computation
 
 		return (
 			<article
 				ref={ref}
-				className="relative h-[420px] w-[336px] overflow-clip rounded-xl border-[1px] border-black bg-black"
+				className="relative h-[420px] w-[336px] overflow-clip rounded-xl border border-black bg-white"
 			>
-				<header className="relative flex h-[173px] w-full items-center justify-center overflow-clip rounded-b-xl">
-					{banner ? (
-						<Image
-							src={`${banner}`}
-							alt={`${title} banner`}
-							className="object-cover object-center"
-							fill
-							unoptimized
-						/>
-					) : (
-						<div className="flex h-full w-full items-center justify-center bg-slate-200">
-							<span className="text-lg text-slate-500">Your banner here</span>
-						</div>
-					)}
-				</header>
-				<section className="absolute top-4 left-3 overflow-hidden rounded-full border-2 border-white bg-slate-200">
-					<div className="relative flex h-8 w-8 items-center justify-center overflow-hidden rounded-full border border-slate-300">
-						{logo ? (
-							<Image
-								src={`${logo}`}
-								alt={`${title} logo`}
-								fill
-								unoptimized
-								className="object-cover"
-							/>
-						) : (
-							<div className="flex h-10 w-10 items-center justify-center bg-slate-300">
-								<Sparkle size={24} />
+				<section
+					ref={sectionRef}
+					className="relative flex h-full flex-col items-center gap-1 p-4 pb-6 text-center"
+				>
+					{styleVariant === "style2" ? (
+						<>
+							{/* Title with tight black rules above and below */}
+							<div className="w-full">
+								<div className="mx-1 h-[6px] w-[calc(100%-0.5rem)] bg-black" />
+								<h5
+									className="mt-[6px] mb-3 line-clamp-4 text-ellipsis pb-[2px] font-baskerville font-bold text-[28px] text-slate-900 leading-[36px] tracking-[-0.01em]"
+									title={title}
+								>
+									{title}
+								</h5>
+								<div className="mx-1 h-[3px] w-[calc(100%-0.5rem)] bg-black" />
 							</div>
-						)}
-					</div>
-				</section>
-				<section className="flex h-[246px] flex-col justify-between rounded-t-xl border-black border-t-[1px] bg-white p-3 pt-4">
-					<h5
-						className="line-clamp-3 text-ellipsis py-1 font-semibold text-[25px] text-slate-800 leading-[27px] tracking-[-0.03em]"
-						title={title}
-					>
-						{title}
-					</h5>
-					<section className="border-black border-t-[1.5px]">
-						<div className="flex items-center justify-between pt-1 pb-2">
-							<span className="font-medium text-xs uppercase">ecocert</span>
-							<span className="font-medium text-xs uppercase">
-								{formattedDateRange}
-							</span>
-						</div>
-						<div className="mt-auto h-[62px] w-full overflow-hidden">
-							<div className="flex h-full flex-wrap content-end justify-start gap-1 pb-1">
-								{visibleBadges.map((badge) => (
-									<span
-										key={badge}
-										className="flex items-center rounded-lg border-[1.5px] border-black px-2 py-1 text-base leading-none"
-										title={
-											badge.endsWith("...")
-												? badges.find((b) => b.startsWith(badge.slice(0, -3)))
-												: badge
-										}
+							{contributorsDisplay && (
+								<p
+									className="mx-auto mt-2 max-w-[90%] truncate text-base text-slate-700 leading-5"
+									title={contributors.join(", ")}
+								>
+									{contributorsDisplay}
+								</p>
+							)}
+							{/* Centered Abstract heading */}
+							{abstract && (
+								<>
+									<p className="mt-3 font-baskerville font-semibold text-slate-900 text-sm uppercase tracking-[0.08em]">
+										Abstract
+									</p>
+									<p
+										ref={abstractRef}
+										className="mt-1 text-slate-700 text-xs leading-4"
+										style={{
+											display: "-webkit-box",
+											WebkitBoxOrient:
+												"vertical" as unknown as React.CSSProperties["WebkitBoxOrient"],
+											WebkitLineClamp:
+												abstractClamp as unknown as React.CSSProperties["WebkitLineClamp"],
+											overflow: "hidden",
+											wordBreak: "break-word",
+											overflowWrap: "anywhere",
+										}}
 									>
-										{badge}
-									</span>
-								))}
-								{hiddenBadgesCount > 0 && (
-									<div className="flex items-center justify-center rounded-full border border-black bg-neutral-100 px-2 py-1 font-medium text-slate-900 text-sm leading-none">
-										+{hiddenBadgesCount}
-									</div>
+										{abstract}
+									</p>
+								</>
+							)}
+						</>
+					) : styleVariant === "style1" ? (
+						<>
+							{/* Style 1: no bars, classic title and inline abstract label */}
+							<div>
+								<h5
+									className="line-clamp-10 text-ellipsis pb-[2px] font-baskerville font-bold text-[30px] text-slate-900 leading-[36px] tracking-[-0.02em]"
+									title={title}
+								>
+									{title}
+								</h5>
+								{contributorsDisplay && (
+									<p
+										className="mx-auto mt-2 max-w-[90%] truncate text-base text-slate-700 leading-5"
+										title={contributors.join(", ")}
+									>
+										{contributorsDisplay}
+									</p>
 								)}
 							</div>
-						</div>
-					</section>
+							{abstract && (
+								<p
+									ref={abstractRef}
+									className="mt-2 text-slate-700 text-xs leading-4"
+									style={{
+										display: "-webkit-box",
+										WebkitBoxOrient:
+											"vertical" as unknown as React.CSSProperties["WebkitBoxOrient"],
+										WebkitLineClamp:
+											abstractClamp as unknown as React.CSSProperties["WebkitLineClamp"],
+										overflow: "hidden",
+										wordBreak: "break-word",
+										overflowWrap: "anywhere",
+									}}
+								>
+									<span className="font-semibold">Abstract.</span> {abstract}
+								</p>
+							)}
+						</>
+					) : (
+						<>
+							{/* Style 3: tiny headline above title, two-column abstract */}
+							<div className="w-full">
+								<p className="text-[10px] text-slate-600 uppercase leading-3 tracking-[0.18em]">
+									recerts
+								</p>
+								<h5
+									className="mt-1 line-clamp-4 text-ellipsis pb-[2px] font-baskerville font-bold text-[28px] text-slate-900 leading-[36px] tracking-[-0.01em]"
+									title={title}
+								>
+									{title}
+								</h5>
+							</div>
+							{contributorsDisplay && (
+								<p
+									className="mx-auto mt-1.5 max-w-[90%] truncate text-slate-700 text-sm leading-[18px]"
+									title={contributors.join(", ")}
+								>
+									{contributorsDisplay}
+								</p>
+							)}
+							{abstract && (
+								<div
+									ref={abstractRef}
+									className="mt-2 text-[10px] text-slate-700 leading-[14px] [column-count:2] [column-gap:12px]"
+									style={{
+										maxHeight: abstractMaxHeightPx,
+										overflow: "hidden",
+									}}
+								>
+									<span className="font-semibold">Abstract.</span> {abstract}
+								</div>
+							)}
+						</>
+					)}
+					<div className="mt-auto" />
+					{/* date range hidden */}
 				</section>
 			</article>
 		);

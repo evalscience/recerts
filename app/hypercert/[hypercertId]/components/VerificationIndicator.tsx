@@ -36,13 +36,13 @@ const VerificationIndicator = () => {
 			{isVerified ? (
 				<div className="flex w-full items-center justify-center gap-1 text-center">
 					<ShieldCheck size={16} className="opacity-50" />
-					<span>This ecocert is verified.</span>
+					<span>This recert is verified.</span>
 				</div>
 			) : isCreator ? (
 				<div className="flex w-full items-center justify-between">
 					<span className="flex items-center gap-1">
 						<ShieldAlert size={16} className="opacity-50" />
-						<span>This ecocert is not listed on the homepage.</span>
+						<span>This recert is not listed on the homepage.</span>
 					</span>
 					<a href="https://tally.so/r/w8rRxA" target="_blank" rel="noreferrer">
 						<button
@@ -56,7 +56,7 @@ const VerificationIndicator = () => {
 			) : (
 				<div className="flex w-full items-center justify-center gap-1 text-center">
 					<ShieldAlert size={16} className="opacity-50" />
-					<span>This ecocert is not listed on the homepage.</span>
+					<span>This recert is not listed on the homepage.</span>
 				</div>
 			)}
 		</div>

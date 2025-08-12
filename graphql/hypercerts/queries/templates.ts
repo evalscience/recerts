@@ -9,6 +9,8 @@ export const hypercert = `
         metadata {
           name
           description
+          contributors
+          work_scope
         }
         orders {
           totalUnitsForSale

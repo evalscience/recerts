@@ -12,7 +12,7 @@ const changelogBlocks: ChangelogBlock[] = [
 	},
 	{
 		date: "May 15th 2025",
-		title: "v1.0.1 - Proof of Impacts and Reviews",
+		title: "v1.0.1 - Supplementary Materials and Reviews",
 		contentSource: "!attestations.md",
 		versionMetadata: {
 			version: "1.0.1",

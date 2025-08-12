@@ -1,6 +1,5 @@
 import { MotionWrapper } from "@/components/ui/motion-wrapper";
 import React from "react";
-import FAQCard from "./components/FAQCard";
 import FAQGrid from "./components/FAQGrid";
 import Title from "./components/title";
 

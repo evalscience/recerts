@@ -64,7 +64,8 @@
 }
 
 .font-baskerville {
-	font-family: var(--font-baskerville);
+    /* Alias to Garamond until Baskerville is provided */
+    font-family: var(--font-garamond);
 }
 
 .font-archia {
@@ -76,10 +77,55 @@
 		@apply border-border;
 	}
 	body {
-		@apply bg-beige text-foreground;
+    /* Let LaTeX.css drive background, max-width, spacing; keep text color from theme */
+    @apply text-foreground;
 	}
 }
 
+/* Override external LaTeX.css anchor colors so they don't force red */
+a,
+a:visited,
+a:hover,
+a:active {
+  color: inherit !important;
+}
+
 body {
-	@apply font-archia;
+  /* Body uses Inter */
+  font-family: var(--font-inter), ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Noto Sans, Ubuntu, Cantarell, Helvetica Neue, Arial, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+}
+
+/* Headings use Garamond */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-garamond), Georgia, Cambria, "Times New Roman", Times, serif;
+}
+
+/* Override LaTeX.css document width constraints to keep app full-width */
+html body {
+  max-width: 100% !important;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+  /* Remove vertical spacing LaTeX.css may add */
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+}
+
+/* Neutralize LaTeX.css spacing on semantic containers, but preserve Tailwind paddings */
+header,
+footer,
+main,
+section {
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
+}
+
+/* Ensure article does not constrain width or add side padding from LaTeX.css */
+article {
+  max-width: none !important;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
 }

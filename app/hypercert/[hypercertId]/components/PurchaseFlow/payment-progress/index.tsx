@@ -9,6 +9,7 @@ import {
 	ModalHeader,
 	ModalTitle,
 } from "@/components/ui/modal/modal";
+import { SUPPORTED_CHAINS } from "@/config/wagmi";
 import type { FullHypercert } from "@/graphql/hypercerts/queries/hypercerts";
 import { cn } from "@/lib/utils";
 import type {
@@ -32,7 +33,7 @@ const PaymentProgressModalWrapper = ({
 	return (
 		<ModalContent dismissible={false} className="font-sans">
 			<ModalHeader>
-				<ModalTitle>Purchase Ecocert</ModalTitle>
+				<ModalTitle>Purchase Recert</ModalTitle>
 				<ModalDescription>Track the progress of your purchase</ModalDescription>
 			</ModalHeader>
 			{children}
@@ -119,12 +120,15 @@ const PaymentProgressBody = ({
 	const { hide, popModal, clear } = useModal();
 
 	const handleStart = useCallback(() => {
+		// Use the wallet's current chain id for tipping
+		const chainId = hypercertExchangeClient.chainId ?? undefined;
 		start(
 			hypercertExchangeClient,
 			hypercert.hypercertId,
 			selectedOrder.id,
 			userAddress,
 			unitsToPurchase,
+			chainId as number,
 		);
 	}, [
 		start,
@@ -246,7 +250,22 @@ const PaymentProgressBody = ({
 						{PAYMENT_PROGRESS_STEPS[currentStepIndex].title}
 					</span>
 					<span className="text-balance text-center text-muted-foreground">
-						{PAYMENT_PROGRESS_STEPS[currentStepIndex].description}
+						{(() => {
+							const step = PAYMENT_PROGRESS_STEPS[currentStepIndex];
+							if (
+								step.index === 6 &&
+								hypercertExchangeClient &&
+								typeof hypercertExchangeClient.chainId === "number"
+							) {
+								const nativeSymbol =
+									SUPPORTED_CHAINS.find(
+										(c) => c.id === hypercertExchangeClient.chainId,
+									)?.nativeCurrency.symbol ??
+									SUPPORTED_CHAINS[0].nativeCurrency.symbol;
+								return step.description.replace("(native token)", nativeSymbol);
+							}
+							return step.description;
+						})()}
 					</span>
 				</div>
 			)}

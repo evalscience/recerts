@@ -3,7 +3,7 @@ import getPriceFeed from "@/lib/pricefeed";
 
 import { cookieStorage, createStorage, http } from "wagmi";
 import { BASE_URL } from "./endpoint";
-import { sepolia, celo, mainnet, celoAlfajores } from "viem/chains";
+import { filecoin, celo, optimism, base, arbitrum } from "viem/chains";
 import { RAW_TOKENS_CONFIG, TokensConfig } from "./raw-tokens";
 
 // Get projectId at https://cloud.walletconnect.com
@@ -11,8 +11,8 @@ export const projectId = process.env.NEXT_PUBLIC_WC_PROJECT_ID;
 
 if (!projectId) throw new Error("Project ID is not defined");
 
-const DEV_CHAINS = [celo] as const;
-const PROD_CHAINS = [celo] as const;
+const DEV_CHAINS = [filecoin, celo, optimism, base, arbitrum] as const;
+const PROD_CHAINS = [filecoin, celo, optimism, base, arbitrum] as const;
 export const SUPPORTED_CHAINS =
   process.env.NEXT_PUBLIC_DEPLOY_ENV === "production"
     ? PROD_CHAINS
@@ -78,8 +78,8 @@ for (const chainId in TOKENS_CONFIG) {
 }
 
 const metadata = {
-  name: "Ecocertain",
-  description: "Fund impactful regenerative projects",
+  name: "Recerts.org",
+  description: "An impact mechanism design journal",
   url: BASE_URL, // origin must match your domain & subdomain
   icons: ["https://avatars.githubusercontent.com/u/46801808"],
 };
@@ -94,6 +94,10 @@ export const config = defaultWagmiConfig({
     storage: cookieStorage,
   }),
   transports: {
-    [celo.id]: http("https://forno.celo.org"),
+    [filecoin.id]: http(filecoin.rpcUrls.default.http[0]!),
+    [celo.id]: http(celo.rpcUrls.default.http[0]!),
+    [optimism.id]: http(optimism.rpcUrls.default.http[0]!),
+    [base.id]: http(base.rpcUrls.default.http[0]!),
+    [arbitrum.id]: http(arbitrum.rpcUrls.default.http[0]!),
   },
 });

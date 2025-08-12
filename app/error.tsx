@@ -11,8 +11,8 @@ export default function HypercertError({
 	reset: () => void;
 }) {
 	useEffect(() => {
-		console.error("Unable to fetch ecocerts", error);
+		console.error("Unable to fetch recerts", error);
 	}, [error]);
 
-	return <PageError title="We couldn't load ecocerts." />;
+	return <PageError title="We couldn't load recerts." />;
 }

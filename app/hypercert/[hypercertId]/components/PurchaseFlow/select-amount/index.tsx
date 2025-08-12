@@ -57,7 +57,7 @@ const SelectAmount = () => {
 					<ChevronLeft />
 				</Button>
 				<div>
-					<ModalTitle>Purchase Ecocert</ModalTitle>
+					<ModalTitle>Purchase Recert</ModalTitle>
 					<ModalDescription>Select the amount to purchase</ModalDescription>
 				</div>
 			</ModalHeader>
@@ -207,8 +207,8 @@ const SelectAmountBody = ({
 				<div className="mt-2 flex items-start gap-2 rounded-lg border bg-muted/50 p-3 font-sans text-muted-foreground text-xs">
 					<Info className="mt-0.5 h-4 w-4 shrink-0" />
 					<p>
-						All proceeds from the purchase of this ecocert go directly to the
-						creator of the ecocert minus a small platform fee worth{" "}
+						All proceeds from the purchase of this recert go directly to the
+						creator of the recert minus a small platform fee worth{" "}
 						<span className="font-bold text-foreground">0.1 Celo</span>.
 					</p>
 				</div>

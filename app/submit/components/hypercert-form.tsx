@@ -44,6 +44,13 @@ import {
 	PopoverContent,
 	PopoverTrigger,
 } from "@/components/ui/popover";
+import {
+	Select,
+	SelectContent,
+	SelectItem,
+	SelectTrigger,
+	SelectValue,
+} from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 
 import { Dialog } from "@/components/ui/dialog";
@@ -54,7 +61,7 @@ import {
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import MarkdownEditor from "@/components/ui/mdx-editor";
-import { BASE_URL } from "@/config/endpoint";
+// BASE_URL import removed (no logo/banner defaults needed)
 import useMintHypercert from "@/hooks/use-mint-hypercert";
 import {
 	MDXEditor,
@@ -73,8 +80,7 @@ import { DeploymentInfoBox } from "./deployment-info-box";
 import HypercertCard from "./hypercert-card";
 import MintingProgressDialog from "./minting-progress-dialog";
 
-const INITIAL_BANNER_URL = `${BASE_URL}/ecocert-card/banner.webp`;
-const INITIAL_LOGO_URL = `${BASE_URL}/ecocert-card/logo.webp`;
+// No initial logo URL needed
 const telegramHandleRegex = /^@([a-zA-Z0-9_]{4,31})$/;
 const emailRegex =
 	/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -90,116 +96,46 @@ const AREA_ACTIVITIES = [
 	{ value: "Science", label: "Science - Researching and monitoring" },
 ] as const;
 
-const HypercertMintSchema = z
-	.object({
-		title: z
-			.string()
-			.min(1, { message: "Hypercert Name is required" })
-			.max(180, { message: "Hypercert Name must be less than 180 characters" }),
-		description: z
-			.string()
-			.min(10, {
-				message: "Description is required and must be at least 10 characters",
-			})
-			.max(10000, {
-				message: "Description must be less than 10000 characters",
-			}),
-		link: z.preprocess(
-			(value) => (value === "" ? undefined : value),
-			z.string().url().optional(),
-		),
-		logo: z.string().url({ message: "Logo Image must be a valid URL" }),
-		logoFile: z.any().optional(),
-		banner: z
-			.string()
-			.url({ message: "Background Banner Image must be a valid URL" }),
-		bannerFile: z.any().optional(),
-		tags: z
-			.string()
-			.refine((val) => val.split(",").every((tag) => tag.trim() !== ""), {
-				message:
-					"Tags must must not be empty, Multiple tags must be separated by commas",
-			}),
-		projectDates: z
-			.tuple([z.date().optional(), z.date().optional()])
-			.refine((data) => {
-				return Boolean(data[0] || data[1]);
-			}, "Work date range is required"),
-		contributors: z.string(),
-		contact: z
-			.string()
-			.refine(
-				(value) =>
-					telegramHandleRegex.test(value) ||
-					/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value),
-				{
-					message: "Input must be a valid Telegram handle or email address",
-				},
-			),
-		acceptTerms: z.boolean(),
-		confirmContributorsPermission: z.boolean(),
-		geojson: z.string().refine((val) => val === "" || val.startsWith("http"), {
-			message: "GeoJSON URL must be empty or start with http",
+const HypercertMintSchema = z.object({
+	title: z
+		.string()
+		.min(1, { message: "Hypercert Name is required" })
+		.max(180, { message: "Hypercert Name must be less than 180 characters" }),
+	description: z
+		.string()
+		.min(10, {
+			message: "Description is required and must be at least 10 characters",
+		})
+		.max(10000, {
+			message: "Description must be less than 10000 characters",
 		}),
-		geojsonFile: z.any().optional(),
-		areaActivity: z.enum(
-			["Restoration", "Conservation", "Landscape", "Community", "Science"],
-			{
-				required_error: "Please select what you're doing with this area",
-			},
-		),
-	})
-	.refine(
-		(data) => {
-			const hasLogoUrl = !!data.logo;
-			const hasLogoFile = !!data.logoFile;
-			return (
-				(hasLogoUrl && !hasLogoFile) ||
-				(!hasLogoUrl && hasLogoFile) ||
-				(hasLogoUrl && hasLogoFile)
-			);
-		},
-		{
-			message: "Please provide a Logo image",
-			path: ["logo"],
-		},
-	)
-	.refine(
-		(data) => {
-			const hasBannerUrl = !!data.banner;
-			const hasBannerFile = !!data.bannerFile;
-			return (
-				(hasBannerUrl && !hasBannerFile) ||
-				(!hasBannerUrl && hasBannerFile) ||
-				(hasBannerUrl && hasBannerFile)
-			);
-		},
-		{
-			message: "Please provide a Banner image",
-			path: ["banner"],
-		},
-	)
-	.refine(
-		(data) => {
-			const hasUrl = !!data.geojson;
-			const hasFile = !!data.geojsonFile;
-			return (hasUrl && !hasFile) || (!hasUrl && hasFile);
-		},
-		{
-			message: "Please provide either a GeoJSON URL or file",
-			path: ["geojson"],
-		},
-	)
-	.refine(
-		(data) => {
-			// Additional refinement to ensure at least one is provided
-			return !!data.geojson || !!data.geojsonFile;
-		},
-		{
-			message: "A GeoJSON URL or file is required",
-			path: ["geojson"],
-		},
-	);
+	styleVariant: z.enum(["style1", "style2", "style3"]).default("style2"),
+	link: z.preprocess(
+		(value) => (value === "" ? undefined : value),
+		z.string().url().optional(),
+	),
+	affiliations: z.string().optional(),
+	emails: z.string().optional(),
+	tags: z
+		.string()
+		.refine((val) => val.split(",").every((tag) => tag.trim() !== ""), {
+			message:
+				"Tags must must not be empty, Multiple tags must be separated by commas",
+		}),
+	projectDates: z
+		.tuple([z.date().optional(), z.date().optional()])
+		.refine((data) => {
+			return Boolean(data[0] || data[1]);
+		}, "Work date range is required"),
+	contributors: z.string(),
+	acceptTerms: z.boolean(),
+	confirmContributorsPermission: z.boolean(),
+	geojson: z.string().optional(),
+	geojsonFile: z.any().optional(),
+	areaActivity: z
+		.enum(["Restoration", "Conservation", "Landscape", "Community", "Science"])
+		.optional(),
+});
 
 export type MintingFormValues = z.infer<typeof HypercertMintSchema>;
 
@@ -208,10 +144,7 @@ const HypercertForm = () => {
 	const [badges, setBadges] = useState<string[]>([]);
 	const [geoJSONFile, setGeoJSONFile] = useState<File | null>(null);
 	const [geoJSONArea, setGeoJSONArea] = useState<number | null>(null);
-	const [logoFile, setLogoFile] = useState<File | null>(null);
-	const [bannerFile, setBannerFile] = useState<File | null>(null);
-	const [logoPreviewUrl, setLogoPreviewUrl] = useState<string | null>(null);
-	const [bannerPreviewUrl, setBannerPreviewUrl] = useState<string | null>(null);
+	// logo removed for paper layout
 	const [showCopied, setShowCopied] = useState(false);
 	const [isInitialized, setIsInitialized] = useState(false);
 	const [isMintingProgressDialogVisible, setIsMintingProgressDialogVisible] =
@@ -221,27 +154,24 @@ const HypercertForm = () => {
 	const [isMobileInfoExpanded, setIsMobileInfoExpanded] = useState(false);
 
 	// Add refs for file inputs
-	const logoFileInputRef = useRef<HTMLInputElement>(null);
-	const bannerFileInputRef = useRef<HTMLInputElement>(null);
 	const geoJSONFileInputRef = useRef<HTMLInputElement>(null);
 
 	const form = useForm<MintingFormValues>({
 		resolver: zodResolver(HypercertMintSchema),
 		defaultValues: {
 			title: "",
-			banner: INITIAL_BANNER_URL,
 			description: "",
-			logo: INITIAL_LOGO_URL,
+			styleVariant: "style2",
 			link: "",
 			tags: "",
 			projectDates: [undefined, undefined],
-			contact: "",
+			// contact removed
 			acceptTerms: false,
 			confirmContributorsPermission: false,
 			geojson: "",
 			geojsonFile: undefined,
-			logoFile: undefined,
-			bannerFile: undefined,
+			affiliations: "",
+			emails: "",
 			areaActivity: undefined,
 		},
 		mode: "onChange",
@@ -259,11 +189,12 @@ const HypercertForm = () => {
 		const formFields: Array<keyof MintingFormValues> = [
 			"title",
 			"description",
+			"styleVariant",
 			"link",
 			"tags",
 			"projectDates",
 			"contributors",
-			"contact",
+			// contact removed
 			"acceptTerms",
 			"confirmContributorsPermission",
 			"geojson",
@@ -283,6 +214,15 @@ const HypercertForm = () => {
 								dates[0] ? new Date(dates[0]) : undefined,
 								dates[1] ? new Date(dates[1]) : undefined,
 							]);
+						}
+						break;
+					}
+					case "styleVariant": {
+						if (["style1", "style2", "style3"].includes(value)) {
+							form.setValue(
+								"styleVariant",
+								value as MintingFormValues["styleVariant"],
+							);
 						}
 						break;
 					}
@@ -334,14 +274,8 @@ const HypercertForm = () => {
 		for (const [key, value] of Object.entries(formValues)) {
 			if (value === undefined || value === null || value === "") continue;
 
-			// Skip logo and banner fields
-			if (
-				key === "logo" ||
-				key === "banner" ||
-				key === "logoFile" ||
-				key === "bannerFile"
-			)
-				continue;
+			// Skip logo fields
+			// nothing to skip for logo anymore
 
 			if (key === "projectDates" && Array.isArray(value)) {
 				const dates = value.map((date) => date?.toISOString()).filter(Boolean);
@@ -399,34 +333,37 @@ const HypercertForm = () => {
 	}, [geoJSONFile, geojsonValue]);
 
 	useEffect(() => {
-		// Add area badges if available
-		const areaBadges = [];
-		if (geoJSONArea) {
-			areaBadges.push(`⭔ ${geoJSONArea} ha`);
-		}
-		if (areaActivity) {
-			areaBadges.push(`${areaActivity}`);
-		}
-
-		if (tags) {
-			const tagArray = tags
-				.split(",")
-				.map((tag) => tag.trim())
-				.filter((tag) => tag !== "");
-			const baseBadges = [...tagArray];
-
-			setBadges([...areaBadges, ...baseBadges]);
-		} else {
-			setBadges(areaBadges);
-		}
-	}, [tags, geoJSONArea, areaActivity]);
+		// For paper layout, badges are topics only
+		const topicBadges = tags
+			? tags
+					.split(",")
+					.map((tag) => tag.trim())
+					.filter((tag) => tag !== "")
+			: [];
+		setBadges(topicBadges);
+	}, [tags]);
 
 	const generateImage = async () => {
-		if (imageRef.current === null) {
-			return;
+		if (imageRef.current === null) return;
+		if (document && "fonts" in document) {
+			try {
+				// ensure fonts are loaded to avoid layout shifts during capture
+				type DocumentWithFonts = Document & {
+					fonts?: { ready?: Promise<unknown> };
+				};
+				const docWithFonts = document as DocumentWithFonts;
+				if (docWithFonts.fonts?.ready) {
+					await docWithFonts.fonts.ready;
+				}
+			} catch {}
 		}
-		const dataUrl = await domToPng(imageRef.current);
-		return dataUrl;
+		// Increase pixel density and hint preferred font format to improve crispness
+		// Use a transparent background so rounded corners blend with the page bg
+		return await domToPng(imageRef.current, {
+			scale: Math.max(2, Math.floor(window.devicePixelRatio || 2)),
+			backgroundColor: "transparent",
+			font: { preferredFormat: "woff2" },
+		});
 	};
 
 	const getTracePreviewUrl = (
@@ -514,80 +451,18 @@ const HypercertForm = () => {
 	};
 
 	// Create object URLs for uploaded files
-	useEffect(() => {
-		if (logoFile) {
-			const objectUrl = URL.createObjectURL(logoFile);
-			setLogoPreviewUrl(objectUrl);
+	// removed logo preview effect
 
-			// Cleanup function to revoke the URL when component unmounts
-			return () => URL.revokeObjectURL(objectUrl);
-		}
-	}, [logoFile]);
+	// removed banner preview handler
 
-	useEffect(() => {
-		if (bannerFile) {
-			const objectUrl = URL.createObjectURL(bannerFile);
-			setBannerPreviewUrl(objectUrl);
+	// removed logo handlers
 
-			// Cleanup function to revoke the URL when component unmounts
-			return () => URL.revokeObjectURL(objectUrl);
-		}
-	}, [bannerFile]);
-
-	const handleLogoFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-		const file = e.target.files?.[0];
-		if (file) {
-			setLogoFile(file);
-			form.setValue("logoFile", file);
-		} else if (logoFile && !file) {
-			// User canceled file selection dialog
-			clearLogoFile();
-		}
-	};
-
-	const handleBannerFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-		const file = e.target.files?.[0];
-		if (file) {
-			setBannerFile(file);
-			form.setValue("bannerFile", file);
-		} else if (bannerFile && !file) {
-			// User canceled file selection dialog
-			clearBannerFile();
-		}
-	};
-
-	const handleLogoUrlChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-		const url = e.target.value;
-		form.setValue("logo", url);
-	};
-
-	const handleBannerUrlChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-		const url = e.target.value;
-		form.setValue("banner", url);
-	};
+	// removed banner handlers
 
 	// Update clear functions to reset the file input element
-	const clearLogoFile = () => {
-		setLogoFile(null);
-		setLogoPreviewUrl(null);
-		form.setValue("logoFile", undefined);
+	// removed logo clear
 
-		// Reset the file input element
-		if (logoFileInputRef.current) {
-			logoFileInputRef.current.value = "";
-		}
-	};
-
-	const clearBannerFile = () => {
-		setBannerFile(null);
-		setBannerPreviewUrl(null);
-		form.setValue("bannerFile", undefined);
-
-		// Reset the file input element
-		if (bannerFileInputRef.current) {
-			bannerFileInputRef.current.value = "";
-		}
-	};
+	// removed banner clear
 
 	const clearGeoJSONFile = () => {
 		setGeoJSONFile(null);
@@ -605,7 +480,6 @@ const HypercertForm = () => {
 				{...{
 					mintingFormValues,
 					generateImage,
-					geoJSONFile,
 					badges,
 					visible: isMintingProgressDialogVisible,
 					setVisible: setIsMintingProgressDialogVisible,
@@ -625,106 +499,81 @@ const HypercertForm = () => {
 							<CardContent className="flex scale-100 flex-col gap-6 p-0 px-4">
 								<section className="flex flex-col gap-2">
 									<h2 className="font-baskerville font-bold text-2xl">
-										General Fields
+										Paper Details
 									</h2>
 									<div className="flex flex-col gap-4 rounded-2xl bg-background p-4">
+										<FormField
+											control={form.control}
+											name="styleVariant"
+											render={({ field }) => (
+												<FormItem>
+													<FormLabel>Preview Style</FormLabel>
+													<FormControl>
+														<Select
+															onValueChange={field.onChange}
+															defaultValue={field.value}
+															value={field.value}
+														>
+															<SelectTrigger className="bg-inherit">
+																<SelectValue placeholder="Choose a style" />
+															</SelectTrigger>
+															<SelectContent className="bg-background">
+																<SelectItem
+																	value="style1"
+																	className="hover:bg-accent"
+																>
+																	Style 1 – Classic (no bars, abstract inline)
+																</SelectItem>
+																<SelectItem
+																	value="style2"
+																	className="hover:bg-accent"
+																>
+																	Style 2 – Paper (black bars, centered
+																	abstract)
+																</SelectItem>
+																<SelectItem
+																	value="style3"
+																	className="hover:bg-accent"
+																>
+																	Style 3 – Recerts header, two-column abstract
+																</SelectItem>
+															</SelectContent>
+														</Select>
+													</FormControl>
+													<FormMessage />
+												</FormItem>
+											)}
+										/>
 										<FormField
 											control={form.control}
 											name="title"
 											render={({ field }) => (
 												<FormItem>
-													<FormLabel>Ecocert Name</FormLabel>
+													<FormLabel>Paper Title</FormLabel>
 													<FormControl>
-														<Input placeholder="Ecocert Title" {...field} />
+														<Input
+															placeholder="Enter the paper title"
+															{...field}
+														/>
 													</FormControl>
 													<FormMessage />
 												</FormItem>
 											)}
 										/>
-										<FormField
-											control={form.control}
-											name="logo"
-											render={({ field }) => (
-												<FormItem>
-													<FormLabel>Logo Image</FormLabel>
-													<FormControl>
-														<div className="relative">
-															<Input
-																ref={logoFileInputRef}
-																type="file"
-																accept="image/*"
-																onChange={handleLogoFileChange}
-																className={logoFile ? "pr-8" : ""}
-																style={{ cursor: "pointer" }}
-															/>
-															{logoFile && (
-																<Button
-																	type="button"
-																	variant="ghost"
-																	size="icon"
-																	className="-translate-y-1/2 absolute top-1/2 right-1 h-6 w-6"
-																	onClick={clearLogoFile}
-																>
-																	<Trash2 className="h-4 w-4 text-destructive" />
-																</Button>
-															)}
-														</div>
-													</FormControl>
-													<div className="mt-1 text-muted-foreground text-xs">
-														Or use default URL: {INITIAL_LOGO_URL}
-													</div>
-													<FormMessage />
-												</FormItem>
-											)}
-										/>
-										<FormField
-											control={form.control}
-											name="banner"
-											render={({ field }) => (
-												<FormItem>
-													<FormLabel>Background Banner Image</FormLabel>
-													<FormControl>
-														<div className="relative">
-															<Input
-																ref={bannerFileInputRef}
-																type="file"
-																accept="image/*"
-																onChange={handleBannerFileChange}
-																className={bannerFile ? "pr-8" : ""}
-																style={{ cursor: "pointer" }}
-															/>
-															{bannerFile && (
-																<Button
-																	type="button"
-																	variant="ghost"
-																	size="icon"
-																	className="-translate-y-1/2 absolute top-1/2 right-1 h-6 w-6"
-																	onClick={clearBannerFile}
-																>
-																	<Trash2 className="h-4 w-4 text-destructive" />
-																</Button>
-															)}
-														</div>
-													</FormControl>
-													<div className="mt-1 text-muted-foreground text-xs">
-														Or use default URL: {INITIAL_BANNER_URL}
-													</div>
-													<FormMessage />
-												</FormItem>
-											)}
-										/>
+										{/* logo removed for paper layout */}
+										{/* banner field removed */}
 										<FormField
 											control={form.control}
 											name="description"
 											render={({ field }) => (
 												<FormItem>
-													<FormLabel>Description</FormLabel>
+													<FormLabel>Abstract</FormLabel>
 													<FormControl>
 														<MarkdownEditor
 															markdown={field.value}
 															onChange={field.onChange}
 															className="rounded-lg border border-border bg-inherit"
-															placeholder="Ecocert description"
+															placeholder="Write a concise abstract for the paper"
 															editorRef={null}
 														/>
 													</FormControl>
@@ -732,6 +581,7 @@ const HypercertForm = () => {
 												</FormItem>
 											)}
 										/>
+										{/* affiliations and emails removed for cleaner card */}
 										<FormField
 											control={form.control}
 											name="link"
@@ -740,7 +590,7 @@ const HypercertForm = () => {
 													<FormLabel>Link</FormLabel>
 													<FormControl>
 														<Input
-															placeholder="https://ecocertain.xyz"
+															placeholder="https://example.org/paper"
 															{...field}
 														/>
 													</FormControl>
@@ -752,77 +602,29 @@ const HypercertForm = () => {
 								</section>
 								<section className="flex flex-col gap-2">
 									<h2 className="font-baskerville font-bold text-2xl">
-										Ecocert Fields
+										Additional Details
 									</h2>
 
 									<div className="flex flex-col gap-4 rounded-2xl bg-background p-4">
-										<FormField
-											control={form.control}
-											name="areaActivity"
-											render={({ field }) => (
-												<FormItem>
-													<FormLabel>
-														What are you doing with this area?
-													</FormLabel>
-													<FormControl>
-														<DropdownMenu>
-															<DropdownMenuTrigger asChild>
-																<Button
-																	variant="outline"
-																	className="w-full justify-between font-normal"
-																>
-																	{field.value
-																		? AREA_ACTIVITIES.find(
-																				(activity) =>
-																					activity.value === field.value,
-																		  )?.label
-																		: "Select an activity"}
-																	<ChevronDown className="ml-2 h-4 w-4 opacity-50" />
-																</Button>
-															</DropdownMenuTrigger>
-															<DropdownMenuContent className="w-[400px]">
-																{AREA_ACTIVITIES.map((activity) => (
-																	<DropdownMenuItem
-																		key={activity.value}
-																		onClick={() =>
-																			field.onChange(activity.value)
-																		}
-																		className="cursor-pointer"
-																	>
-																		{activity.label}
-																	</DropdownMenuItem>
-																))}
-															</DropdownMenuContent>
-														</DropdownMenu>
-													</FormControl>
-													<FormMessage />
-												</FormItem>
-											)}
-										/>
+										{/* area activity not relevant for paper layout, keep if needed later */}
 
 										<FormField
 											control={form.control}
 											name="tags"
 											render={({ field }) => (
 												<FormItem>
-													<FormLabel>Work Scope</FormLabel>
+													<FormLabel>Topics</FormLabel>
 													<FormControl>
 														<Textarea
 															className="bg-inherit"
-															placeholder="Ecocerts, Impact, ..."
+															placeholder="List topics separated by commas (e.g., Climate, Remote Sensing, Field Study)"
 															{...field}
 														/>
 													</FormControl>
 													<FormMessage />
 													<div className="flex flex-wrap gap-0.5">
-														{badges.map((tag, index) => (
-															<Badge
-																key={`${tag}-${
-																	// biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
-																	index
-																}`}
-																variant="secondary"
-															>
+														{badges.map((tag) => (
+															<Badge key={tag} variant="secondary">
 																{tag}
 															</Badge>
 														))}
@@ -837,7 +639,7 @@ const HypercertForm = () => {
 												name="projectDates"
 												render={({ field }) => (
 													<FormItem className="flex w-full flex-col">
-														<FormLabel>Project Dates</FormLabel>
+														<FormLabel>Dates</FormLabel>
 														<Popover>
 															<PopoverTrigger asChild>
 																<FormControl>
@@ -875,9 +677,7 @@ const HypercertForm = () => {
 																		to: field.value?.[1],
 																	}}
 																	onSelect={(range) => {
-																		console.log(range, field);
 																		field.onChange([range?.from, range?.to]);
-																		console.log(field.value);
 																	}}
 																	numberOfMonths={2}
 																/>
@@ -894,11 +694,11 @@ const HypercertForm = () => {
 											name="contributors"
 											render={({ field }) => (
 												<FormItem>
-													<FormLabel>List of Contributors</FormLabel>
+													<FormLabel>Authors</FormLabel>
 													<FormControl>
 														<Textarea
 															className="bg-inherit"
-															placeholder="Add contributor addresses, names or pseudonyms, whose work is represented by the hypercert. Entries should be separated by a comma."
+															placeholder="Add author names separated by commas"
 															{...field}
 														/>
 													</FormControl>
@@ -907,77 +707,14 @@ const HypercertForm = () => {
 											)}
 										/>
 
-										<FormField
-											control={form.control}
-											name="geojson"
-											render={({ field }) => (
-												<FormItem>
-													<FormLabel>GeoJSON (URL or File)</FormLabel>
-													<FormControl>
-														<div className="flex gap-2">
-															<Input
-																type="text"
-																placeholder="https://example.com/data.geojson"
-																{...field}
-																onChange={handleUrlChange}
-															/>
-															<div className="relative flex-shrink-0">
-																<Input
-																	ref={geoJSONFileInputRef}
-																	type="file"
-																	accept=".geojson,.json,.txt,application/geo+json,application/json,text/plain"
-																	onChange={handleFileChange}
-																	className={geoJSONFile ? "pr-8" : ""}
-																/>
-																{geoJSONFile && (
-																	<Button
-																		type="button"
-																		variant="ghost"
-																		size="icon"
-																		className="-translate-y-1/2 absolute top-1/2 right-1 h-6 w-6"
-																		onClick={clearGeoJSONFile}
-																	>
-																		<Trash2 className="h-4 w-4 text-destructive" />
-																	</Button>
-																)}
-															</div>
-														</div>
-													</FormControl>
-													<FormMessage />
-													{field.value && (
-														<div className="mt-4 aspect-video w-full rounded-lg border border-border">
-															<iframe
-																src={`https://legacy.gainforest.app/?shapefile=${encodeURIComponent(
-																	field.value,
-																)}&showUI=false`}
-																className="h-full w-full rounded-lg"
-																title="GeoJSON Preview"
-															/>
-														</div>
-													)}
-												</FormItem>
-											)}
-										/>
+										{/* GeoJSON not required for paper layout; keep component around if needed later */}
 									</div>
 								</section>
 								<section className="flex flex-col gap-2">
 									<h2 className="font-baskerville font-bold text-2xl">
-										Contact Information
+										Agreement
 									</h2>
 									<div className="flex flex-col gap-4 rounded-2xl bg-background p-4">
-										<FormField
-											control={form.control}
-											name="contact"
-											render={({ field }) => (
-												<FormItem>
-													<FormLabel>Telegram / Email</FormLabel>
-													<FormControl>
-														<Input placeholder="@gainforestnow" {...field} />
-													</FormControl>
-													<FormMessage />
-												</FormItem>
-											)}
-										/>
 										<FormField
 											control={form.control}
 											name="confirmContributorsPermission"
@@ -991,8 +728,8 @@ const HypercertForm = () => {
 													</FormControl>
 													<div className="space-y-1 leading-none">
 														<FormLabel>
-															I confirm that all listed contributors gave their
-															permission to include their work in this ecocert.
+															I confirm that all listed authors gave permission
+															to include their work in this record.
 														</FormLabel>
 													</div>
 												</FormItem>
@@ -1075,17 +812,22 @@ const HypercertForm = () => {
 								<div className="flex w-full items-center justify-center">
 									<HypercertCard
 										title={form.watch("title") || undefined}
-										banner={
-											bannerPreviewUrl || form.watch("banner") || undefined
-										}
-										logo={logoPreviewUrl || form.watch("logo") || undefined}
 										workStartDate={form.watch("projectDates.0")}
 										workEndDate={form.watch("projectDates.1")}
 										badges={badges}
 										displayOnly={true}
 										contributors={
-											form.watch("contributors")?.split(", ").filter(Boolean) ||
-											[]
+											form
+												.watch("contributors")
+												?.split(",")
+												.map((v) => v.trim())
+												.filter(Boolean) || []
+										}
+										abstract={form.watch("description") || ""}
+										styleVariant={
+											(form.watch(
+												"styleVariant",
+											) as MintingFormValues["styleVariant"]) || "style2"
 										}
 										ref={imageRef}
 									/>

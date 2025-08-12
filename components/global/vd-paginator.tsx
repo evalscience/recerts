@@ -27,13 +27,13 @@ const ShowingDisplay = ({
 	}
 	if (totalItemAmount === 1) {
 		return (
-			<p className="text-muted-foreground text-sm md:text-base">
+			<p className="mb-4 text-muted-foreground text-sm md:text-base">
 				Showing 1 item
 			</p>
 		);
 	}
 	return (
-		<p className="text-muted-foreground text-sm md:text-base">
+		<p className="mb-4 text-muted-foreground text-sm md:text-base">
 			Showing {(currentPage - 1) * itemsPerPage + 1} -{" "}
 			{currentPage * itemsPerPage > totalItemAmount
 				? totalItemAmount

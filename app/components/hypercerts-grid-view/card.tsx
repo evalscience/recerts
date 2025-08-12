@@ -1,120 +1,108 @@
+"use client";
+
 import CircularProgress from "@/components/ui/circular-progress";
-import { SUPPORTED_CHAINS } from "@/config/wagmi";
+import {
+	Tooltip,
+	TooltipContent,
+	TooltipProvider,
+	TooltipTrigger,
+} from "@/components/ui/tooltip";
 import type { Hypercert } from "@/graphql/hypercerts/queries/hypercerts";
-import { calculateBigIntPercentage } from "@/lib/calculateBigIntPercentage";
-import { cn } from "@/lib/utils";
-import { Calendar } from "lucide-react";
+import { getChainInfo } from "@/lib/chainInfo";
 import Image from "next/image";
 import Link from "next/link";
-import { CircularProgressbar } from "react-circular-progressbar";
-import Progress from "../shared/progress";
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 
 // * REFACTORED from hypercerts-app hypercert-window
 const Card = ({
 	hypercert,
 	totalSalesInUSD,
+	contributors,
 }: {
 	hypercert: Hypercert;
 	totalSalesInUSD: number | null;
+	contributors?: string[];
 }) => {
-	const {
-		hypercertId,
-		name,
-		description,
-		totalUnits,
-		sales,
-		unitsForSale,
-		pricePerPercentInUSD,
-		chainId,
-		buyerCount,
-	} = hypercert;
-
-	const chainName = SUPPORTED_CHAINS.find(
-		(x) => x.id === Number(chainId),
-	)?.name;
-	const percentAvailable = calculateBigIntPercentage(unitsForSale, totalUnits);
+	const { hypercertId, unitsForSale, pricePerPercentInUSD, topics, chainId } =
+		hypercert;
+	const chainInfo = getChainInfo(chainId);
 
 	return (
 		<Link href={`/hypercert/${hypercertId}`} passHref>
-			<article className="group relative overflow-hidden rounded-2xl border border-border bg-muted">
-				<div className="h-[320px] w-full overflow-hidden p-4">
+			<article className="group relative flex h-[300px] flex-col overflow-hidden rounded-lg border border-border/60 bg-background shadow-sm transition-shadow hover:shadow-md">
+				<div className="relative h-[240px] w-full overflow-hidden border-border/50 border-b bg-muted/30 p-2">
 					<Image
 						src={`/api/hypercert-image/${hypercertId}`}
-						alt={name ?? "Untitled"}
-						height={500}
-						width={500}
-						className="h-auto w-full object-contain object-center transition group-hover:scale-[1.05]"
+						alt={"Hypercert image"}
+						height={600}
+						width={800}
+						className="mx-auto h-full w-full object-contain object-center transition duration-300 group-hover:scale-[1.02]"
 					/>
-				</div>
-				<section className="absolute top-4 left-4 flex space-x-1 opacity-100 transition-opacity duration-150 ease-out group-hover:opacity-100 md:opacity-0">
-					<div className="flex items-center gap-1 rounded-md border border-black/60 bg-black px-2 py-0.5 text-white text-xs shadow-sm">
-						<Calendar size={12} />{" "}
-						{new Date(
-							Number(hypercert.creationBlockTimestamp) * 1000,
-						).toLocaleDateString("en-US", {
-							year: "numeric",
-							month: "short",
-							day: "numeric",
-						})}
-					</div>
-				</section>
-				<section
-					className="absolute bottom-0 flex w-full flex-col gap-2 border-t border-t-border bg-background/90 p-4 backdrop-blur-md"
-					style={{
-						boxShadow: "0 -10px 10px rgba(0, 0, 0, 0.1)",
-					}}
-				>
-					<p
-						className={cn(
-							"line-clamp-2 h-[2.56rem] text-ellipsis break-words font-semibold text-lg leading-5",
-							name
-								? "font-baskerville text-foreground"
-								: "text-muted-foreground",
-						)}
-					>
-						{name ?? "[Untitled]"}
-					</p>
-					<p
-						className={cn(
-							"text-ellipsis text-muted-foreground text-sm",
-							pricePerPercentInUSD === undefined
-								? "mb-2.5 line-clamp-5 h-auto min-h-[100px]"
-								: "line-clamp-2 h-10",
-						)}
-					>
-						{description ?? "..."}
-					</p>
-					{pricePerPercentInUSD === undefined ? null : unitsForSale === 0n ? ( // </div> // 	</span> // 		Not listed for sale // 	<span className="inline-block rounded-full bg-beige-muted px-2 text-beige-muted-foreground"> // <div className="flex w-full items-center justify-start text-muted-foreground text-sm">
-						<div className="flex w-full items-center justify-start text-muted-foreground text-sm">
-							<span className="inline-block rounded-full bg-destructive/20 px-2 text-destructive">
-								Sold
+					{chainInfo ? (
+						<div className="absolute top-2 left-2 inline-flex items-center gap-1 rounded-md bg-background/80 px-2 py-1 shadow-sm ring-1 ring-border backdrop-blur">
+							<Image
+								src={chainInfo.logoSrc}
+								alt={`${chainInfo.label} logo`}
+								width={14}
+								height={14}
+								className="rounded-[2px]"
+							/>
+							<span className="font-medium text-[11px] text-muted-foreground">
+								{chainInfo.label}
 							</span>
 						</div>
-					) : (
-						totalSalesInUSD !== null && (
-							<div className="flex items-center justify-between">
-								<div className="space-y-1">
-									<div className="font-semibold text-sm">
-										${totalSalesInUSD.toFixed(0)} raised
-									</div>
-									<div className="text-muted-foreground text-sm">
-										${Math.floor(pricePerPercentInUSD * 100).toFixed(0)} target
-										· {buyerCount} buyer{buyerCount !== 1 ? "s" : ""}
-									</div>
-								</div>
-								<CircularProgress
-									value={totalSalesInUSD / pricePerPercentInUSD}
-									text={
-										Math.floor(totalSalesInUSD / pricePerPercentInUSD) > 999
-											? ">999%"
-											: `${Math.floor(
-													totalSalesInUSD / pricePerPercentInUSD,
-											  ).toFixed(0)}%`
-									}
-								/>
-							</div>
-						)
-					)}
+					) : null}
+				</div>
+
+				<section className="flex w-full flex-1 px-3 py-3">
+					<div className="flex w-full items-center justify-between gap-3">
+						<div className="flex min-w-0 flex-1 items-center">
+							{Array.isArray(topics) && topics.length > 0 ? (
+								<TagsTwoRows topics={topics} idPrefix={String(hypercertId)} />
+							) : null}
+						</div>
+						<div className="flex items-center">
+							{pricePerPercentInUSD === undefined ? null : unitsForSale ===
+							  0n ? (
+								<span className="inline-block rounded-full bg-destructive/15 px-2 py-0.5 text-destructive text-sm">
+									Sold
+								</span>
+							) : totalSalesInUSD !== null ? (
+								<TooltipProvider>
+									<Tooltip>
+										<TooltipTrigger asChild>
+											<div className="inline-flex flex-col items-end">
+												<CircularProgress
+													value={totalSalesInUSD / pricePerPercentInUSD}
+													text={
+														Math.floor(totalSalesInUSD / pricePerPercentInUSD) >
+														999
+															? ">999%"
+															: `${Math.floor(
+																	totalSalesInUSD / pricePerPercentInUSD,
+															  ).toFixed(0)}%`
+													}
+													textClassName="text-black"
+												/>
+											</div>
+										</TooltipTrigger>
+										<TooltipContent>
+											<div>
+												<div className="font-medium">Funding</div>
+												<div className="text-muted-foreground text-sm">
+													${Math.floor(totalSalesInUSD).toFixed(0)} raised
+												</div>
+												<div className="text-muted-foreground text-sm">
+													${Math.floor(pricePerPercentInUSD * 100).toFixed(0)}{" "}
+													target
+												</div>
+											</div>
+										</TooltipContent>
+									</Tooltip>
+								</TooltipProvider>
+							) : null}
+						</div>
+					</div>
 				</section>
 			</article>
 		</Link>
@@ -122,3 +110,94 @@ const Card = ({
 };
 
 export default Card;
+
+function TagsTwoRows({
+	topics,
+	idPrefix,
+}: { topics: string[]; idPrefix: string }) {
+	const containerRef = useRef<HTMLDivElement | null>(null);
+	const [visibleCount, setVisibleCount] = useState<number>(topics.length);
+
+	const maxHeightPx = 48; // ~ two rows of 24px chips
+
+	useLayoutEffect(() => {
+		const container = containerRef.current;
+		if (!container) return;
+
+		// Reset to measure from full
+		setVisibleCount(topics.length);
+
+		const measure = () => {
+			if (!container) return;
+			const chips = Array.from(
+				container.querySelectorAll<HTMLSpanElement>("[data-chip='tag']"),
+			);
+			let lastIndexThatFits = chips.length - 1;
+			for (let i = 0; i < chips.length; i++) {
+				const chip = chips[i];
+				const bottom = chip.offsetTop + chip.offsetHeight;
+				if (bottom > maxHeightPx) {
+					lastIndexThatFits = Math.max(0, i - 1);
+					break;
+				}
+			}
+			setVisibleCount(Math.max(0, lastIndexThatFits + 1));
+		};
+
+		// Defer measurement till after paint
+		requestAnimationFrame(measure);
+
+		const ro = new ResizeObserver(() => requestAnimationFrame(measure));
+		ro.observe(container);
+		return () => ro.disconnect();
+	}, [topics]);
+
+	const overflow = Math.max(0, topics.length - visibleCount);
+	const visible = topics.slice(0, visibleCount);
+
+	const allTags = (
+		<div className="flex max-w-[420px] flex-wrap items-center">
+			{topics.map((t) => (
+				<span
+					key={`${idPrefix}-topic-full-${t}`}
+					className="mr-1 mb-1 inline-flex items-center rounded-full border px-2 py-[2px] text-[11px] text-muted-foreground leading-4"
+					data-chip="tag"
+				>
+					{t}
+				</span>
+			))}
+		</div>
+	);
+
+	return (
+		<TooltipProvider>
+			<Tooltip>
+				<TooltipTrigger asChild>
+					<div
+						ref={containerRef}
+						className="flex max-h-12 min-w-0 flex-1 flex-wrap items-center overflow-hidden"
+					>
+						{visible.map((t) => (
+							<span
+								key={`${idPrefix}-topic-${t}`}
+								className="mr-1 mb-1 inline-flex items-center rounded-full border px-2 py-[2px] text-[11px] text-muted-foreground leading-4"
+								data-chip="tag"
+							>
+								{t}
+							</span>
+						))}
+						{overflow > 0 ? (
+							<span
+								className="mr-1 mb-1 inline-flex items-center rounded-full border px-2 py-[2px] text-[11px] text-muted-foreground leading-4"
+								data-chip="tag"
+							>
+								+{overflow}
+							</span>
+						) : null}
+					</div>
+				</TooltipTrigger>
+				{overflow > 0 ? <TooltipContent>{allTags}</TooltipContent> : null}
+			</Tooltip>
+		</TooltipProvider>
+	);
+}

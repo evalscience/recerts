@@ -22,12 +22,12 @@ interface SiteConfig {
 }
 
 export const siteConfig: SiteConfig = {
-  name: "Ecocertain",
-  title: "By GainForest.Earth",
+  name: "Recerts",
+  title: "By Eval.Science",
   description:
-    "Ecocertain is a marketplace that uses blockchain to showcase verified conservation efforts through digital certificates called ecocerts.",
+    "Recerts Journal of Decentralized Funding Research",
   localeDefault: "en",
-  url: "https://ecocertain.xyz",
+  url: "https://recerts.org",
   links: {
     discord: "https://discord.gg/reuvzTdVAU",
     twitter: "https://twitter.com/GainForestNow",
@@ -42,7 +42,7 @@ export const siteConfig: SiteConfig = {
     },
     {
       title: "Twitter",
-      url: "https://twitter.com/GainForestNow",
+      url: "https://twitter.com/evalscience",
       icon: CustomIcons.twitter,
       openInNewTab: true,
     },
@@ -50,11 +50,6 @@ export const siteConfig: SiteConfig = {
       title: "Changelog",
       url: "/changelog",
       openInNewTab: false,
-    },
-    {
-      title: "Impact Report",
-      url: "https://www.canva.com/design/DAGNpwdK0jo/QkBOQ1gfl0gy8jDTBAo10g/view?utm_content=DAGNpwdK0jo&utm_campaign=designshare&utm_medium=link&utm_source=editor",
-      openInNewTab: true,
     },
   ],
 };

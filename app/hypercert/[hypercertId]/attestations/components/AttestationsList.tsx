@@ -94,15 +94,15 @@ export default function AttestationsList({
 			/>
 			<div className="mt-2 flex flex-col items-center justify-between gap-2 rounded-lg border border-border bg-beige-muted p-2 md:flex-row">
 				<p className="text-balance text-center text-beige-muted-foreground text-sm md:text-left">
-					Have any assets or data that verifies project's authenticity, or its
-					impact? Attest your proofs now.
+					Have any supplementary material for this work (data, media, links)?
+					Add it now.
 				</p>
 				<AddAttestationDialog
 					hypercertId={hypercert.hypercertId}
 					trigger={
 						<Button className="gap-2">
 							<PlusCircle size={16} />
-							Add proof of impact
+							Add supplementary material
 						</Button>
 					}
 				/>
@@ -175,8 +175,8 @@ export default function AttestationsList({
 												<div className="flex max-w-[200px] flex-col items-center gap-1">
 													<BadgeCheck size={24} className="text-primary" />
 													<span className="text-balance text-center font-sans text-muted-foreground text-xs">
-														This proof of impact was attested by the creator of
-														the hypercert.
+														This supplementary material was added by the author
+														of the recert.
 													</span>
 												</div>
 											}

@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import QuickTooltip from "@/components/ui/quicktooltip";
-import { generateEcocertainIPFSUrl, getMetadata } from "@/utils/metadata";
+import { generateIPFSUrl, getMetadata } from "@/utils/metadata";
 import { validateMetaData } from "@hypercerts-org/sdk";
 import type { HypercertMetadata } from "@hypercerts-org/sdk";
 import { useQuery } from "@tanstack/react-query";
@@ -63,7 +63,7 @@ const getMapDataFromHypercertCID = async (
 		}
 
 		const cid = match[1];
-		const geojsonURL = generateEcocertainIPFSUrl(cid);
+		const geojsonURL = generateIPFSUrl(cid);
 		const mapPreviewURL = `https://legacy.gainforest.app/?shapefile=${geojsonURL}&showUI=false`;
 		const metadata = validationResult.data as HypercertMetadata;
 		return {

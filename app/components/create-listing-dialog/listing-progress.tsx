@@ -7,6 +7,7 @@ import { useHypercertClient } from "@/hooks/use-hypercerts-client";
 import { cn } from "@/lib/utils";
 import { submitReferral } from "@divvi/referral-sdk";
 
+import { SUPPORTED_CHAINS } from "@/config/wagmi";
 import type {
 	Currency,
 	HypercertExchangeClient,
@@ -25,7 +26,6 @@ import {
 import Link from "next/link";
 import React, { useEffect, useRef, useState } from "react";
 import { createWalletClient, custom, formatEther } from "viem";
-import { celo } from "viem/chains";
 import { useAccount, usePublicClient } from "wagmi";
 
 type ListingProgressConfig = {
@@ -129,7 +129,7 @@ const listingProgressConfigs: Record<
 		title: "Sign the transaction for the Platform Fee",
 		description: `Please confirm the platform fee transaction of ${formatEther(
 			GAINFOREST_TIP_AMOUNT,
-		)} Celo.`,
+		)} (native token).`,
 	},
 	COMPLETED: {
 		title: "Listing created!",
@@ -302,7 +302,9 @@ const ListingProgress = ({
 		setConfigKey("TIP_SIGNING");
 		try {
 			const walletClient = createWalletClient({
-				chain: celo,
+				chain:
+					SUPPORTED_CHAINS.find((c) => c.id === publicClient.chain.id) ??
+					SUPPORTED_CHAINS[0],
 				transport: custom(
 					// biome-ignore lint/suspicious/noExplicitAny: window.ethereum has to be any
 					"ethereum" in window ? (window.ethereum as any) : null,
@@ -321,7 +323,7 @@ const ListingProgress = ({
 				// We don't wait for confirmation as per requirements
 				submitReferral({
 					txHash: txhash as `0x${string}`,
-					chainId: celo.id,
+					chainId: publicClient.chain.id,
 				});
 				setConfigKey("COMPLETED");
 				setIsListingComplete(true);
@@ -462,7 +464,18 @@ const ListingProgress = ({
 													? "Your hypercert is now listed for sale. Thank you for supporting GainForest!"
 													: "The tip was rejected, but your hypercert is now listed for sale!"
 												: "The hypercert was listing successfully!"
-										  : listingProgressConfig.description}
+										  : (() => {
+													const nativeSymbol =
+														SUPPORTED_CHAINS.find(
+															(c) => c.id === publicClient?.chain.id,
+														)?.nativeCurrency.symbol ??
+														SUPPORTED_CHAINS[0].nativeCurrency.symbol;
+													return key === "TIP_SIGNING"
+														? `Please confirm the platform fee transaction of ${formatEther(
+																GAINFOREST_TIP_AMOUNT,
+														  )} ${nativeSymbol}.`
+														: listingProgressConfig.description;
+											  })()}
 								</span>
 								{showErrorVariant && (
 									<div className="flex items-center gap-2">

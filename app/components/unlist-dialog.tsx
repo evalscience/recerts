@@ -72,9 +72,9 @@ const UnlistDialog = ({
 		console.log("unlistHypercert", hypercert);
 		setStatus({ type: "loading", message: "Preparing to unlist..." });
 		if (!hypercert)
-			throw new Error("Error gathering information about the ecocert.");
+			throw new Error("Error gathering information about the recert.");
 		if (hypercert.orderNonce === undefined || !hypercert.orderId)
-			throw new Error("This ecocert is not yet listed on marketplace.");
+			throw new Error("This recert is not yet listed on marketplace.");
 		if (!isConnected || !address)
 			throw new Error("Please connect your wallet to authorize this action.");
 		if (address.toLowerCase() !== hypercert.creatorAddress.toLowerCase())
@@ -84,7 +84,7 @@ const UnlistDialog = ({
 
 		setStatus({
 			type: "loading",
-			message: "Please sign the transaction to unlist the ecocert.",
+			message: "Please sign the transaction to unlist the recert.",
 		});
 		const [unlistTxError, unlistTx] = await catchError(
 			hcExchangeClient.deleteOrder(hypercert.orderId),
@@ -93,7 +93,7 @@ const UnlistDialog = ({
 
 		if (!unlistTx)
 			throw new Error(
-				"The ecocert could not be listed because transaction failed. Please try again.",
+				"The recert could not be listed because transaction failed. Please try again.",
 			);
 	}, [hcExchangeClient, hypercert, isConnected, address]);
 
@@ -111,7 +111,7 @@ const UnlistDialog = ({
 			setStatus({
 				type: "success",
 				message:
-					"The Ecocert has been unlisted successfully. This might take a few minutes to reflect.",
+					"The recert has been unlisted successfully. This might take a few minutes to reflect.",
 			});
 		}
 	};
@@ -130,21 +130,21 @@ const UnlistDialog = ({
 			<DialogTrigger asChild>{children}</DialogTrigger>
 			<DialogContent className="font-sans">
 				<DialogHeader>
-					<DialogTitle>Unlist Ecocert</DialogTitle>
+					<DialogTitle>Unlist Recert</DialogTitle>
 				</DialogHeader>
 				<DialogDescription>
-					Remove this Ecocert from the marketplace.
+					Remove this Recert from the marketplace.
 				</DialogDescription>
 
 				{status ? (
 					<StatusBox variant={status.type} text={status.message} />
 				) : // before the unlisting process:
 				hypercertLoading ? (
-					<StatusBox variant="loading" text="Loading Ecocert info..." />
+					<StatusBox variant="loading" text="Loading Recert info..." />
 				) : hypercertError ? (
 					<StatusBox
 						variant="error"
-						text="Unable to get ecocert info. Please retry."
+						text="Unable to get recert info. Please retry."
 					/>
 				) : hypercert ? (
 					isConnected &&
@@ -152,24 +152,24 @@ const UnlistDialog = ({
 						hypercert.orderId && hypercert.orderNonce !== undefined ? (
 							<div className="flex flex-col gap-2">
 								<span>
-									Are you sure to unlist the Ecocert,{" "}
+									Are you sure to unlist the Recert,{" "}
 									<b>{hypercert?.name ?? "Untitled"}</b> from the marketplace?
 								</span>
 								<span>
-									Unlisting the ecocert will stop donations. You can create a
-									new listing to start accepting donations again.
+									Unlisting the recert will stop donations. You can create a new
+									listing to start accepting donations again.
 								</span>
 							</div>
 						) : (
 							<StatusBox
 								variant="error"
-								text="This Ecocert is not yet listed on the marketplace."
+								text="This recert is not yet listed on the marketplace."
 							/>
 						)
 					) : (
 						<StatusBox
 							variant="error"
-							text="You are not authorized to unlist this Ecocert. Please connect your wallet with an authorized account."
+							text="You are not authorized to unlist this Recert. Please connect your wallet with an authorized account."
 						/>
 					)
 				) : (

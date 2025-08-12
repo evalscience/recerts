@@ -29,7 +29,7 @@ export default async function CeloSupportStreams() {
 			<div className="flex w-full max-w-6xl flex-col gap-2 p-8">
 				<Link href={"/"}>
 					<Button variant={"link"} className="gap-2 p-0">
-						<ChevronLeft size={20} /> Browse ecocerts
+						<ChevronLeft size={20} /> Browse recerts
 					</Button>
 				</Link>
 				<div className="flex flex-col justify-start gap-4">

@@ -1,27 +1,29 @@
 "use client";
+import {
+	Accordion,
+	AccordionContent,
+	AccordionItem,
+	AccordionTrigger,
+} from "@/components/ui/accordion";
 import React from "react";
-import Masonry from "react-masonry-css";
 import FAQs from "./../data.json";
-import FAQCard from "./FAQCard";
-
-const breakpointColsObj = {
-	default: 2,
-	768: 1,
-};
 
 const FAQGrid = () => {
 	return (
-		<Masonry
-			breakpointCols={breakpointColsObj}
-			className="flex w-auto gap-3"
-			columnClassName="flex flex-col gap-3"
-		>
-			{FAQs.map((faq) => {
-				return (
-					<FAQCard key={faq.id} question={faq.question} answer={faq.answer} />
-				);
-			})}
-		</Masonry>
+		<div className="w-full">
+			<Accordion type="single" collapsible className="w-full">
+				{FAQs.map((faq) => (
+					<AccordionItem key={faq.id} value={String(faq.id)}>
+						<AccordionTrigger className="px-3 py-2 text-left font-baskerville text-base hover:no-underline">
+							{faq.question}
+						</AccordionTrigger>
+						<AccordionContent className="px-3 pb-2 text-muted-foreground text-sm leading-relaxed">
+							{faq.answer}
+						</AccordionContent>
+					</AccordionItem>
+				))}
+			</Accordion>
+		</div>
 	);
 };
 

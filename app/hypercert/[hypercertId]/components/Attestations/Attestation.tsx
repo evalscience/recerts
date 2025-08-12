@@ -94,8 +94,8 @@ const Attestation = ({
 							<div className="flex max-w-[200px] flex-col items-center gap-1">
 								<BadgeCheck size={24} className="text-primary" />
 								<span className="text-balance text-center font-sans text-muted-foreground text-xs">
-									This proof of impact was attested by the creator of the
-									hypercert.
+									This supplementary material was added by the author of the
+									recert.
 								</span>
 							</div>
 						}

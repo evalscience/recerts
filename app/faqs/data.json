@@ -1,17 +1,42 @@
 [
 	{
 		"id": "0",
-		"question": "What are hypercerts?",
-		"answer": "Hypercerts are digital impact certificates. Projects create hypercerts based on the work that they have done in the past. They can then sell portions of their hypercerts to funders, thereby transferring shares of the impact claims to them."
+		"question": "What are recerts?",
+		"answer": "Recerts are scholarly hypercerts - digital certificates that represent a claim about scholarly work and its impact. Projects mint a recert for work they've done or will do; funders can buy fractions to support that work and hold a share of the impact claim."
 	},
 	{
 		"id": "1",
-		"question": "What are ecocerts?",
-		"answer": "Ecocerts are environmental hypercerts that standardizes environmental impact. Just as carbon credits created a data market for measuring and implementing carbon reduction, hypercerts creates a market for ecological data collection and verification."
+		"question": "How does funding work?",
+		"answer": "Each recert can be listed for sale in fractions. You choose an amount, sign the transaction, and receive fractional ownership of the recert. The project receives the funds immediately."
 	},
 	{
 		"id": "2",
-		"question": "Can I resell my ecocerts?",
-		"answer": "Unfortunately, right now ecocerts are not transferrable."
+		"question": "Which networks are supported?",
+		"answer": "You can use Celo, Base, OP Mainnet, Arbitrum, and Filecoin. Your wallet will prompt you to switch if needed."
+	},
+	{
+		"id": "3",
+		"question": "Is there a platform fee?",
+		"answer": "Yes. A small platform fee of 0.1 (native token) is charged when you mint, list, or buy. The exact amount and currency are shown in your wallet before you confirm."
+	},
+	{
+		"id": "4",
+		"question": "Are recerts transferable?",
+		"answer": "Yes. Recerts minted here are transferable, so you can send them to another wallet or list them for sale."
+	},
+	{
+		"id": "5",
+		"question": "Can I resell my recert?",
+		"answer": "Yes. You can create a listing from the recert page and set your desired price."
+	},
+	{
+		"id": "6",
+		"question": "What do I receive as a funder?",
+		"answer": "You receive fractional ownership of the recert, on-chain proof of your support, and visibility on the recert’s page."
+	},
+	{
+		"id": "7",
+		"question": "How is impact verified?",
+		"answer": "Projects can attach attestations, data sources, and context to their recerts. You can review these on the recert page under Attestations."
 	}
 ]

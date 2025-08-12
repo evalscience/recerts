@@ -11,17 +11,22 @@ import { ModalProvider } from "@/components/ui/modal/context";
 import { siteConfig } from "@/config/site";
 import { config } from "@/config/wagmi";
 import { WagmiContextProvider } from "@/contexts/wagmi";
-import { Libre_Baskerville } from "next/font/google";
+import { EB_Garamond, Inter } from "next/font/google";
 import { headers } from "next/headers";
 import { PriceFeedProvider } from "./PriceFeedProvider";
 import FarcasterProvider from "./components/FarcasterProvider";
 import Footer from "./components/Footer";
 import Header from "./components/Header";
 
-const baskerville = Libre_Baskerville({
-	variable: "--font-baskerville",
+const garamond = EB_Garamond({
+	variable: "--font-garamond",
 	subsets: ["latin"],
 	weight: ["400", "700"],
+});
+
+const inter = Inter({
+	variable: "--font-inter",
+	subsets: ["latin"],
 });
 
 const archia = localFont({
@@ -39,7 +44,7 @@ export const metadata: Metadata = {
 	metadataBase: new URL(siteConfig.url),
 	title: siteConfig.name,
 	description: siteConfig.description,
-	authors: [{ name: "GainForest", url: "https://gainforest.earth" }],
+	authors: [{ name: "GainForest", url: "https://Eval.Science" }],
 	icons: [
 		{
 			rel: "icon",
@@ -62,8 +67,8 @@ export const metadata: Metadata = {
 	applicationName: siteConfig.name,
 	keywords: [
 		"hypercerts",
-		"ecocerts",
-		"ecocertain",
+		"recerts",
+		"recerts",
 		"fund",
 		"impactful",
 		"regenerative",
@@ -109,12 +114,12 @@ export const metadata: Metadata = {
 
 const frame = {
 	version: "next",
-	imageUrl: "https://ecocertain.xyz/farcaster/FarcasterEmbedThumbnail.png",
+	imageUrl: "https://recerts.org/farcaster/FarcasterEmbedThumbnail.png",
 	button: {
-		title: "Browse Ecocerts",
+		title: "Browse Recerts",
 		action: {
 			type: "launch_frame",
-			url: "https://ecocertain.xyz",
+			url: "https://recerts.org",
 			name: siteConfig.name,
 		},
 	},
@@ -128,12 +133,14 @@ export default function RootLayout({
 	return (
 		<html lang="en">
 			<head>
+				<link rel="stylesheet" href="https://latex.vercel.app/style.css" />
 				<meta property="fc:frame" content={JSON.stringify(frame)} />
 			</head>
 			<body
 				className={cn(
 					"flex min-h-screen flex-col antialiased",
-					baskerville.variable,
+					garamond.variable,
+					inter.variable,
 					archia.variable,
 				)}
 			>
@@ -144,7 +151,11 @@ export default function RootLayout({
 							<PriceFeedProvider>
 								<ModalProvider modalVariants={[]}>
 									<Header />
-									<div className="flex-1">{children}</div>
+									<main className="flex-1">
+										<article className="mx-auto w-full max-w-6xl px-6 py-10 md:py-14">
+											{children}
+										</article>
+									</main>
 									<Footer />
 								</ModalProvider>
 							</PriceFeedProvider>

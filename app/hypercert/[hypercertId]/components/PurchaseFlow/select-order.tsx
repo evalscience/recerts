@@ -77,7 +77,7 @@ const SelectOrder = ({ hypercert }: { hypercert: FullHypercert }) => {
 	return (
 		<ModalContent dismissible={false} className="font-sans">
 			<ModalHeader>
-				<ModalTitle>Purchase Ecocert</ModalTitle>
+				<ModalTitle>Purchase Recert</ModalTitle>
 				<ModalDescription>
 					Select an order from the available orders
 				</ModalDescription>

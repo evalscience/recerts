@@ -134,17 +134,17 @@ const CreateListingDialog = ({
 			<DialogContent sidebarChildren={<Sidebar />}>
 				<DialogHeader>
 					<DialogTitle className="font-baskerville">
-						List ecocert for sale
+						List recert for sale
 					</DialogTitle>
 					<DialogDescription className="font-sans text-base">
-						List your ecocert for sale on the marketplace and get donations.
+						List your recert for sale on the marketplace and get donations.
 					</DialogDescription>
 				</DialogHeader>
 				<div className="flex min-h-80 w-full flex-1 flex-col">
 					{!isCurrentChainSupported ? (
 						<ErrorSection
 							title="This chain is not supported"
-							description="Please switch to a supported chain to list your ecocert."
+							description="Please switch to a supported chain to list your recert."
 							cta={
 								<Button
 									onClick={() => open({ view: "Networks" })}
@@ -159,7 +159,7 @@ const CreateListingDialog = ({
 					) : hypercertError ? (
 						<ErrorSection
 							title="Unable to load information"
-							description="We could not load information about this ecocert."
+							description="We could not load information about this recert."
 							cta={
 								<Button
 									onClick={() => refetchHypercert()}
@@ -174,8 +174,8 @@ const CreateListingDialog = ({
 					) : hypercert ? (
 						hypercert.orders.length > 0 ? (
 							<ErrorSection
-								title="This ecocert is already listed"
-								description="Please switch to a supported chain to list your ecocert."
+								title="This recert is already listed"
+								description="Please switch to a supported chain to list your recert."
 								cta={null}
 							/>
 						) : !isProgressVisible ||

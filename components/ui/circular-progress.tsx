@@ -6,11 +6,13 @@ const CircularProgress = ({
 	className,
 	styles,
 	text,
+	textClassName,
 }: {
 	value: number;
 	className?: string;
 	styles?: React.CSSProperties;
 	text?: string;
+	textClassName?: string;
 }) => {
 	return (
 		<div className="relative h-10 w-10">
@@ -27,7 +29,9 @@ const CircularProgress = ({
 			/>
 			{text !== undefined && (
 				<div className="absolute inset-0 flex items-center justify-center">
-					<span className="font-medium text-[0.6rem]">{text}</span>
+					<span className={cn("font-medium text-[0.6rem]", textClassName)}>
+						{text}
+					</span>
 				</div>
 			)}
 		</div>

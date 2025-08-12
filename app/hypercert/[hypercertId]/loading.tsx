@@ -44,7 +44,7 @@ const Loading = () => {
 			<div className="flex w-full max-w-6xl flex-col gap-2 p-8">
 				<Link href={"/"}>
 					<Button variant={"link"} className="gap-2 p-0">
-						<ChevronLeft size={20} /> View all ecocerts
+						<ChevronLeft size={20} /> View all recerts
 					</Button>
 				</Link>
 				<div className="flex w-full flex-col items-start gap-12 md:flex-row md:items-center">

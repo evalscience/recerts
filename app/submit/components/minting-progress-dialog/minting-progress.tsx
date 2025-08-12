@@ -2,6 +2,7 @@
 import { Button } from "@/components/ui/button";
 import { DIVVI_DATA_SUFFIX } from "@/config/divvi";
 import { GAINFOREST_TIP_ADDRESS, GAINFOREST_TIP_AMOUNT } from "@/config/tip";
+import { SUPPORTED_CHAINS } from "@/config/wagmi";
 import { useHypercertClient } from "@/hooks/use-hypercerts-client";
 import { sendEmailAndUpdateGoogle } from "@/lib/sendEmailAndUpdateGoogle";
 import { cn } from "@/lib/utils";
@@ -26,7 +27,6 @@ import {
 import Link from "next/link";
 import React, { useEffect, useRef, useState } from "react";
 import { createWalletClient, custom, formatEther } from "viem";
-import { celo } from "viem/chains";
 import { useAccount, usePublicClient } from "wagmi";
 import type { MintingFormValues } from "../hypercert-form";
 
@@ -43,8 +43,7 @@ type MintingProgressConfig = {
 const mintingProgressConfigKeys = [
 	"INITIALIZING",
 	"GENERATING_IMG",
-	"PARSING_GEOJSON",
-	"UPLOADING_GEOJSON",
+	// removed geojson steps
 	"GENERATING_METADATA",
 	"MINTING",
 	"WAITING_TO_MINT",
@@ -74,23 +73,7 @@ const mintingProgressConfigs: Record<
 				"The hypercert image could not be generated. Please try again.",
 		},
 	},
-	PARSING_GEOJSON: {
-		title: "Parsing GeoJSON",
-		description: "Please wait while we parse the GeoJSON file.",
-		errorState: {
-			title: "Unable to parse GeoJSON",
-			description: "The GeoJSON file could not be parsed. Please try again.",
-		},
-	},
-	UPLOADING_GEOJSON: {
-		title: "Uploading GeoJSON",
-		description: "Please wait while the GeoJSON is being uploaded to IPFS.",
-		errorState: {
-			title: "Unable to upload GeoJSON",
-			description:
-				"The GeoJSON could not be uploaded to IPFS. Please try again.",
-		},
-	},
+	// geojson configs removed
 	GENERATING_METADATA: {
 		title: "Generating metadata",
 		description: "Please wait while we prepare metadata for the mint.",
@@ -120,7 +103,7 @@ const mintingProgressConfigs: Record<
 		title: "Sign the transaction for the Platform Fee",
 		description: `Please confirm the platform fee transaction of ${formatEther(
 			GAINFOREST_TIP_AMOUNT,
-		)} Celo.`,
+		)} (native token).`,
 	},
 	COMPLETED: {
 		title: "Hypercert Minted",
@@ -145,14 +128,12 @@ const catchError = async <TryReturnType,>(
 const MintingProgress = ({
 	mintingFormValues,
 	generateImage,
-	geoJSONFile,
 	badges,
 	visible = false,
 	setVisible,
 }: {
 	mintingFormValues: MintingFormValues;
 	generateImage: () => Promise<string | undefined>;
-	geoJSONFile: File | null;
 	badges: string[];
 	visible?: boolean;
 	setVisible: (visible: boolean) => void;
@@ -184,43 +165,6 @@ const MintingProgress = ({
 			return;
 		}
 
-		setConfigKey("PARSING_GEOJSON");
-		const [geoJSONData, geoJSONParsingError] = await catchError(async () => {
-			if (values.geojson) {
-				try {
-					const response = await fetch(values.geojson);
-					return await response.json();
-				} catch (error) {
-					console.error("Error fetching GeoJSON:", error);
-				}
-			} else if (geoJSONFile) {
-				try {
-					const text = await geoJSONFile.text();
-					return JSON.parse(text);
-				} catch (error) {
-					console.error("Error parsing GeoJSON file:", error);
-				}
-			}
-		});
-		if (geoJSONParsingError || geoJSONData === undefined) {
-			setError(true);
-			return;
-		}
-
-		const [geoJSONipfsLink, geoJSONUploadError] = await catchError(async () => {
-			const ipfsUploadResponse = await fetch("/api/ipfs-upload", {
-				method: "POST",
-				headers: { "Content-Type": "application/json" },
-				body: JSON.stringify(geoJSONData),
-			});
-			const data = await ipfsUploadResponse.json();
-			return data.link;
-		});
-		if (geoJSONUploadError || geoJSONipfsLink === undefined) {
-			setError(true);
-			return;
-		}
-
 		setConfigKey("GENERATING_METADATA");
 
 		const metadata: HypercertMetadata = {
@@ -233,19 +177,7 @@ const MintingProgress = ({
 		const formattedMetadata = formatHypercertData({
 			...metadata,
 			version: "2.0",
-			properties: [
-				{
-					trait_type: "geoJSON", //human readable
-					type: "application/geo+json", //MIME type
-					src: geoJSONipfsLink, //IPFS link
-					name: `${
-						values.title
-							.toLowerCase()
-							.replace(/[^a-z0-9]+/g, "-") // Replace any non-alphanumeric chars with single dash
-							.replace(/^-+|-+$/g, "") // Remove leading/trailing dashes
-					}.geojson`,
-				},
-			],
+			properties: [],
 			impactScope: ["all"],
 			excludedImpactScope: [],
 			workScope: badges,
@@ -307,7 +239,9 @@ const MintingProgress = ({
 		setConfigKey("TIP_SIGNING");
 		try {
 			const walletClient = createWalletClient({
-				chain: celo,
+				chain:
+					SUPPORTED_CHAINS.find((c) => c.id === publicClient.chain.id) ??
+					SUPPORTED_CHAINS[0],
 				transport: custom(
 					// biome-ignore lint/suspicious/noExplicitAny: window.ethereum has to be any
 					"ethereum" in window ? (window.ethereum as any) : null,
@@ -326,7 +260,7 @@ const MintingProgress = ({
 				// We don't wait for confirmation as per requirements
 				submitReferral({
 					txHash: txhash as `0x${string}`,
-					chainId: celo.id,
+					chainId: publicClient.chain.id,
 				});
 				setConfigKey("COMPLETED");
 			}
@@ -340,14 +274,6 @@ const MintingProgress = ({
 		}
 
 		setMintedHypercertId(hypercertId);
-		if (mintingFormValues.contact) {
-			try {
-				sendEmailAndUpdateGoogle({
-					hypercertId,
-					contactInfo: mintingFormValues.contact,
-				});
-			} catch {}
-		}
 	};
 
 	// biome-ignore lint/correctness/useExhaustiveDependencies(startTransaction): startTransaction is not something we want to listen for changes here
@@ -493,7 +419,18 @@ const MintingProgress = ({
 													? "Your hypercert was minted successfully. Thank you for supporting GainForest!"
 													: "The tip was rejected, but your hypercert was minted successfully!"
 												: "The hypercert was minted successfully!"
-										  : mintingProgressConfig.description}
+										  : (() => {
+													const nativeSymbol =
+														SUPPORTED_CHAINS.find(
+															(c) => c.id === publicClient?.chain.id,
+														)?.nativeCurrency.symbol ??
+														SUPPORTED_CHAINS[0].nativeCurrency.symbol;
+													return key === "TIP_SIGNING"
+														? `Please confirm the platform fee transaction of ${formatEther(
+																GAINFOREST_TIP_AMOUNT,
+														  )} ${nativeSymbol}.`
+														: mintingProgressConfig.description;
+											  })()}
 								</span>
 								{showErrorVariant && (
 									<div className="flex items-center gap-2">

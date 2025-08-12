@@ -60,7 +60,7 @@ const attestationProgressConfigs: Record<
 		errorState: {
 			title: "Unable to process your request",
 			description:
-				"Something went wrong while getting information about the ecocert. Please try again.",
+				"Something went wrong while getting information about the recert. Please try again.",
 		},
 	},
 	WAITING_TO_SIGN: {
@@ -81,7 +81,7 @@ const attestationProgressConfigs: Record<
 	},
 	COMPLETED: {
 		title: "Attestation added!",
-		description: "Your attestation has been added to the ecocert.",
+		description: "Your attestation has been added to the recert.",
 		isFinalState: true,
 	},
 };
@@ -337,7 +337,7 @@ const AttestationProgress = ({
 										)}
 										<span className="flex items-center gap-1 text-muted-foreground text-xs">
 											<Info size={16} />
-											It might take a few minutes to reflect on the ecocert.
+											It might take a few minutes to reflect on the recert.
 										</span>
 									</div>
 								)}

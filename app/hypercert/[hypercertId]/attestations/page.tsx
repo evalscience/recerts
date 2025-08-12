@@ -33,13 +33,13 @@ export default async function HypercertProofOfImpactPage({
 				<div className="flex w-full max-w-6xl flex-col gap-2 p-3 md:p-8">
 					<Link href={`/hypercert/${hypercertId}`}>
 						<Button variant={"link"} className="gap-2 p-0">
-							<ChevronLeft size={20} /> Back to hypercert
+							<ChevronLeft size={20} /> Back to recert
 						</Button>
 					</Link>
 					<div className="w-full">
 						<h1 className="mb-8 text-balance text-center font-baskerville font-bold text-3xl">
 							<i className="text-2xl text-beige-muted-foreground">
-								Proof of Impact for
+								Supplementary Material for
 							</i>
 							<br />
 							<span>{hypercert.metadata.name}</span>
