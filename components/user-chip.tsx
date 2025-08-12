@@ -4,7 +4,13 @@ import { cn } from "@/lib/utils";
 import { truncateEthereumAddress } from "@/lib/utils";
 import { Check, Copy } from "lucide-react";
 import Link from "next/link";
-import React, { useCallback, useLayoutEffect, useRef, useState } from "react";
+import React, {
+	useCallback,
+	useLayoutEffect,
+	useMemo,
+	useRef,
+	useState,
+} from "react";
 import { useEnsName } from "wagmi";
 import { Button } from "./ui/button";
 import ENSName from "./ui/ens-name";
@@ -32,6 +38,19 @@ const UserChip = ({
 		address,
 		chainId: 1,
 	});
+
+	const formattedEnsName = useMemo(() => {
+		if (!ensName) return undefined;
+		const dotIndex = ensName.indexOf(".");
+		const base = dotIndex >= 0 ? ensName.slice(0, dotIndex) : ensName;
+		const normalized = base.replace(/[._-]+/g, " ").trim();
+		const titleCased = normalized
+			.split(/\s+/)
+			.filter(Boolean)
+			.map((w) => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase())
+			.join(" ");
+		return titleCased;
+	}, [ensName]);
 
 	// Refs for measuring font size and input width
 	const inputRef = useRef<HTMLInputElement>(null);
@@ -102,25 +121,42 @@ const UserChip = ({
 		return truncateEthereumAddress(value as `0x${string}`);
 	}, []);
 
+	// Title-case fallback for address (e.g., if using ENS-like words without ENS resolution)
+	const prettify = useCallback((value: string) => {
+		return value
+			.split(/\s+/)
+			.filter(Boolean)
+			.map((w) =>
+				w.length ? w[0].toUpperCase() + w.slice(1).toLowerCase() : w,
+			)
+			.join(" ");
+	}, []);
+
+	// Stable updater for ellipsis recomputation
+	const updateMiddleEllipsis = useCallback(() => {
+		const raw = formattedEnsName ?? ensName ?? address;
+		const value = typeof raw === "string" ? prettify(raw) : raw;
+		const computed = computeMiddleEllipsis(value);
+		setMiddleEllipsis(computed);
+	}, [formattedEnsName, ensName, address, prettify, computeMiddleEllipsis]);
+
 	// Effect to update ellipsis on resize or value change
 	useLayoutEffect(() => {
 		if (ellipsisLocation !== "middle") return;
-		const update = () => {
-			const value = ensName ?? address;
-			const computed = computeMiddleEllipsis(value);
-			setMiddleEllipsis(computed);
-		};
-		update();
+		updateMiddleEllipsis();
 		if (!inputRef.current) return;
-		const ro = new window.ResizeObserver(update);
+		const ro = new window.ResizeObserver(updateMiddleEllipsis);
 		ro.observe(inputRef.current);
 		return () => ro.disconnect();
-	}, [address, ensName, ellipsisLocation, computeMiddleEllipsis]);
+	}, [ellipsisLocation, updateMiddleEllipsis]);
 
+	const baseLabel = formattedEnsName ?? ensName ?? address;
+	const prettyBaseLabel =
+		typeof baseLabel === "string" ? prettify(baseLabel) : baseLabel;
 	const displayValue =
 		ellipsisLocation === "middle"
-			? middleEllipsis || ensName || address
-			: ensName ?? address;
+			? middleEllipsis || prettyBaseLabel
+			: prettyBaseLabel;
 
 	return (
 		<li

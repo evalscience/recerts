@@ -46,9 +46,7 @@ const Wrapper = ({
 	return (
 		<div className="w-full overflow-hidden rounded-2xl border border-border bg-background">
 			<section className="flex w-full flex-col gap-4 p-4">
-				<h2 className="font-baskerville font-bold text-muted-foreground text-xl">
-					Support
-				</h2>
+				<h2 className="font-baskerville font-bold text-xl">Support</h2>
 				{children}
 			</section>
 			{buyFraction}

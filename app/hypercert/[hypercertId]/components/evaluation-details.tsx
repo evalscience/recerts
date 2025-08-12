@@ -49,8 +49,8 @@ const EvaluationDetails = ({ hypercert }: { hypercert: FullHypercert }) => {
 					<span className="text-center text-muted-foreground leading-none">
 						{!hyperboardIdsLoading &&
 							(isVerifiedByGainForest
-								? "This hypercert and its works have been verified by GainForest and is visible on the homepage."
-								: "This hypercert is not yet verified by GainForest, and cannot be accessed on the homepage.")}
+								? "This hypercert and its works have been verified by the editorial team and is visible on the homepage."
+								: "This hypercert is not yet verified by the editorial team, and cannot be accessed on the homepage.")}
 					</span>
 					{isCreator && (
 						<Link

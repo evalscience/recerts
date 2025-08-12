@@ -85,9 +85,7 @@ const LeftContent = ({ hypercert }: { hypercert: FullHypercert }) => {
 					<section className="my-3 flex w-full flex-col gap-3 p-1">
 						<Metadata hypercert={hypercert} />
 						<div className="flex flex-col gap-2">
-							<h2 className="font-baskerville font-semibold text-base text-muted-foreground">
-								Abstract
-							</h2>
+							<h1 className="font-baskerville text-xl">Abstract</h1>
 							<div className="text-sm leading-relaxed">
 								<MarkdownEditor
 									markdown={hypercert.metadata.description ?? ""}

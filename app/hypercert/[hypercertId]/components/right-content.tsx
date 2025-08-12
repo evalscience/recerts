@@ -1,6 +1,5 @@
 import type { FullHypercert } from "@/graphql/hypercerts/queries/hypercerts";
 import React from "react";
-import AccessPaper from "./AccessPaper";
 import Attestations from "./Attestations";
 import Contributors from "./Contributors";
 import FundingView from "./FundingView";
@@ -16,7 +15,6 @@ const RightContent = ({ hypercert }: { hypercert: FullHypercert }) => {
 			{hypercert.cheapestOrder.pricePerPercentInUSD !== undefined ? (
 				<FundingView />
 			) : null}
-			<AccessPaper hypercert={hypercert} />
 			<Attestations />
 			<Contributors hypercert={hypercert} />
 			<SectionWrapper title={"Verification"}>

@@ -44,7 +44,7 @@ const Attestations = () => {
 
 	return (
 		<SectionWrapper
-			title="Supplementary Material"
+			title="Access Paper"
 			titleRight={
 				<>
 					{validAttestations.length > 2 && (
@@ -65,7 +65,7 @@ const Attestations = () => {
 					{validAttestations.length === 0 ? (
 						<div className="flex flex-col items-center justify-center gap-2 rounded-md bg-muted p-4 font-sans">
 							<p className="text-muted-foreground text-sm">
-								No supplementary material found
+								No artifacts found
 							</p>
 						</div>
 					) : (
@@ -85,7 +85,7 @@ const Attestations = () => {
 						trigger={
 							<Button variant="outline" className="gap-2" size={"sm"}>
 								<PlusCircle size={16} />
-								Add Supplementary Material
+								Add artifact
 							</Button>
 						}
 						hypercertId={hypercert.hypercertId}
