@@ -124,7 +124,7 @@ export default async function ProfilePage({
 	return (
 		<MotionWrapper
 			type="main"
-			className="mx-auto flex max-w-6xl flex-col items-start gap-8 p-10 md:flex-row"
+			className="mx-auto flex max-w-6xl flex-col items-start gap-6 p-6 md:flex-row"
 			initial={{ opacity: 0, filter: "blur(10px)" }}
 			animate={{ opacity: 1, filter: "blur(0px)" }}
 			transition={{ duration: 0.5 }}

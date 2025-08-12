@@ -1,8 +1,10 @@
 "use client";
 import useCopy from "@/hooks/use-copy";
+import { getChainInfo } from "@/lib/chainInfo";
 import { cn } from "@/lib/utils";
 import { truncateEthereumAddress } from "@/lib/utils";
 import { Check, Copy } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 import React, {
 	useCallback,
@@ -24,6 +26,7 @@ const UserChip = ({
 	className,
 	avatarAndLabelGap = 6,
 	ellipsisLocation = "middle",
+	chainId,
 }: {
 	address: `0x${string}`;
 	className?: string;
@@ -32,6 +35,7 @@ const UserChip = ({
 	showCopyButton?: "always" | "hover" | "never";
 	avatarAndLabelGap?: number;
 	ellipsisLocation?: "end" | "middle";
+	chainId?: number | string;
 }) => {
 	const { copy, isCopied } = useCopy();
 	const { data: ensName } = useEnsName({
@@ -158,6 +162,8 @@ const UserChip = ({
 			? middleEllipsis || prettyBaseLabel
 			: prettyBaseLabel;
 
+	const chainInfo = chainId !== undefined ? getChainInfo(chainId) : undefined;
+
 	return (
 		<li
 			className={cn(
@@ -169,7 +175,25 @@ const UserChip = ({
 				className="flex flex-1 items-center justify-center"
 				style={{ gap: `${avatarAndLabelGap}px` }}
 			>
-				{showAvatar && <EthAvatar address={address} size={avatarSize} />}
+				{showAvatar && (
+					<div
+						className="relative"
+						style={{ height: `${avatarSize}px`, width: `${avatarSize}px` }}
+					>
+						<EthAvatar address={address} size={avatarSize} />
+						{chainInfo?.logoSrc ? (
+							<div className="-bottom-0.5 -right-0.5 absolute rounded-full border border-background bg-background/80 p-[1px]">
+								<Image
+									src={chainInfo.logoSrc}
+									alt={chainInfo.label}
+									width={Math.max(10, Math.round(avatarSize / 2.6))}
+									height={Math.max(10, Math.round(avatarSize / 2.6))}
+									className="rounded-full"
+								/>
+							</div>
+						) : null}
+					</div>
+				)}
 				<Link
 					href={`/profile/${address}`}
 					style={{ flex: 1, minWidth: 0 }}

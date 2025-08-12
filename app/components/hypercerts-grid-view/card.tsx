@@ -23,8 +23,14 @@ const Card = ({
 	totalSalesInUSD: number | null;
 	contributors?: string[];
 }) => {
-	const { hypercertId, unitsForSale, pricePerPercentInUSD, topics, chainId } =
-		hypercert;
+	const {
+		hypercertId,
+		unitsForSale,
+		pricePerPercentInUSD,
+		topics,
+		chainId,
+		hasReviews,
+	} = hypercert;
 	const chainInfo = getChainInfo(chainId);
 
 	return (
@@ -62,6 +68,11 @@ const Card = ({
 							) : null}
 						</div>
 						<div className="flex items-center">
+							{!hasReviews ? (
+								<span className="mr-2 inline-block rounded-full bg-amber-100 px-2 py-0.5 text-amber-900 text-xs">
+									Under review
+								</span>
+							) : null}
 							{pricePerPercentInUSD === undefined ? null : unitsForSale ===
 							  0n ? (
 								<span className="inline-block rounded-full bg-destructive/15 px-2 py-0.5 text-destructive text-sm">

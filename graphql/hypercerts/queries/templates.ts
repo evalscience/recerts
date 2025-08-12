@@ -12,6 +12,11 @@ export const hypercert = `
           contributors
           work_scope
         }
+        attestations {
+          data {
+            data
+          }
+        }
         orders {
           totalUnitsForSale
           cheapestOrder {

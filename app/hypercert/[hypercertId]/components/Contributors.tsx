@@ -42,6 +42,7 @@ const Contributors = ({ hypercert }: { hypercert: FullHypercert }) => {
 									className="w-full text-lg"
 									showCopyButton="hover"
 									avatarAndLabelGap={12}
+									chainId={hypercert.chainId}
 								/>
 							))}
 					</div>

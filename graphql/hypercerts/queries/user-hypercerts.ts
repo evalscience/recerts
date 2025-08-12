@@ -60,6 +60,31 @@ export const fetchHypercertsByUserId = async (
         currencyAmount: typeCastApiResponseToBigInt(sale.currency_amount) ?? 0n,
       };
     });
+
+    // Determine if there are any review attestations
+    let hasReviews = false;
+    try {
+      const attestationItems: unknown[] = (hypercert.attestations?.data ?? []) as unknown[];
+      for (const item of attestationItems) {
+        const attData = (item as { data?: { sources?: unknown } }).data;
+        const sources = Array.isArray(attData?.sources) ? (attData?.sources as unknown[]) : [];
+        for (const source of sources) {
+          if (typeof source !== "string") continue;
+          try {
+            const parsed = JSON.parse(source) as { type?: string };
+            if (parsed?.type === "review") {
+              hasReviews = true;
+              break;
+            }
+          } catch {
+            // ignore parse errors; not a structured source
+          }
+        }
+        if (hasReviews) break;
+      }
+    } catch {
+      hasReviews = false;
+    }
     return {
       hypercertId: hypercert.hypercert_id as string,
       creatorAddress: hypercert.creator_address as string,
@@ -77,6 +102,7 @@ export const fetchHypercertsByUserId = async (
       orderNonce: orderNonce ? Number(orderNonce) : undefined,
       orderId: hypercert.orders?.data?.[0]?.id ?? undefined,
       sales: parsedSales,
+      hasReviews,
     } satisfies Hypercert;
   });
 

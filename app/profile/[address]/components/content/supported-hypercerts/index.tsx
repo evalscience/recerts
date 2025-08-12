@@ -25,7 +25,7 @@ const SupportedHypercerts = ({
 		Number(b.lastSaleTimestamp - a.lastSaleTimestamp),
 	);
 	return (
-		<div className="grid w-full grid-cols-1 gap-4 lg:grid-cols-2">
+		<div className="grid w-full grid-cols-1 gap-3 md:grid-cols-3 sm:grid-cols-2">
 			{newestSortedCombinedSales.map((sale) => {
 				return <Card key={sale.id} combinedSale={sale} />;
 			})}

@@ -21,7 +21,7 @@ const CreatedHypercerts = ({ hypercerts }: { hypercerts: Hypercert[] }) => {
 		Number(b.creationBlockTimestamp - a.creationBlockTimestamp),
 	);
 	return (
-		<div className="grid w-full grid-cols-1 gap-4 lg:grid-cols-2">
+		<div className="grid w-full grid-cols-1 gap-3 md:grid-cols-3 sm:grid-cols-2">
 			{newestSortedHypercerts.map((hypercert) => {
 				return <Card key={hypercert.hypercertId} hypercert={hypercert} />;
 			})}

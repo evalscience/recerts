@@ -15,12 +15,12 @@ const Content = ({
 	createdHypercerts: Hypercert[];
 }) => {
 	return (
-		<section className="mt-2 flex w-full flex-1 flex-col gap-6">
-			<span className="ml-4 flex items-center gap-4 font-baskerville font-bold text-3xl">
+		<section className="mt-1 flex w-full flex-1 flex-col gap-4">
+			<span className="ml-2 flex items-center gap-2 font-baskerville font-semibold text-muted-foreground text-xl">
 				{view === "created" ? (
-					<Sparkle className="text-primary" size={36} />
+					<Sparkle className="text-primary" size={18} />
 				) : (
-					<HeartHandshake className="text-primary" size={36} />
+					<HeartHandshake className="text-primary" size={18} />
 				)}
 				<span>{view === "created" ? "My" : "Supported"} Hypercerts</span>
 			</span>

@@ -70,11 +70,11 @@ const navLinks: NavLinkConfig<"dynamic" | "static">[] = [
 			equals: "/",
 		},
 	},
-	{
-		type: "dynamic",
-		id: "my-hypercerts",
-		clientNode: MyHypercerts,
-	},
+	// {
+	// 	type: "dynamic",
+	// 	id: "my-hypercerts",
+	// 	clientNode: MyHypercerts,
+	// },
 	{
 		type: "static",
 		id: "submit",
@@ -93,16 +93,6 @@ const navLinks: NavLinkConfig<"dynamic" | "static">[] = [
 		Icon: Sparkle,
 		pathCheck: {
 			equals: "/about",
-		},
-	},
-	{
-		type: "static",
-		id: "faqs",
-		href: "/faqs",
-		text: "FAQs",
-		Icon: MessageCircleQuestion,
-		pathCheck: {
-			startsWith: "/faqs",
 		},
 	},
 ];

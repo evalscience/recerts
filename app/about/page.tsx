@@ -1,3 +1,4 @@
+import FAQGrid from "@/app/faqs/components/FAQGrid";
 import type { Metadata } from "next";
 import Image from "next/image";
 import React from "react";
@@ -91,6 +92,15 @@ export default function AboutPage() {
 							<PersonRow key={p.name} {...p} />
 						))}
 					</div>
+				</div>
+			</section>
+
+			<section className="mt-16">
+				<h2 className="text-center font-baskerville font-bold text-black text-xl md:text-left">
+					Frequently asked questions
+				</h2>
+				<div className="mt-4">
+					<FAQGrid />
 				</div>
 			</section>
 		</main>

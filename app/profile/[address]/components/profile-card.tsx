@@ -52,22 +52,22 @@ const ProfileCard = ({
 	const shortAddress = `${address.slice(0, 6)}...${address.slice(-4)}`;
 
 	return (
-		<div className="flex w-full flex-col overflow-hidden rounded-2xl border border-border bg-background">
+		<div className="flex w-full flex-col overflow-hidden rounded-xl border border-border/60 bg-background/40">
 			<div className="flex w-full items-center">
 				<button
 					type="button"
-					className="flex w-full items-center justify-center gap-2 border-b border-b-border bg-background py-2 font-sans text-muted-foreground text-sm hover:bg-muted hover:text-foreground"
+					className="flex w-full items-center justify-center gap-2 border-b border-b-border/60 bg-background/40 py-2 font-sans text-muted-foreground text-xs hover:bg-muted hover:text-foreground"
 					onClick={() => copyProfileLink(profileLink)}
 				>
-					{isProfileLinkCopied ? <Check size={16} /> : <Share2 size={16} />}
-					{isProfileLinkCopied ? "Copied Profile URL" : "Share Profile"}
+					{isProfileLinkCopied ? <Check size={14} /> : <Share2 size={14} />}
+					{isProfileLinkCopied ? "Copied profile URL" : "Share profile"}
 				</button>
 			</div>
-			<div className="relative flex w-full flex-col items-center gap-4 p-4">
-				<div className="flex h-24 w-24 items-center justify-center rounded-full border-4 border-primary/50">
+			<div className="relative flex w-full flex-col items-center gap-3 p-4">
+				<div className="flex h-20 w-20 items-center justify-center rounded-full border border-border/60">
 					<EthAvatar address={address as `0x${string}`} />
 				</div>
-				<div className="flex w-full flex-col items-center gap-2">
+				<div className="flex w-full flex-col items-center gap-1">
 					{!ensName && isEnsNameLoading ? (
 						<span
 							className={
@@ -80,7 +80,7 @@ const ProfileCard = ({
 						<div className="flex w-full items-center justify-center">
 							<span
 								className={
-									"max-w-[80%] truncate text-center font-bold text-2xl"
+									"max-w-[80%] truncate text-center font-semibold text-xl"
 								}
 							>
 								{ensName ?? shortAddress}
@@ -90,13 +90,13 @@ const ProfileCard = ({
 											<Button
 												className="text-muted-foreground"
 												variant={"ghost"}
-												size={"sm"}
+												size={"icon"}
 												onClick={() => copyAddress(address)}
 											>
 												{isAddressCopied ? (
-													<Check size={16} />
+													<Check size={14} />
 												) : (
-													<Copy size={16} />
+													<Copy size={14} />
 												)}
 											</Button>
 										</TooltipTrigger>
@@ -109,13 +109,13 @@ const ProfileCard = ({
 						</div>
 					)}
 					{stats.hypercertsCreated + stats.salesMadeCount >= 0 && (
-						<span className="flex h-6 items-center justify-center rounded-full bg-beige-muted px-2 text-center text-beige-muted-foreground text-sm">
-							{stats.hypercertsCreated > 0 ? "Community Member" : "Author"}
+						<span className="flex h-6 items-center justify-center rounded-full border border-border/60 bg-background/40 px-2 text-center text-muted-foreground text-xs">
+							{stats.hypercertsCreated > 0 ? "Community member" : "Author"}
 						</span>
 					)}
 				</div>
 			</div>
-			<ul className="mt-2 flex w-full flex-col gap-0.5 border-t border-t-border p-2">
+			<ul className="mt-1 flex w-full flex-col gap-1 border-t border-t-border/60 p-2">
 				<li>
 					<Link href={"?view=created"}>
 						<Button
@@ -124,12 +124,12 @@ const ProfileCard = ({
 							size={"sm"}
 						>
 							<span className="flex items-center justify-start gap-2 text-left">
-								<Sparkle size={16} className="text-primary" />
+								<Sparkle size={14} className="text-primary" />
 								My Hypercerts
 							</span>
 							<span className="flex items-center justify-end gap-1 text-right text-muted-foreground">
 								<span>{stats.hypercertsCreated}</span>
-								<ChevronRight size={16} />
+								<ChevronRight size={14} />
 							</span>
 						</Button>
 					</Link>
@@ -142,12 +142,12 @@ const ProfileCard = ({
 							size={"sm"}
 						>
 							<span className="flex items-center justify-start gap-2 text-left">
-								<HeartHandshake size={16} className="text-primary" />
+								<HeartHandshake size={14} className="text-primary" />
 								Supported Hypercerts
 							</span>
 							<span className="flex items-center justify-end gap-1 text-right text-muted-foreground">
 								<span>{stats.hypercertsSupported}</span>
-								<ChevronRight size={16} />
+								<ChevronRight size={14} />
 							</span>
 						</Button>
 					</Link>

@@ -89,6 +89,7 @@ export type Hypercert = {
   creationBlockTimestamp: bigint;
   orderNonce?: number;
   orderId?: string;
+  hasReviews: boolean;
 };
 
 export const fetchHypercertById = async (
@@ -133,6 +134,32 @@ export const fetchHypercertById = async (
     };
   });
 
+  // Determine if there are any review attestations
+  let hasReviews = false;
+  try {
+    const attestationItems: unknown[] = (hypercert.attestations?.data ?? []) as unknown[];
+    for (const item of attestationItems) {
+      // Each item is expected to have a `data` object with `sources` string[]
+      const attData = (item as { data?: { sources?: unknown } }).data;
+      const sources = Array.isArray(attData?.sources) ? (attData?.sources as unknown[]) : [];
+      for (const source of sources) {
+        if (typeof source !== "string") continue;
+        try {
+          const parsed = JSON.parse(source) as { type?: string };
+          if (parsed?.type === "review") {
+            hasReviews = true;
+            break;
+          }
+        } catch {
+          // ignore parse errors; not a structured source
+        }
+      }
+      if (hasReviews) break;
+    }
+  } catch {
+    hasReviews = false;
+  }
+
   // ADD UNINDEXED SALES:
   if (
     hypercertId ===
@@ -164,6 +191,7 @@ export const fetchHypercertById = async (
       typeCastApiResponseToBigInt(hypercert.creation_block_timestamp) ?? 0n,
     orderNonce: orderNonce ? Number(orderNonce) : undefined,
     orderId: hypercert.orders?.data?.[0]?.id ?? undefined,
+    hasReviews,
   };
 };
 
