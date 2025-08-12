@@ -36,7 +36,7 @@ export const siteConfig: SiteConfig = {
   footerLinks: [
     {
       title: "GitHub",
-      url: "https://github.com/GainForest/hypercerts-platform.git",
+      url: "https://github.com/evalscience/recerts.git",
       icon: CustomIcons.gitHub,
       openInNewTab: true,
     },

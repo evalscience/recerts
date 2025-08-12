@@ -18,7 +18,6 @@ import {
 	MessageCircleQuestion,
 	Sparkle,
 } from "lucide-react";
-import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import React, {
@@ -119,18 +118,9 @@ export const DesktopNavLink = ({
 			})}
 		>
 			{link.id === "home" ? (
-				<div className="flex items-center gap-2">
-					<Image
-						src="/assets/media/images/logo.svg"
-						alt="Recerts"
-						width={100}
-						height={100}
-						className="h-5 w-5"
-					/>
-					<span className="font-baskerville text-base text-black leading-none">
-						Recerts
-					</span>
-				</div>
+				<span className="font-baskerville text-black text-lg leading-none tracking-wide">
+					Recerts Journal
+				</span>
 			) : link.showIconOnlyOnDesktop === false ? (
 				<link.Icon size={18} />
 			) : (
@@ -168,18 +158,8 @@ export const PhoneNavLink = ({
 				rel: "noopener noreferrer",
 			})}
 		>
-			{link.id === "home" ? (
-				<Image
-					src="/assets/media/images/logo.svg"
-					alt="Recerts"
-					width={20}
-					height={20}
-					className="mr-2 h-5 w-5"
-				/>
-			) : (
-				link.Icon && (
-					<link.Icon size={18} className="mr-2 text-muted-foreground" />
-				)
+			{link.Icon && (
+				<link.Icon size={18} className="mr-2 text-muted-foreground" />
 			)}
 			{link.text}
 			{link.openInNewTab && (
@@ -235,14 +215,7 @@ const NavLinks = () => {
 				href="/"
 				className="flex items-center gap-2 md:hidden focus:outline-none focus-visible:ring-0 focus-visible:ring-offset-0"
 			>
-				<Image
-					src="/assets/media/images/logo.svg"
-					alt="Recerts"
-					width={20}
-					height={20}
-					className="h-5 w-5"
-				/>
-				<span className="font-baskerville text-base text-black leading-none">
+				<span className="font-baskerville text-black text-lg leading-none tracking-wide">
 					Recerts
 				</span>
 			</Link>
@@ -259,15 +232,8 @@ const NavLinks = () => {
 					<div className="hidden" />
 					<DrawerHeader>
 						<div className="flex flex-col items-center justify-center gap-2 px-4">
-							<Image
-								src="/assets/media/images/logo.svg"
-								className="h-14 w-auto"
-								alt="Recerts"
-								width={500}
-								height={500}
-							/>
-							<DrawerTitle className="text-center font-baskerville font-bold text-2xl text-black leading-none">
-								Recerts
+							<DrawerTitle className="text-center font-baskerville font-bold text-3xl text-black uppercase leading-none tracking-wide">
+								RECERTS
 							</DrawerTitle>
 						</div>
 						<div className="flex w-full items-center justify-center px-4">

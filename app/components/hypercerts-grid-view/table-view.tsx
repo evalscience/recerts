@@ -50,10 +50,11 @@ export default function TableView({
 				className="w-full table-auto text-left font-serif"
 			>
 				<colgroup>
-					<col className="w-[10%]" />
-					<col className="w-[40%]" />
+					<col className="w-[8%]" />
+					<col className="w-[36%]" />
 					<col className="w-[18%]" />
 					<col className="w-[24%]" />
+					<col className="w-[6%]" />
 					<col className="w-[8%]" />
 				</colgroup>
 				<thead className="text-muted-foreground text-xs">
@@ -62,6 +63,7 @@ export default function TableView({
 						<th className="py-2 pr-2 font-medium">Title</th>
 						<th className="py-2 pr-2 font-medium">Authors</th>
 						<th className="py-2 pr-2 font-medium">Subject areas</th>
+						<th className="py-2 pr-2 font-medium">Status</th>
 						<th className="py-2 pr-0 text-right font-medium">Funding</th>
 					</tr>
 				</thead>
@@ -138,12 +140,18 @@ export default function TableView({
 											<span className="text-muted-foreground">—</span>
 										)}
 									</td>
-									<td className="py-3 pr-0 text-right align-top">
+									<td className="py-3 pr-2 align-top">
 										{!h.hasReviews ? (
-											<span className="mr-2 inline-block rounded-full bg-amber-100 px-2 py-0.5 text-amber-900 text-xs">
+											<span className="inline-block rounded-full bg-amber-100 px-2 py-0.5 text-amber-900 text-xs">
 												Under review
 											</span>
-										) : null}
+										) : (
+											<span className="inline-block rounded-full bg-emerald-100 px-2 py-0.5 text-emerald-900 text-xs">
+												Reviewed
+											</span>
+										)}
+									</td>
+									<td className="py-3 pr-0 text-right align-top">
 										{isSold ? (
 											<span className="inline-block rounded-full bg-destructive/15 px-2 py-0.5 text-destructive text-xs">
 												Sold
@@ -186,7 +194,7 @@ export default function TableView({
 								</tr>
 								{isOpen ? (
 									<tr className="border-b last:border-b-0">
-										<td colSpan={5} className="bg-muted/20">
+										<td colSpan={6} className="bg-muted/20">
 											<div className="px-4 py-4">
 												<div className="mb-2 font-medium text-[15px]">
 													Abstract

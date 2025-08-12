@@ -59,7 +59,7 @@ export default function AboutPage() {
 		<main className="mx-auto w-full max-w-6xl px-6 py-10 md:py-14">
 			<header className="mb-10 flex flex-col gap-2">
 				<h1 className="text-balance text-center font-baskerville font-bold text-3xl text-black md:text-4xl">
-					About Recerts
+					About Recerts Journal
 				</h1>
 				<p className="mx-auto max-w-3xl text-center text-muted-foreground">
 					The Recerts Journal of Decentralized Funding Research (JDFR) is a
