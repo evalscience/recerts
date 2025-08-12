@@ -100,6 +100,25 @@ h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-garamond), Georgia, Cambria, "Times New Roman", Times, serif;
 }
 
+/* Remove default top/bottom margins on headings to avoid extra whitespace
+   We control spacing via Tailwind utilities in components */
+h1, h2, h3, h4, h5, h6 {
+  margin-top: 0;  /* reset */
+  margin-bottom: 0; /* reset */
+}
+
+/* Ensure section-wrapped headings never inherit extra top margin from external CSS */
+.section-wrapper h1,
+.section-wrapper h2,
+.section-wrapper h3,
+.section-wrapper h4,
+.section-wrapper h5,
+.section-wrapper h6 {
+  margin-top: 0 !important;
+  margin-bottom: 0.125rem; /* minimal bottom space for readability */
+  line-height: 1.15; /* tighten */
+}
+
 /* Override LaTeX.css document width constraints to keep app full-width */
 html body {
   max-width: 100% !important;

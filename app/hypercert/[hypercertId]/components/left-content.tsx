@@ -5,7 +5,6 @@ import type { FullHypercert } from "@/graphql/hypercerts/queries/hypercerts";
 import { bigintToFormattedDate } from "@/lib/utils";
 import { CalendarCheck, CalendarDays, User2 } from "lucide-react";
 import type React from "react";
-import Reviews from "./Reviews";
 import VerificationIndicator from "./VerificationIndicator";
 import NFT3D from "./nft-3d";
 import Support from "./support";
@@ -18,8 +17,10 @@ const MetadataCard = ({
 	children: React.ReactNode;
 }) => {
 	return (
-		<div className="flex shrink-0 flex-col justify-between gap-1 rounded-xl bg-muted p-2 text-sm">
-			<span className="font-bold text-muted-foreground text-xs">{title}</span>
+		<div className="flex shrink-0 flex-col justify-between gap-1 rounded-lg border border-border/60 bg-background/40 p-2 text-sm">
+			<span className="text-[11px] text-muted-foreground uppercase tracking-wide">
+				{title}
+			</span>
 			{children}
 		</div>
 	);
@@ -28,13 +29,7 @@ const MetadataCard = ({
 const Metadata = ({ hypercert }: { hypercert: FullHypercert }) => {
 	const work = hypercert.metadata.work;
 	return (
-		<ScrollArea
-			className="w-full"
-			style={{
-				maskImage:
-					"linear-gradient(to right, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 1) 85%, rgba(0, 0, 0, 0) 100%)",
-			}}
-		>
+		<ScrollArea className="w-full">
 			<div className="flex items-stretch gap-2 p-2">
 				<MetadataCard
 					title={
@@ -81,19 +76,19 @@ const Metadata = ({ hypercert }: { hypercert: FullHypercert }) => {
 const LeftContent = ({ hypercert }: { hypercert: FullHypercert }) => {
 	return (
 		<div className="flex w-full flex-initial flex-col gap-6 lg:w-auto lg:flex-[3]">
-			<div className="overflow-hidden rounded-2xl border border-border bg-beige-muted/80">
+			<div className="overflow-hidden rounded-xl border border-border/60 bg-background/40">
 				<VerificationIndicator />
-				<div className="flex w-full flex-col items-center justify-center p-2">
+				<div className="flex w-full flex-col items-center justify-center p-3 md:p-4">
 					<div className="w-full max-w-sm">
 						<NFT3D src={`/api/hypercert-image/${hypercert.hypercertId}`} />
 					</div>
-					<section className="my-2 flex w-full flex-col gap-2 rounded-xl bg-background p-3 shadow-[0px_-10px_20px_rgba(0,0,0,0.1)]">
+					<section className="my-3 flex w-full flex-col gap-3 p-1">
 						<Metadata hypercert={hypercert} />
-						<div className="flex flex-col gap-2 p-0 md:p-2">
-							<h2 className="font-baskerville font-bold text-muted-foreground text-xl">
-								Description
+						<div className="flex flex-col gap-2">
+							<h2 className="font-baskerville font-semibold text-base text-muted-foreground">
+								Abstract
 							</h2>
-							<div className="text-justify leading-tight">
+							<div className="text-sm leading-relaxed">
 								<MarkdownEditor
 									markdown={hypercert.metadata.description ?? ""}
 									editorRef={null}
@@ -103,7 +98,6 @@ const LeftContent = ({ hypercert }: { hypercert: FullHypercert }) => {
 							</div>
 						</div>
 					</section>
-					<Reviews />
 				</div>
 			</div>
 
