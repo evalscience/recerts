@@ -46,7 +46,7 @@ export const DeploymentInfoBox = ({ className }: DeploymentInfoBoxProps) => {
 					/>
 					<ListItem
 						Icon={ShieldCheck}
-						label="Register it for approval by GainForest"
+						label="Register it for approval by the Recerts Editors"
 					/>
 				</ul>
 
