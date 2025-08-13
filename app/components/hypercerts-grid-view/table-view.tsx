@@ -12,7 +12,7 @@ import { getChainInfo } from "@/lib/chainInfo";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
 import Link from "next/link";
-import { Fragment, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 
 export default function TableView({
 	hypercerts,
@@ -22,6 +22,29 @@ export default function TableView({
 	getTotalSalesInUSD: (h: Hypercert) => number | null;
 }) {
 	const [expandedById, setExpandedById] = useState<Record<string, boolean>>({});
+	const [reviewStatusById, setReviewStatusById] = useState<
+		Record<string, "Under review" | "Reviewed">
+	>({});
+
+	useEffect(() => {
+		let cancelled = false;
+		const load = async () => {
+			try {
+				const res = await fetch("/api/airtable-hypercert-ids?debug=1", {
+					cache: "no-store",
+				});
+				if (!res.ok) return;
+				const json = (await res.json()) as {
+					statuses?: Record<string, "Under review" | "Reviewed">;
+				};
+				if (!cancelled && json.statuses) setReviewStatusById(json.statuses);
+			} catch {}
+		};
+		load();
+		return () => {
+			cancelled = true;
+		};
+	}, []);
 
 	const formatYear = (timestamp?: bigint) => {
 		if (!timestamp) return "—";
@@ -179,7 +202,9 @@ export default function TableView({
 										)}
 									</td>
 									<td className="py-3 pr-2 align-top">
-										{!h.hasReviews ? (
+										{(reviewStatusById[h.hypercertId] ??
+											(h.hasReviews ? "Reviewed" : "Under review")) ===
+										"Under review" ? (
 											<span className="inline-block rounded-full bg-amber-100 px-2 py-0.5 text-amber-900 text-xs">
 												Under review
 											</span>

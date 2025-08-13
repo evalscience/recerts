@@ -2,6 +2,7 @@ import {
 	createAirtableRecordForHypercertId,
 	fetchAllAirtableRecordsForDebug,
 	fetchApprovedHypercertIdsFromAirtable,
+	fetchApprovedHypercertStatusesFromAirtable,
 } from "@/lib/airtable";
 import { NextResponse } from "next/server";
 
@@ -14,8 +15,10 @@ export async function GET(request: Request) {
 
 		// Minimal debug info to validate field names without exposing secrets
 		const sample = await fetchAllAirtableRecordsForDebug();
+		const statuses = await fetchApprovedHypercertStatusesFromAirtable();
 		return NextResponse.json({
 			ids,
+			statuses,
 			meta: { count: ids.length, sample: sample.slice(0, 3) },
 		});
 	} catch (error) {

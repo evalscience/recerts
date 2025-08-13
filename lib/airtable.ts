@@ -89,6 +89,31 @@ function getFirstStringField(
   return null;
 }
 
+export async function fetchApprovedHypercertStatusesFromAirtable(): Promise<Record<string, "Under review" | "Reviewed">> {
+  const records = await fetchAllAirtableRecordsForDebug();
+  const result: Record<string, "Under review" | "Reviewed"> = {};
+  for (const record of records) {
+    const statusField = (record.fields["Status"] ?? "") as string;
+    const normalizedStatus = statusField.trim().toLowerCase();
+    if (normalizedStatus === "awaiting approval") continue;
+
+    const rawId = getFirstStringField(record.fields, [
+      "Hypercert Id",
+      "Hypercerts Id",
+      "HypercertID",
+      "HypercertsID",
+    ]);
+    if (!rawId) continue;
+    const normalizedId = normalizeHypercertId(rawId);
+    if (!normalizedId) continue;
+
+    // Map Airtable statuses to UI labels
+    const uiStatus = normalizedStatus === "reviewed" ? "Reviewed" : "Under review";
+    result[normalizedId] = uiStatus;
+  }
+  return result;
+}
+
 export async function createAirtableRecordForHypercertId(
   hypercertId: string,
   extraFields?: Record<string, unknown>,

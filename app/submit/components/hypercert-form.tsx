@@ -703,7 +703,7 @@ const HypercertForm = () => {
 											name="link"
 											render={({ field }) => (
 												<FormItem>
-													<FormLabel>Link</FormLabel>
+													<FormLabel>Link to Paper</FormLabel>
 													<FormControl>
 														<Input
 															placeholder="https://example.org/paper"

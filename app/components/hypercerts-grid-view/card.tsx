@@ -33,6 +33,31 @@ const Card = ({
 	} = hypercert;
 	const chainInfo = getChainInfo(chainId);
 
+	const [reviewStatus, setReviewStatus] = useState<"Under review" | "Reviewed">(
+		hasReviews ? "Reviewed" : "Under review",
+	);
+
+	useEffect(() => {
+		let cancelled = false;
+		const fetchStatus = async () => {
+			try {
+				const res = await fetch("/api/airtable-hypercert-ids?debug=1", {
+					cache: "no-store",
+				});
+				if (!res.ok) return;
+				const json = (await res.json()) as {
+					statuses?: Record<string, "Under review" | "Reviewed">;
+				};
+				const s = json.statuses?.[hypercertId];
+				if (!cancelled && s) setReviewStatus(s);
+			} catch {}
+		};
+		fetchStatus();
+		return () => {
+			cancelled = true;
+		};
+	}, [hypercertId]);
+
 	return (
 		<Link href={`/hypercert/${hypercertId}`} passHref>
 			<article className="group relative flex h-[300px] flex-col overflow-hidden rounded-lg border border-border/60 bg-background shadow-sm transition-shadow hover:shadow-md">
@@ -68,7 +93,7 @@ const Card = ({
 							) : null}
 						</div>
 						<div className="flex items-center">
-							{!hasReviews ? (
+							{reviewStatus === "Under review" ? (
 								<span className="mr-2 inline-block rounded-full bg-amber-100 px-2 py-0.5 text-amber-900 text-xs">
 									Under review
 								</span>
