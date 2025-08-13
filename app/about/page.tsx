@@ -25,6 +25,7 @@ const steeringCommittee: Person[] = [
 	{ name: "Wisdom Ogwu", affiliation: "Sublinear Labs" },
 	{ name: "Raymond Cheng", affiliation: "Open Source Observer" },
 	{ name: "Angela Kreitenweis", affiliation: "Token Engineering Commons" },
+	{ name: "Holke Brammer", affiliation: "Hypercerts Foundation" },
 ];
 
 function avatarFor(name: string): string {
