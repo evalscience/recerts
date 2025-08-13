@@ -11,6 +11,7 @@ import { useEffect, useState } from "react";
 import { type TransactionReceipt, parseEther } from "viem";
 import type { WaitForTransactionReceiptData } from "wagmi/query";
 import { useSendEmailAndUpdateGoogle } from "./use-send-email-and-update-google";
+import { createAirtableRecordForHypercertId } from "@/lib/airtable";
 
 type Payload = {
 	metaData: HypercertMetadata;
@@ -25,7 +26,7 @@ export type HypercertMintReceiptData = {
 
 const useMintHypercert = () => {
 	const [contactInfo, setContactInfo] = useState<string>("");
-	const [metaData, setMetaData] = useState<HypercertMetadata | undefined>();
+  const [metaData, setMetaData] = useState<HypercertMetadata | undefined>();
 	const { client } = useHypercertClient();
 	const publicClient = usePublicClient();
 
@@ -96,13 +97,36 @@ const useMintHypercert = () => {
 	} = useSendEmailAndUpdateGoogle();
 
 	useEffect(() => {
-		if (receiptData?.hypercertId && contactInfo) {
-			sendEmailAndUpdateGoogle({
-				hypercertId: receiptData.hypercertId,
-				contactInfo,
-			});
-		}
-	}, [receiptData?.hypercertId, contactInfo, sendEmailAndUpdateGoogle]);
+    if (receiptData?.hypercertId && contactInfo) {
+      sendEmailAndUpdateGoogle({
+        hypercertId: receiptData.hypercertId,
+        contactInfo,
+      });
+      // Fire-and-forget: record in Airtable for review pipeline
+      createAirtableRecordForHypercertId(receiptData.hypercertId, {
+        Title: metaData?.name,
+        Abstract: metaData?.description,
+        Authors: Array.isArray(metaData?.contributors)
+          ? metaData?.contributors
+          : [],
+        Topics: Array.isArray(metaData?.workScope)
+          ? (metaData?.workScope as string[])
+          : [],
+        Link: metaData?.external_url,
+        "Article Type": undefined,
+      }).catch(() => {
+        // ignore errors; this should not block UX
+      });
+    }
+  }, [
+    receiptData?.hypercertId,
+    contactInfo,
+    sendEmailAndUpdateGoogle,
+    metaData?.name,
+    metaData?.description,
+    metaData?.contributors,
+    metaData?.workScope,
+  ]);
 
 	return {
 		mintHypercert,

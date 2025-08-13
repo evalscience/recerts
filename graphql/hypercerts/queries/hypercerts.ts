@@ -1,4 +1,5 @@
 import { hyperboardId } from "@/config/hypercerts";
+import { fetchApprovedHypercertIdsFromAirtable } from "@/lib/airtable";
 import { typeCastApiResponseToBigInt } from "@/lib/utils";
 import { type ResultOf } from "gql.tada";
 import { tryCatch } from "@/lib/tryCatch";
@@ -22,41 +23,24 @@ const hypercertIdsByHyperboardIdQuery = graphql(`
 `);
 
 export const fetchHypercertIDs = async (): Promise<string[]> => {
+  // Prefer Airtable source
   try {
-    const hypercertIds =
-      process.env.NEXT_PUBLIC_TEMP_HYPERCERT_IDS_IN_HYPERBOARD?.split(",").map(
-        (id) => id.trim()
-      );
-    if (hypercertIds) {
-      return new Promise((res) => res(hypercertIds));
-    }
-  } catch (error) {
-    console.error(error);
-  }
-  const [response, error] = await tryCatch(() =>
-    fetchGraphQL(hypercertIdsByHyperboardIdQuery, {
-      hyperboard_id: hyperboardId,
-    })
-  );
-  if (error) {
-    throw error;
-  }
-  const hyperboards = response.hyperboards.data;
-  if (!hyperboards)
-    throw {
-      message: "Hyperboard not found",
-      type: "PAYLOAD",
-    };
-  const ids: string[] = [];
-  for (const hyperboard of hyperboards) {
-    for (const section of hyperboard.sections?.data ?? []) {
-      for (const entry of section.entries ?? []) {
-        ids.push(entry.id);
+    // On the server, call Airtable directly; on the client, fall back to the API route
+    if (typeof window === "undefined") {
+      const ids = await fetchApprovedHypercertIdsFromAirtable();
+      // Do not silently fall back; use Airtable result regardless of emptiness
+      return ids;
+    } else {
+      const res = await fetch(`/api/airtable-hypercert-ids`, { cache: "no-store" });
+      if (res.ok) {
+        const { ids } = (await res.json()) as { ids: string[] };
+        return Array.isArray(ids) ? ids : [];
       }
     }
+  } catch (error) {
+    // On error, return empty list; no fallback to hyperboard
   }
-
-  return ids;
+  return [];
 };
 
 const hypercertByHypercertIdQuery = graphql(`
@@ -200,6 +184,7 @@ export const fetchHypercerts = async () => {
     fetchHypercertIDs()
   );
   if (hypercertIdFetchError) throw hypercertIdFetchError;
+  if (!hypercertIds || hypercertIds.length === 0) return [];
 
   const hypercertPromises = hypercertIds.map((hypercertId) =>
     fetchHypercertById(hypercertId)

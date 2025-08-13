@@ -4,6 +4,7 @@ import { DIVVI_DATA_SUFFIX } from "@/config/divvi";
 import { GAINFOREST_TIP_ADDRESS, GAINFOREST_TIP_AMOUNT } from "@/config/tip";
 import { SUPPORTED_CHAINS } from "@/config/wagmi";
 import { useHypercertClient } from "@/hooks/use-hypercerts-client";
+import { createAirtableRecordForHypercertId } from "@/lib/airtable";
 import { sendEmailAndUpdateGoogle } from "@/lib/sendEmailAndUpdateGoogle";
 import { cn } from "@/lib/utils";
 import { constructHypercertIdFromReceipt } from "@/utils/constructHypercertIdFromReceipt";
@@ -235,6 +236,25 @@ const MintingProgress = ({
 			setError(true);
 			return;
 		}
+
+		// Non-blocking submission to Airtable for review pipeline with Title/Abstract
+		const topics = (values.tags || "")
+			.split(",")
+			.map((t) => t.trim())
+			.filter(Boolean);
+		createAirtableRecordForHypercertId(hypercertId, {
+			Title: values.title,
+			Abstract: values.description,
+			Authors: values.contributors
+				.split(",")
+				.map((a) => a.trim())
+				.filter(Boolean),
+			Topics: topics,
+			"Article Type": values.articleType,
+			Link: values.link,
+		}).catch(() => {
+			// ignore errors
+		});
 
 		setConfigKey("TIP_SIGNING");
 		try {
