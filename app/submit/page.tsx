@@ -187,13 +187,7 @@ function SubmitPage() {
 								</p>
 								<p className="mt-2">
 									To submit an article, submit a recerts through the hypercert
-									submission form. You can keep it private during the review
-									process if you would like — just share your repository with{" "}
-									<code>@recerts-reviewers</code>. Then email{" "}
-									<a href="mailto:editors@recerts.org" className="underline">
-										editors@recerts.org
-									</a>{" "}
-									to begin the process.
+									submission form.
 								</p>
 								<p className="mt-2">
 									Recerts handles all reviews and editing through EAS
