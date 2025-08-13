@@ -23,7 +23,7 @@ interface SiteConfig {
 
 export const siteConfig: SiteConfig = {
   name: "Recerts",
-  title: "By Eval.Science",
+  title: "By Eval.Science & GainForest.Earth",
   description:
     "Recerts Journal of Decentralized Funding Research",
   localeDefault: "en",

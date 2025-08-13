@@ -2,7 +2,8 @@
 
 import { Button } from "@/components/ui/button";
 import type { FullHypercert } from "@/graphql/hypercerts/queries/hypercerts";
-import { ArrowUpRight, FileText, LibraryBig } from "lucide-react";
+import useCopy from "@/hooks/use-copy";
+import { ArrowUpRight, Check, Copy } from "lucide-react";
 import React from "react";
 import SectionWrapper from "./SectionWrapper";
 
@@ -16,83 +17,116 @@ function toYear(timestamp: bigint | number | undefined): number | undefined {
 	return new Date(ms).getUTCFullYear();
 }
 
-function buildBibTeX(hypercert: FullHypercert, pdfUrl?: string): string {
-	const title = hypercert.metadata.name ?? "Untitled";
-	const authors = (hypercert.metadata.contributors ?? []).join(" and ");
-	const year = toYear(hypercert.creationBlockTimestamp);
-	const keyBase = title.replace(/[^a-z0-9]+/gi, "").toLowerCase();
-	const key = `${keyBase || "hypercert"}${year ?? ""}`;
-	const fields: Record<string, string | undefined> = {
-		title,
-		author: authors || undefined,
-		year: year ? String(year) : undefined,
-		howpublished: pdfUrl ? `\\url{${pdfUrl}}` : undefined,
-		note: `Hypercert ID: ${hypercert.hypercertId}`,
-	};
-	const body = Object.entries(fields)
-		.filter(([, v]) => v !== undefined && v !== "")
-		.map(([k, v]) => `  ${k} = {${v}}`)
-		.join(",\n");
-	return `@misc{${key},\n${body}\n}`;
-}
-
-function extractPdfUrl(hypercert: FullHypercert): string | undefined {
-	for (const att of hypercert.attestations ?? []) {
-		for (const src of att.data?.sources ?? []) {
-			const url = src.src ?? "";
-			if (typeof url === "string" && /\.pdf(\?.*)?$/i.test(url)) {
-				return url;
-			}
-		}
+function sanitizeHttpUrl(url: string | undefined): string | undefined {
+	if (!url) return undefined;
+	const trimmed = url.trim();
+	if (trimmed.length === 0) return undefined;
+	// Add protocol if missing but looks like a web URL
+	const withProtocol = /^(https?:)?\/\//i.test(trimmed)
+		? trimmed.startsWith("http")
+			? trimmed
+			: `https:${trimmed}`
+		: trimmed.startsWith("www.")
+		  ? `https://${trimmed}`
+		  : trimmed;
+	if (!/^https?:\/\//i.test(withProtocol)) return undefined;
+	try {
+		return encodeURI(withProtocol);
+	} catch {
+		return undefined;
 	}
-	return undefined;
 }
 
 const AccessPaper: React.FC<{ hypercert: FullHypercert }> = ({ hypercert }) => {
-	const pdfUrl = React.useMemo(() => extractPdfUrl(hypercert), [hypercert]);
+	const [showBibtex, setShowBibtex] = React.useState(false);
+	const { isCopied, copy } = useCopy();
+	const paperUrlFromMetadata = hypercert.metadata.externalUrl;
+	const fallbackUrlFromAttestations = React.useMemo(() => {
+		for (const att of hypercert.attestations ?? []) {
+			for (const src of att.data?.sources ?? []) {
+				const url = src.src ?? "";
+				if (typeof url === "string" && /^https?:\/\//i.test(url)) {
+					return url;
+				}
+			}
+		}
+		return undefined;
+	}, [hypercert]);
+	const paperUrl =
+		sanitizeHttpUrl(paperUrlFromMetadata) ??
+		sanitizeHttpUrl(fallbackUrlFromAttestations);
+	const paperHost = React.useMemo(() => {
+		if (!paperUrl) return undefined;
+		try {
+			const host = new URL(paperUrl).hostname;
+			return host.replace(/^www\./, "");
+		} catch {
+			return undefined;
+		}
+	}, [paperUrl]);
 
-	const handleCopyBibTex = React.useCallback(() => {
-		const bib = buildBibTeX(hypercert, pdfUrl);
-		void navigator.clipboard.writeText(bib);
-	}, [hypercert, pdfUrl]);
+	const bibtex = React.useMemo(() => {
+		const year = toYear(
+			hypercert.metadata.work.from ?? hypercert.creationBlockTimestamp,
+		);
+		const title = hypercert.metadata.name ?? "Untitled";
+		const authors = (hypercert.metadata.contributors ?? []).filter(Boolean);
+		const idSuffix = hypercert.hypercertId.slice(-6);
+		const authorLine = authors.length
+			? `\n  author = {${authors.join(" and ")}},`
+			: "";
+		return `@misc{recert_${idSuffix}_${
+			year ?? "nd"
+		},\n  title = {${title}},${authorLine}\n  journal = {Recerts Journal},\n  year = {${
+			year ?? ""
+		}},\n  hypercert_id = {${hypercert.hypercertId}}\n}`;
+	}, [hypercert]);
+
+	// Optional: minimal debug log during development
+	// console.log("[AccessPaper] paperUrl:", paperUrl);
 
 	return (
 		<SectionWrapper title="Access Paper">
-			<div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-				<div className="text-muted-foreground text-xs">
-					{pdfUrl
-						? "View or cite the associated paper."
-						: "No PDF found in supplementary material."}
-				</div>
-				<div className="flex items-center gap-2">
+			<div className="flex flex-wrap items-center justify-start gap-2">
+				<Button
+					className="gap-2"
+					size="sm"
+					variant="outline"
+					disabled={!paperUrl}
+					onClick={() => {
+						if (paperUrl) {
+							window.open(paperUrl, "_blank", "noopener,noreferrer");
+						}
+					}}
+				>
+					<span>Read paper</span>
+					<ArrowUpRight size={14} />
+				</Button>
+				<Button
+					className="gap-2"
+					size="sm"
+					variant="outline"
+					onClick={() => setShowBibtex((v) => !v)}
+				>
+					<span>{showBibtex ? "Hide BibTeX" : "Export BibTeX"}</span>
+				</Button>
+				{showBibtex && (
 					<Button
-						asChild
+						className="gap-2"
 						variant="outline"
-						size="sm"
-						disabled={!pdfUrl}
-						className="gap-2"
+						size="icon"
+						aria-label="Copy BibTeX"
+						onClick={() => copy(bibtex)}
 					>
-						<a
-							href={pdfUrl ?? "#"}
-							target={pdfUrl ? "_blank" : undefined}
-							rel="noreferrer"
-						>
-							<FileText size={14} />
-							<span>View PDF</span>
-							{pdfUrl ? <ArrowUpRight size={14} /> : null}
-						</a>
+						{isCopied ? <Check size={16} /> : <Copy size={16} />}
 					</Button>
-					<Button
-						variant="secondary"
-						size="sm"
-						className="gap-2"
-						onClick={handleCopyBibTex}
-					>
-						<LibraryBig size={14} />
-						<span>Export as BibTeX</span>
-					</Button>
-				</div>
+				)}
 			</div>
+			{showBibtex && (
+				<pre className="mt-3 w-full max-w-full whitespace-pre-wrap break-words rounded-md bg-muted p-3 font-mono text-sm">
+					{bibtex}
+				</pre>
+			)}
 		</SectionWrapper>
 	);
 };

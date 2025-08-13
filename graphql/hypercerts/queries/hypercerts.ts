@@ -212,6 +212,7 @@ const fullHypercertByHypercertIdQuery = graphql(`
         metadata {
           name
           description
+          external_url
           work_scope
           work_timeframe_from
           work_timeframe_to
@@ -307,6 +308,7 @@ export type FullHypercert = {
   metadata: {
     name?: string;
     description?: string;
+      externalUrl?: string;
     work: {
       scope: string[];
       from?: bigint;
@@ -374,6 +376,11 @@ export const fetchFullHypercertById = async (
   }
 
   const metadata = hypercert.metadata;
+  // Debug: surface external_url from server-side fetch
+  try {
+    // eslint-disable-next-line no-console
+    console.log("[fetchFullHypercertById] metadata.external_url:", metadata?.external_url);
+  } catch {}
   const pricePerPercentInUSD = cheapestOrder?.pricePerPercentInUSD
     ? Number(cheapestOrder?.pricePerPercentInUSD)
     : undefined;
@@ -467,6 +474,7 @@ export const fetchFullHypercertById = async (
     metadata: {
       name: metadata?.name ?? undefined,
       description: metadata?.description ?? undefined,
+      externalUrl: metadata?.external_url ?? undefined,
       work: {
         scope: metadata?.work_scope ?? [],
         from: typeCastApiResponseToBigInt(metadata?.work_timeframe_from) ?? 0n,

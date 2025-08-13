@@ -47,8 +47,8 @@ export default async function HypercertPage({
 						</Button>
 					</Link>
 					<div className="flex flex-col justify-start gap-4 md:flex-row md:items-end md:justify-between">
-						<div className="flex flex-col items-start gap-1 md:items-start">
-							<h1 className="font-baskerville font-semibold text-3xl leading-tight md:text-5xl">
+						<div className="flex w-full flex-col items-center gap-1">
+							<h1 className="text-center font-baskerville font-semibold text-3xl leading-tight md:text-5xl">
 								{hypercert.metadata.name ?? "Untitled"}
 							</h1>
 							{contributors.length > 0 && (

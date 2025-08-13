@@ -44,7 +44,7 @@ const Attestations = () => {
 
 	return (
 		<SectionWrapper
-			title="Access Paper"
+			title="Supplementary Materials"
 			titleRight={
 				<>
 					{validAttestations.length > 2 && (

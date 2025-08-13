@@ -44,7 +44,7 @@ export const metadata: Metadata = {
 	metadataBase: new URL(siteConfig.url),
 	title: siteConfig.name,
 	description: siteConfig.description,
-	authors: [{ name: "GainForest", url: "https://Eval.Science" }],
+	authors: [{ name: "GainForest", url: "https://gainforest.earth" }],
 	icons: [
 		{
 			rel: "icon",

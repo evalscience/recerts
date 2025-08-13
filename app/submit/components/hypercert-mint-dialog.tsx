@@ -127,19 +127,19 @@ const HypercertMintDialog = ({
 						{googleSheetsStatus === "idle" && (
 							<>
 								<Badge className="h-5 w-5" />
-								<p>Waiting to send to Eval.Science for approval</p>
+								<p>Waiting to send to Recerts Editors for approval</p>
 							</>
 						)}
 						{googleSheetsStatus === "pending" && (
 							<>
 								<Loader className="h-5 w-5 animate-spin" />
-								<p>Sending to Eval.Science team</p>
+								<p>Sending to Recerts Editors team</p>
 							</>
 						)}
 						{googleSheetsStatus === "success" && (
 							<>
 								<BadgeCheck className="h-5 w-5" />
-								<p className="">Sent to Eval.Science team!</p>
+								<p className="">Sent to Recerts Editors team!</p>
 							</>
 						)}
 						{googleSheetsStatus === "error" && googleSheetsError && (
