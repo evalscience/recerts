@@ -15,17 +15,16 @@ type Person = {
 };
 
 const editors: Person[] = [
-	{ name: "Editor One", affiliation: "JDFR" },
-	{ name: "Editor Two", affiliation: "JDFR" },
+	{ name: "David Dao", affiliation: "GainForest.Earth" },
+	{ name: "Sejal Rekhan", affiliation: "Protocol Labs" },
 ];
 
 const steeringCommittee: Person[] = [
-	{ name: "Member Alpha", affiliation: "Institute A" },
-	{ name: "Member Beta", affiliation: "Institute B" },
-	{ name: "Member Gamma", affiliation: "Institute C" },
-	{ name: "Member Delta", affiliation: "Institute D" },
-	{ name: "Member Epsilon", affiliation: "Institute E" },
-	{ name: "Member Zeta", affiliation: "Institute F" },
+	{ name: "Luca Nicoli", affiliation: "CryptoEconLab" },
+	{ name: "Joel Miller", affiliation: "UIUC" },
+	{ name: "Wisdom Ogwu", affiliation: "Sublinear Labs" },
+	{ name: "Raymond Cheng", affiliation: "Open Source Observer" },
+	{ name: "Angela Kreitenweis", affiliation: "Token Engineering Commons" },
 ];
 
 function avatarFor(name: string): string {
@@ -74,7 +73,7 @@ export default function AboutPage() {
 			<section className="grid grid-cols-1 gap-10 md:grid-cols-3 md:gap-16">
 				<div className="md:col-span-1">
 					<h2 className="font-baskerville font-bold text-black text-xl">
-						Editors
+						Editors in Chief
 					</h2>
 					<div className="mt-4 divide-y">
 						{editors.map((p) => (
@@ -85,7 +84,7 @@ export default function AboutPage() {
 
 				<div className="md:col-span-2">
 					<h2 className="font-baskerville font-bold text-black text-xl">
-						Steering Committee
+						Editorial Board
 					</h2>
 					<div className="mt-4 grid grid-cols-1 gap-x-8 gap-y-1 sm:grid-cols-2">
 						{steeringCommittee.map((p) => (
