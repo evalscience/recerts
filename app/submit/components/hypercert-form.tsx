@@ -102,6 +102,19 @@ const AREA_ACTIVITIES = [
 	{ value: "Science", label: "Science - Researching and monitoring" },
 ] as const;
 
+const ARTICLE_TYPE_DESCRIPTIONS = {
+	Research:
+		"Recerts publishes novel research results of significant interest to the community.",
+	Exposition:
+		"Explains, synthesizes, and reviews existing research. Includes Reviews, Tutorials, Primers, and Perspectives.",
+	Commentary:
+		"Non‑technical essays on topics like public policy or meta‑discussion of science. We are especially interested in charity-free narratives for public goods funding.",
+	"Datasets & Benchmarks":
+		"Datasets and benchmarks that support research and evaluation.",
+	Proposal:
+		"Proposals are early stage research and project ideas that outline potential research directions or methodologies.",
+} as const;
+
 const HypercertMintSchema = z.object({
 	articleType: z.enum(
 		[
@@ -554,89 +567,47 @@ const HypercertForm = () => {
 																<SelectValue placeholder="Select an article type" />
 															</SelectTrigger>
 															<SelectContent className="bg-background">
-																<TooltipProvider>
-																	<Tooltip>
-																		<TooltipTrigger asChild>
-																			<SelectItem
-																				value="Research"
-																				className="hover:bg-accent"
-																			>
-																				Research
-																			</SelectItem>
-																		</TooltipTrigger>
-																		<TooltipContent side="right" align="start">
-																			Recerts publishes novel research results
-																			of significant interest to the community.
-																		</TooltipContent>
-																	</Tooltip>
-																	<Tooltip>
-																		<TooltipTrigger asChild>
-																			<SelectItem
-																				value="Exposition"
-																				className="hover:bg-accent"
-																			>
-																				Exposition
-																			</SelectItem>
-																		</TooltipTrigger>
-																		<TooltipContent side="right" align="start">
-																			Explains, synthesizes, and reviews
-																			existing research. Includes Reviews,
-																			Tutorials, Primers, and Perspectives. We
-																			are especially interested in explorable
-																			explanations.
-																		</TooltipContent>
-																	</Tooltip>
-																	<Tooltip>
-																		<TooltipTrigger asChild>
-																			<SelectItem
-																				value="Commentary"
-																				className="hover:bg-accent"
-																			>
-																				Commentary
-																			</SelectItem>
-																		</TooltipTrigger>
-																		<TooltipContent side="right" align="start">
-																			Non‑technical essays on topics like public
-																			policy or meta‑discussion of science.
-																			Please contact editors@recerts.org prior
-																			to submission.
-																		</TooltipContent>
-																	</Tooltip>
-																	<Tooltip>
-																		<TooltipTrigger asChild>
-																			<SelectItem
-																				value="Datasets & Benchmarks"
-																				className="hover:bg-accent"
-																			>
-																				Datasets &amp; Benchmarks
-																			</SelectItem>
-																		</TooltipTrigger>
-																		<TooltipContent side="right" align="start">
-																			Datasets and benchmarks that support
-																			research and evaluation. Please contact
-																			editors@recerts.org prior to submission.
-																		</TooltipContent>
-																	</Tooltip>
-																	<Tooltip>
-																		<TooltipTrigger asChild>
-																			<SelectItem
-																				value="Proposal"
-																				className="hover:bg-accent"
-																			>
-																				Proposal
-																			</SelectItem>
-																		</TooltipTrigger>
-																		<TooltipContent side="right" align="start">
-																			Proposals are early stage research and
-																			project ideas that outline potential
-																			research directions or methodologies.
-																		</TooltipContent>
-																	</Tooltip>
-																</TooltipProvider>
+																<SelectItem
+																	value="Research"
+																	className="hover:bg-accent"
+																>
+																	Research
+																</SelectItem>
+																<SelectItem
+																	value="Exposition"
+																	className="hover:bg-accent"
+																>
+																	Exposition
+																</SelectItem>
+																<SelectItem
+																	value="Commentary"
+																	className="hover:bg-accent"
+																>
+																	Commentary
+																</SelectItem>
+																<SelectItem
+																	value="Datasets & Benchmarks"
+																	className="hover:bg-accent"
+																>
+																	Datasets &amp; Benchmarks
+																</SelectItem>
+																<SelectItem
+																	value="Proposal"
+																	className="hover:bg-accent"
+																>
+																	Proposal
+																</SelectItem>
 															</SelectContent>
 														</Select>
 													</FormControl>
 													<FormMessage />
+													{field.value && (
+														<div className="mt-2 rounded-md bg-muted/50 p-3">
+															<p className="text-muted-foreground text-sm">
+																{ARTICLE_TYPE_DESCRIPTIONS[field.value]}
+															</p>
+														</div>
+													)}
 												</FormItem>
 											)}
 										/>
