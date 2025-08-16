@@ -131,6 +131,13 @@ function SubmitPage() {
 										</a>{" "}
 										prior to submission.
 									</li>
+									<li>
+										<strong>Proposal</strong>: Proposals are early stage
+										research and project ideas that outline potential research
+										directions or methodologies. These submissions help
+										communicate emerging concepts and seek community feedback on
+										developing work.
+									</li>
 								</ul>
 								<p className="mt-2">
 									There are no word count limits for any article type. Articles

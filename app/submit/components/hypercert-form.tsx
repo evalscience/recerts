@@ -104,7 +104,13 @@ const AREA_ACTIVITIES = [
 
 const HypercertMintSchema = z.object({
 	articleType: z.enum(
-		["Research", "Exposition", "Commentary", "Datasets & Benchmarks"],
+		[
+			"Research",
+			"Exposition",
+			"Commentary",
+			"Datasets & Benchmarks",
+			"Proposal",
+		],
 		{ errorMap: () => ({ message: "Please select an article type" }) },
 	),
 	title: z
@@ -246,6 +252,7 @@ const HypercertForm = () => {
 								"Exposition",
 								"Commentary",
 								"Datasets & Benchmarks",
+								"Proposal",
 							].includes(value)
 						) {
 							form.setValue(key, value as MintingFormValues["articleType"]);
@@ -608,6 +615,21 @@ const HypercertForm = () => {
 																			Datasets and benchmarks that support
 																			research and evaluation. Please contact
 																			editors@recerts.org prior to submission.
+																		</TooltipContent>
+																	</Tooltip>
+																	<Tooltip>
+																		<TooltipTrigger asChild>
+																			<SelectItem
+																				value="Proposal"
+																				className="hover:bg-accent"
+																			>
+																				Proposal
+																			</SelectItem>
+																		</TooltipTrigger>
+																		<TooltipContent side="right" align="start">
+																			Proposals are early stage research and
+																			project ideas that outline potential
+																			research directions or methodologies.
 																		</TooltipContent>
 																	</Tooltip>
 																</TooltipProvider>
