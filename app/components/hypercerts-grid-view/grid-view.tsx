@@ -21,19 +21,42 @@ const calculateHypercertTotalSalesInUSD = (
 	priceFeed: PriceFeedContext,
 ) => {
 	const { sales } = hypercert;
-	const totalSalesInUSD =
-		priceFeed.status === "ready"
-			? sales.reduce((acc, sale) => {
-					return (
-						acc +
-						(priceFeed.toUSD(
-							sale.currency as `0x${string}`,
-							BigInt(sale.currencyAmount),
-						) ?? 0)
-					);
-			  }, 0)
-			: null;
-	return totalSalesInUSD;
+
+	if (!sales || sales.length === 0) {
+		return null;
+	}
+
+	let total = 0;
+	for (const sale of sales) {
+		try {
+			// Try priceFeed conversion first
+			if (priceFeed.status === "ready") {
+				const usd = priceFeed.toUSD(
+					sale.currency as `0x${string}`,
+					BigInt(sale.currencyAmount),
+				);
+				if (usd !== null) {
+					total += usd;
+					continue;
+				}
+			}
+
+			// Fallback: Handle USD-pegged stablecoins like USDGLO
+			const currencyLower = sale.currency.toLowerCase();
+			const isUSDGLO =
+				currencyLower === "0x4f604735c1cf31399c6e711d5962b2b3e0225ad3";
+
+			if (isUSDGLO) {
+				// USDGLO is USD-pegged, so 1 USDGLO = 1 USD (with 18 decimals)
+				const usdValue = Number(sale.currencyAmount) / 10 ** 18;
+				total += usdValue;
+			}
+		} catch (error) {
+			console.warn("Failed to convert sale to USD:", error);
+		}
+	}
+
+	return total > 0 ? total : null;
 };
 
 export function GridView({ hypercerts }: { hypercerts: Hypercert[] }) {

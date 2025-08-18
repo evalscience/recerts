@@ -76,58 +76,19 @@ const ProgressIndicator = ({
 	);
 };
 
-const LoadingVariant = () => {
-	return (
-		<div className="flex h-full w-full flex-col justify-between font-sans">
-			<div className="group flex w-full flex-col">
-				<div className="flex flex-col items-center gap-1">
-					<span className="h-8 w-36 animate-pulse rounded-md bg-beige-muted" />
-					<span className="h-6 w-28 animate-pulse rounded-md bg-beige-muted" />
-				</div>
-				<div className="mt-4 flex w-full flex-col items-center">
-					<div className="relative w-full">
-						<div className="h-4 animate-pulse rounded-sm bg-primary/20" />
-					</div>
-				</div>
-			</div>
-			<div className="mt-2 flex items-center justify-end">
-				<div className="h-8 w-20 animate-pulse rounded-md bg-beige-muted" />
-			</div>
-		</div>
-	);
-};
-
-const ErrorVariant = () => {
-	return (
-		<div className="flex h-full w-full flex-col items-center justify-center gap-2">
-			<div className="flex flex-col items-center justify-center gap-2">
-				<CircleAlert size={32} className="text-muted-foreground opacity-60" />
-				<span className="text-muted-foreground text-sm">
-					Unable to load funding statistics.
-				</span>
-				<Button
-					variant={"outline"}
-					size={"sm"}
-					className="gap-2"
-					onClick={() => window?.location.reload()}
-				>
-					<RefreshCcw size={14} />
-					<span>Retry</span>
-				</Button>
-			</div>
-		</div>
-	);
-};
-
 const OpenVariant = ({
 	totalSalesInUSD,
-	percentageUnitsSold,
 	goalInUSD,
 }: {
 	totalSalesInUSD: number;
-	percentageUnitsSold: number;
 	goalInUSD: number;
 }) => {
+	// Calculate progress percentage (how much of the goal is achieved)
+	const progressPercentage = Math.min((totalSalesInUSD * 100) / goalInUSD, 100);
+
+	// Calculate where to show the goal line on the progress bar
+	// If we haven't reached the goal yet, show the goal at 100%
+	// If we've exceeded the goal, show the goal at a proportional position
 	const goalPercentageOnBar =
 		totalSalesInUSD <= goalInUSD ? 100 : (goalInUSD / totalSalesInUSD) * 100;
 	const { show, pushModalByVariant, stack } = useModal();
@@ -173,7 +134,7 @@ const OpenVariant = ({
 				<div className="mt-4 flex w-full flex-col items-center">
 					<div className="relative w-full">
 						<Progress
-							percentage={Math.min((totalSalesInUSD * 100) / goalInUSD, 100)}
+							percentage={progressPercentage}
 							className="h-2 rounded bg-beige-muted"
 						/>
 						{goalPercentageOnBar < 99 && (
@@ -241,35 +202,47 @@ const VariantSelector = () => {
 		cheapestOrder: { pricePerPercentInUSD },
 		sales,
 	} = hypercert;
-	const { address } = useAccount();
 	const priceFeed = usePriceFeed();
 
-	// Calculate total sales in USD synchronously
+	// Calculate total sales in USD - with USDGLO fallback
 	const totalSalesInUSD = React.useMemo(() => {
-		if (priceFeed.status !== "ready" || !sales || sales.length === 0) {
+		if (!sales || sales.length === 0) {
 			return 0;
 		}
+
 		let total = 0;
 		for (const sale of sales) {
-			const usd = priceFeed.toUSD(
-				sale.currency as `0x${string}`,
-				BigInt(sale.currencyAmount),
-			);
-			if (usd !== null) {
-				total += usd;
+			try {
+				// Try priceFeed conversion first
+				if (priceFeed.status === "ready") {
+					const usd = priceFeed.toUSD(
+						sale.currency as `0x${string}`,
+						BigInt(sale.currencyAmount),
+					);
+					if (usd !== null) {
+						total += usd;
+						continue;
+					}
+				}
+
+				// Fallback: Handle USD-pegged stablecoins like USDGLO
+				const currencyLower = sale.currency.toLowerCase();
+				const isUSDGLO =
+					currencyLower === "0x4f604735c1cf31399c6e711d5962b2b3e0225ad3";
+
+				if (isUSDGLO) {
+					// USDGLO is USD-pegged, so 1 USDGLO = 1 USD (with 18 decimals)
+					const usdValue = Number(sale.currencyAmount) / 10 ** 18;
+					total += usdValue;
+				}
+			} catch (error) {
+				console.warn("Failed to convert sale to USD:", error);
 			}
 		}
 		return total;
 	}, [sales, priceFeed]);
 
-	if (priceFeed.status === "loading") {
-		return <LoadingVariant />;
-	}
-
-	if (priceFeed.status === "error") {
-		return <ErrorVariant />;
-	}
-
+	// Always show component if we have hypercert data, similar to Support component
 	if (pricePerPercentInUSD === undefined) {
 		return <ComingVariant />;
 	}
@@ -279,7 +252,6 @@ const VariantSelector = () => {
 	if (percentCompleted === undefined) return <SoldVariant />;
 	return (
 		<OpenVariant
-			percentageUnitsSold={percentCompleted}
 			goalInUSD={formatDecimals(100 * pricePerPercentInUSD)}
 			totalSalesInUSD={formatDecimals(totalSalesInUSD)}
 		/>

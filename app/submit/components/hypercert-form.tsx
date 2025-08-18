@@ -86,22 +86,6 @@ import { DeploymentInfoBox } from "./deployment-info-box";
 import HypercertCard from "./hypercert-card";
 import MintingProgressDialog from "./minting-progress-dialog";
 
-// No initial logo URL needed
-const telegramHandleRegex = /^@([a-zA-Z0-9_]{4,31})$/;
-const emailRegex =
-	/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-
-const AREA_ACTIVITIES = [
-	{ value: "Restoration", label: "Restoration - Bringing nature back" },
-	{
-		value: "Conservation",
-		label: "Conservation - Letting nature do its own thing",
-	},
-	{ value: "Landscape", label: "Landscape - Managing diverse activities" },
-	{ value: "Community", label: "Community - Empowering local community" },
-	{ value: "Science", label: "Science - Researching and monitoring" },
-] as const;
-
 const ARTICLE_TYPE_DESCRIPTIONS = {
 	Research:
 		"Recerts publishes novel research results of significant interest to the community.",
