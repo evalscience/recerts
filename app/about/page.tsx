@@ -24,7 +24,7 @@ const steeringCommittee: Person[] = [
 	{ name: "Joel Miller", affiliation: "UIUC" },
 	{ name: "Wisdom Ogwu", affiliation: "Sublinear Labs" },
 	{ name: "Raymond Cheng", affiliation: "Open Source Observer" },
-	{ name: "Angela Kreitenweis", affiliation: "Token Engineering Commons" },
+	{ name: "Angela Kreitenweis", affiliation: "Token Engineering Academy / GovXS" },
 	{ name: "Holke Brammer", affiliation: "Hypercerts Foundation" },
 ];
 
