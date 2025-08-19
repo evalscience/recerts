@@ -42,7 +42,6 @@ const Metadata = ({ hypercert }: { hypercert: FullHypercert }) => {
 						className="p-0.5"
 						avatarSize={20}
 						address={hypercert.creatorAddress as `0x${string}`}
-						chainId={hypercert.chainId}
 					/>
 				</MetadataCard>
 				<MetadataCard
