@@ -8,7 +8,6 @@ import {
 	TooltipTrigger,
 } from "@/components/ui/tooltip";
 import type { Hypercert } from "@/graphql/hypercerts/queries/hypercerts";
-import { getChainInfo } from "@/lib/chainInfo";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
@@ -28,10 +27,8 @@ const Card = ({
 		unitsForSale,
 		pricePerPercentInUSD,
 		topics,
-		chainId,
 		hasReviews,
 	} = hypercert;
-	const chainInfo = getChainInfo(chainId);
 
 	const [reviewStatus, setReviewStatus] = useState<"Under review" | "Reviewed">(
 		hasReviews ? "Reviewed" : "Under review",
@@ -69,20 +66,6 @@ const Card = ({
 						width={800}
 						className="mx-auto h-full w-full object-contain object-center transition duration-300 group-hover:scale-[1.02]"
 					/>
-					{chainInfo ? (
-						<div className="absolute top-2 left-2 inline-flex items-center gap-1 rounded-md bg-background/80 px-2 py-1 shadow-sm ring-1 ring-border backdrop-blur">
-							<Image
-								src={chainInfo.logoSrc}
-								alt={`${chainInfo.label} logo`}
-								width={14}
-								height={14}
-								className="rounded-[2px]"
-							/>
-							<span className="font-medium text-[11px] text-muted-foreground">
-								{chainInfo.label}
-							</span>
-						</div>
-					) : null}
 				</div>
 
 				<section className="flex w-full flex-1 px-3 py-3">

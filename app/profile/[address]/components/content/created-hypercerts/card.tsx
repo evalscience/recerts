@@ -1,7 +1,6 @@
 import { HypercertProvider } from "@/app/contexts/hypercert";
 import { Button } from "@/components/ui/button";
 import type { Hypercert } from "@/graphql/hypercerts/queries/hypercerts";
-import { getChainInfo } from "@/lib/chainInfo";
 import { ArrowUpRight } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -9,9 +8,6 @@ import CardOptions from "./card-options";
 
 export default function Card({ hypercert }: { hypercert: Hypercert }) {
 	const { hypercertId, name, description } = hypercert;
-	const chainInfo = getChainInfo(
-		hypercert.chainId ?? hypercertId.split("-")[0],
-	);
 
 	return (
 		<HypercertProvider value={hypercert}>
@@ -36,17 +32,6 @@ export default function Card({ hypercert }: { hypercert: Hypercert }) {
 									View <ArrowUpRight size={14} />
 								</Button>
 							</Link>
-						</div>
-					)}
-					{chainInfo && (
-						<div className="absolute right-2 bottom-2 rounded-full border border-background bg-background/80 p-0.5">
-							<Image
-								src={chainInfo.logoSrc}
-								alt={chainInfo.label}
-								width={18}
-								height={18}
-								className="rounded-full"
-							/>
 						</div>
 					)}
 				</div>

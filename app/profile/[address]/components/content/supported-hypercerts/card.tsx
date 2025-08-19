@@ -1,5 +1,4 @@
 import { Button } from "@/components/ui/button";
-import { getChainInfo } from "@/lib/chainInfo";
 import { ArrowRight } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -11,10 +10,6 @@ export default function Card({ combinedSale }: { combinedSale: CombinedSale }) {
 		hypercertId,
 		metadata: { name, description },
 	} = combinedSale.hypercert;
-
-	const chainInfo = getChainInfo(
-		combinedSale.hypercert.hypercertId.split("-")[0],
-	);
 
 	return (
 		<article className="group relative flex flex-col overflow-hidden rounded-xl border border-border/60">
@@ -39,17 +34,6 @@ export default function Card({ combinedSale }: { combinedSale: CombinedSale }) {
 								View <ArrowRight size={14} />
 							</Button>
 						</Link>
-					</div>
-				)}
-				{chainInfo && (
-					<div className="absolute right-2 bottom-2 rounded-full border border-background bg-background/80 p-0.5">
-						<Image
-							src={chainInfo.logoSrc}
-							alt={chainInfo.label}
-							width={18}
-							height={18}
-							className="rounded-full"
-						/>
 					</div>
 				)}
 			</div>

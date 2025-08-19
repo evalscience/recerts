@@ -8,9 +8,7 @@ import {
 	TooltipTrigger,
 } from "@/components/ui/tooltip";
 import type { Hypercert } from "@/graphql/hypercerts/queries/hypercerts";
-import { getChainInfo } from "@/lib/chainInfo";
 import { cn } from "@/lib/utils";
-import Image from "next/image";
 import Link from "next/link";
 import { Fragment, useEffect, useState } from "react";
 
@@ -139,7 +137,6 @@ export default function TableView({
 						const totalSalesInUSD = getTotalSalesInUSD(h);
 						const targetUSD = h.pricePerPercentInUSD;
 						const isSold = targetUSD !== undefined && h.unitsForSale === 0n;
-						const chainInfo = getChainInfo(h.chainId);
 						return (
 							<Fragment key={h.hypercertId}>
 								<tr className="border-b transition-colors hover:bg-muted/20">
@@ -170,20 +167,6 @@ export default function TableView({
 											>
 												{h.name ?? "Untitled"}
 											</Link>
-											{chainInfo ? (
-												<span className="inline-flex items-center gap-1 rounded-md bg-muted/40 px-1.5 py-[2px]">
-													<Image
-														src={chainInfo.logoSrc}
-														alt={`${chainInfo.label} logo`}
-														width={12}
-														height={12}
-														className="rounded-[2px]"
-													/>
-													<span className="text-[10px] text-muted-foreground">
-														{chainInfo.label}
-													</span>
-												</span>
-											) : null}
 										</div>
 									</td>
 									<td className="py-3 pr-2 align-top text-[13px] text-muted-foreground italic">

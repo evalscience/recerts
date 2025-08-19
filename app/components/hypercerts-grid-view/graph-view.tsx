@@ -2,7 +2,6 @@
 
 import usePriceFeed from "@/app/PriceFeedProvider";
 import type { Hypercert } from "@/graphql/hypercerts/queries/hypercerts";
-import { getChainInfo } from "@/lib/chainInfo";
 import { useEffect, useMemo, useRef } from "react";
 
 type GraphNode = {
@@ -44,35 +43,6 @@ export default function GraphView({ hypercerts }: { hypercerts: Hypercert[] }) {
 		return m;
 	}, [hypercerts]);
 
-	const usdFormatter = useMemo(
-		() =>
-			new Intl.NumberFormat(undefined, {
-				style: "currency",
-				currency: "USD",
-				maximumFractionDigits: 0,
-			}),
-		[],
-	);
-
-	const totalSalesUSDById = useMemo(() => {
-		const result = new Map<string, number | null>();
-		for (const h of hypercerts) {
-			if (priceFeed.status !== "ready") {
-				result.set(h.hypercertId, null);
-				continue;
-			}
-			const sum = h.sales.reduce((acc, sale) => {
-				const v = priceFeed.toUSD(
-					sale.currency as `0x${string}`,
-					BigInt(sale.currencyAmount),
-				);
-				return acc + (v ?? 0);
-			}, 0);
-			result.set(h.hypercertId, sum);
-		}
-		return result;
-	}, [hypercerts, priceFeed]);
-
 	const buildTooltipHTML = (h: Hypercert): string => {
 		const name = h.name ?? "Untitled";
 		const rawDesc = (h.description ?? "").trim();
@@ -86,11 +56,7 @@ export default function GraphView({ hypercerts }: { hypercerts: Hypercert[] }) {
 				: truncated
 			).trimEnd()}…`;
 		}
-		const raised = totalSalesUSDById.get(h.hypercertId);
-		const raisedText =
-			raised == null ? "—" : usdFormatter.format(Math.floor(raised));
 		const authors = Array.isArray(h.contributors) ? h.contributors : [];
-		const chainInfo = getChainInfo(h.chainId);
 		const idShort = `${h.hypercertId.slice(0, 6)}…${h.hypercertId.slice(-6)}`;
 		const authorsText = authors.length
 			? authors.join(", ").replace(/, ([^,]*)$/, " & $1")
@@ -115,17 +81,6 @@ export default function GraphView({ hypercerts }: { hypercerts: Hypercert[] }) {
         <div style="color:var(--muted-foreground, #6b7280);font-size:11px;">${escapeHtml(
 					idShort,
 				)}</div>
-        ${
-					chainInfo
-						? `<div style=\"display:flex;align-items:center;gap:6px;font-size:11px;color:var(--muted-foreground,#6b7280);margin-top:4px;\"><img src=\"${
-								chainInfo.logoSrc
-						  }\" alt=\"${
-								chainInfo.label
-						  } logo\" width=\"12\" height=\"12\" style=\"border-radius:2px;\"/>Minted on ${escapeHtml(
-								chainInfo.label,
-						  )}</div>`
-						: ""
-				}
       </div>
     `;
 	};
