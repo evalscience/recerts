@@ -8,29 +8,29 @@ import { useMemo } from "react";
 import { useChainId, useWalletClient } from "wagmi";
 
 export const useHypercertExchangeClient = () => {
-  const { data: walletClient } = useWalletClient();
-  const chainId = useChainId();
-  const provider = useEthersProvider();
-  const signer = useEthersSigner();
+	const { data: walletClient } = useWalletClient();
+	const chainId = useChainId();
+	const provider = useEthersProvider();
+	const signer = useEthersSigner();
 
-  const client = useMemo(() => {
-    if (
-      !SUPPORTED_CHAINS.find((chain) => chain.id === walletClient?.chain.id)
-    ) {
-      return null;
-    }
+	const client = useMemo(() => {
+		if (
+			!SUPPORTED_CHAINS.find((chain) => chain.id === walletClient?.chain.id)
+		) {
+			return null;
+		}
 
-    return new HypercertExchangeClient(
-      chainId,
-      // @ts-expect-error - wagmi and viem have different typing
-      provider,
-      signer,
-      {
-        apiEndpoint: restEndpoint,
-      },
-      walletClient
-    );
-  }, [walletClient, chainId, provider, signer]);
+		return new HypercertExchangeClient(
+			chainId,
+			// @ts-expect-error - wagmi and viem have different typing
+			provider,
+			signer,
+			{
+				apiEndpoint: restEndpoint,
+			},
+			walletClient,
+		);
+	}, [walletClient, chainId, provider, signer]);
 
-  return { client };
+	return { client };
 };

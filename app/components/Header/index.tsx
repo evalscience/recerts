@@ -1,23 +1,20 @@
-import Link from "next/link";
+"use client";
+
 import React from "react";
 import NavLinks from "./NavLinks";
 import { WalletProfile } from "./WalletProfile";
 
 const Header = () => {
 	return (
-		<>
-			<header className="sticky top-0 z-40 w-full border-border border-b bg-background/80 backdrop-blur supports-[backdrop-filter]:bg-background/70">
-				<div className="mx-auto flex h-16 max-w-5xl items-center justify-between px-3 md:px-4">
-					{/* Left: Primary navigation */}
-					<NavLinks />
+		<header className="sticky top-0 z-50 w-full border-neutral-200/60 border-b bg-white/80 backdrop-blur-md dark:border-neutral-800/60 dark:bg-neutral-900/80 dark:supports-[backdrop-filter]:bg-neutral-900/90 supports-[backdrop-filter]:bg-white/90">
+			<div className="mx-auto flex h-14 max-w-6xl items-center justify-between px-4 md:px-6">
+				<NavLinks />
 
-					{/* Right: Wallet */}
-					<div className="flex items-center gap-2">
-						<WalletProfile />
-					</div>
+				<div className="flex items-center gap-3">
+					<WalletProfile />
 				</div>
-			</header>
-		</>
+			</div>
+		</header>
 	);
 };
 

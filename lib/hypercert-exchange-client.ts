@@ -27,9 +27,9 @@ export const getHypercertExchangeClient = (): HypercertExchangeClient => {
 		return hypercertExchangeClient;
 	}
 
-  hypercertExchangeClient = new HypercertExchangeClient(
-    // @ts-ignore - marketplace SDK expects its ChainId type; we pass viem chain id
-    SUPPORTED_CHAINS[0].id,
+	hypercertExchangeClient = new HypercertExchangeClient(
+		// @ts-ignore - marketplace SDK expects its ChainId type; we pass viem chain id
+		SUPPORTED_CHAINS[0].id,
 		// @ts-ignore
 		provider as unknown as Provider,
 		// @ts-ignore

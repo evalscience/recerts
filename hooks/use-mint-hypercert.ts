@@ -2,6 +2,7 @@ import { useHypercertClient } from "@/hooks/use-hypercerts-client";
 import { useMutation } from "@tanstack/react-query";
 import { usePublicClient, useWaitForTransactionReceipt } from "wagmi";
 
+import { createAirtableRecordForHypercertId } from "@/lib/airtable";
 import { constructHypercertIdFromReceipt } from "@/utils/constructHypercertIdFromReceipt";
 import {
 	type HypercertMetadata,
@@ -11,7 +12,6 @@ import { useEffect, useState } from "react";
 import { type TransactionReceipt, parseEther } from "viem";
 import type { WaitForTransactionReceiptData } from "wagmi/query";
 import { useSendEmailAndUpdateGoogle } from "./use-send-email-and-update-google";
-import { createAirtableRecordForHypercertId } from "@/lib/airtable";
 
 type Payload = {
 	metaData: HypercertMetadata;
@@ -26,7 +26,7 @@ export type HypercertMintReceiptData = {
 
 const useMintHypercert = () => {
 	const [contactInfo, setContactInfo] = useState<string>("");
-  const [metaData, setMetaData] = useState<HypercertMetadata | undefined>();
+	const [metaData, setMetaData] = useState<HypercertMetadata | undefined>();
 	const { client } = useHypercertClient();
 	const publicClient = usePublicClient();
 
@@ -97,38 +97,43 @@ const useMintHypercert = () => {
 	} = useSendEmailAndUpdateGoogle();
 
 	useEffect(() => {
-    if (receiptData?.hypercertId && contactInfo) {
-      sendEmailAndUpdateGoogle({
-        hypercertId: receiptData.hypercertId,
-        contactInfo,
-      });
-      // Fire-and-forget: record in Airtable for review pipeline
-      const md = (metaData ?? {}) as unknown as {
-        contributors?: unknown;
-        workScope?: unknown;
-        external_url?: string;
-        name?: string;
-        description?: string;
-      };
-      const authors = Array.isArray(md.contributors)
-        ? (md.contributors as string[])
-        : [];
-      const topics = Array.isArray(md.workScope)
-        ? (md.workScope as string[])
-        : [];
+		if (receiptData?.hypercertId && contactInfo) {
+			sendEmailAndUpdateGoogle({
+				hypercertId: receiptData.hypercertId,
+				contactInfo,
+			});
+			// Fire-and-forget: record in Airtable for review pipeline
+			const md = (metaData ?? {}) as unknown as {
+				contributors?: unknown;
+				workScope?: unknown;
+				external_url?: string;
+				name?: string;
+				description?: string;
+			};
+			const authors = Array.isArray(md.contributors)
+				? (md.contributors as string[])
+				: [];
+			const topics = Array.isArray(md.workScope)
+				? (md.workScope as string[])
+				: [];
 
-      createAirtableRecordForHypercertId(receiptData.hypercertId, {
-        Title: md.name,
-        Abstract: md.description,
-        Authors: authors,
-        Topics: topics,
-        Link: md.external_url,
-        "Article Type": undefined,
-      }).catch(() => {
-        // ignore errors; this should not block UX
-      });
-    }
-  }, [receiptData?.hypercertId, contactInfo, sendEmailAndUpdateGoogle, metaData]);
+			createAirtableRecordForHypercertId(receiptData.hypercertId, {
+				Title: md.name,
+				Abstract: md.description,
+				Authors: authors,
+				Topics: topics,
+				Link: md.external_url,
+				"Article Type": undefined,
+			}).catch(() => {
+				// ignore errors; this should not block UX
+			});
+		}
+	}, [
+		receiptData?.hypercertId,
+		contactInfo,
+		sendEmailAndUpdateGoogle,
+		metaData,
+	]);
 
 	return {
 		mintHypercert,

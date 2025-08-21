@@ -107,9 +107,10 @@ export const DesktopNavLink = ({
 		<Link
 			href={link.href}
 			className={cn(
-				buttonVariants({ variant: "ghost" }),
-				"group rounded-md font-medium focus:outline-none focus-visible:ring-0 focus-visible:ring-offset-0",
-				isActive ? "bg-muted" : "",
+				"group rounded-full px-3 py-1.5 font-medium text-neutral-600 text-sm transition-all dark:hover:text-neutral-100 dark:text-neutral-400 hover:text-neutral-900 focus:outline-none focus-visible:ring-0 focus-visible:ring-offset-0",
+				isActive
+					? "bg-neutral-100 text-neutral-900 dark:bg-neutral-800 dark:text-neutral-100"
+					: "",
 				link.href === "#" ? "opacity-50 hover:opacity-50" : "",
 			)}
 			{...(link.openInNewTab && {
@@ -118,11 +119,11 @@ export const DesktopNavLink = ({
 			})}
 		>
 			{link.id === "home" ? (
-				<span className="font-baskerville text-black text-lg leading-none tracking-wide">
-					Recerts Journal
+				<span className="font-baskerville font-semibold text-base text-neutral-900 leading-none tracking-tight dark:text-neutral-100">
+					Recerts
 				</span>
 			) : link.showIconOnlyOnDesktop === false ? (
-				<link.Icon size={18} />
+				<link.Icon size={16} />
 			) : (
 				link.text
 			)}
@@ -215,7 +216,7 @@ const NavLinks = () => {
 				href="/"
 				className="flex items-center gap-2 md:hidden focus:outline-none focus-visible:ring-0 focus-visible:ring-offset-0"
 			>
-				<span className="font-baskerville text-black text-lg leading-none tracking-wide">
+				<span className="font-baskerville font-semibold text-base text-neutral-900 leading-none tracking-tight dark:text-neutral-100">
 					Recerts
 				</span>
 			</Link>
