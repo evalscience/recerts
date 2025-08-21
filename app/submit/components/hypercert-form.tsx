@@ -526,16 +526,14 @@ const HypercertForm = () => {
 						setIsMintingProgressDialogVisible(true);
 					})}
 				>
-					<div className="mb-10 flex flex-col-reverse gap-6 md:mb-0 md:flex-row md:gap-4">
-						<Card className="relative overflow-hidden rounded-3xl bg-white/50 py-4 shadow-none">
-							<div className="-top-10 -right-10 absolute h-40 w-40 rounded-full bg-primary/30 blur-2xl" />
-							<div className="-bottom-10 -left-10 absolute h-40 w-40 rounded-full bg-beige-muted-foreground/30 blur-2xl" />
-							<CardContent className="flex scale-100 flex-col gap-6 p-0 px-4">
-								<section className="flex flex-col gap-2">
-									<h2 className="font-baskerville font-bold text-2xl">
+					<div className="mb-10 flex flex-col-reverse gap-8 md:mb-0 md:flex-row md:gap-8">
+						<Card className="rounded-xl border-border/20 bg-background/60 shadow-sm backdrop-blur-sm">
+							<CardContent className="flex flex-col gap-8 p-6 md:p-8">
+								<section className="flex flex-col gap-6">
+									<h2 className="font-baskerville font-bold text-2xl text-foreground">
 										Paper Details
 									</h2>
-									<div className="flex flex-col gap-4 rounded-2xl bg-background p-4">
+									<div className="flex flex-col gap-6">
 										<FormField
 											control={form.control}
 											name="articleType"
@@ -695,12 +693,12 @@ const HypercertForm = () => {
 										/>
 									</div>
 								</section>
-								<section className="flex flex-col gap-2">
-									<h2 className="font-baskerville font-bold text-2xl">
+								<section className="flex flex-col gap-6">
+									<h2 className="font-baskerville font-bold text-2xl text-foreground">
 										Additional Details
 									</h2>
 
-									<div className="flex flex-col gap-4 rounded-2xl bg-background p-4">
+									<div className="flex flex-col gap-6">
 										{/* area activity not relevant for paper layout, keep if needed later */}
 
 										<FormField
@@ -805,16 +803,16 @@ const HypercertForm = () => {
 										{/* GeoJSON not required for paper layout; keep component around if needed later */}
 									</div>
 								</section>
-								<section className="flex flex-col gap-2">
-									<h2 className="font-baskerville font-bold text-2xl">
+								<section className="flex flex-col gap-6">
+									<h2 className="font-baskerville font-bold text-2xl text-foreground">
 										Agreement
 									</h2>
-									<div className="flex flex-col gap-4 rounded-2xl bg-background p-4">
+									<div className="flex flex-col gap-4">
 										<FormField
 											control={form.control}
 											name="confirmContributorsPermission"
 											render={({ field }) => (
-												<FormItem className="flex flex-row items-center space-x-3 space-y-0 p-2">
+												<FormItem className="flex flex-row items-start space-x-3 space-y-0">
 													<FormControl>
 														<Checkbox
 															checked={field.value}
@@ -834,7 +832,7 @@ const HypercertForm = () => {
 											control={form.control}
 											name="acceptTerms"
 											render={({ field }) => (
-												<FormItem className="flex flex-row items-center space-x-3 space-y-0 p-2">
+												<FormItem className="flex flex-row items-start space-x-3 space-y-0">
 													<FormControl>
 														<Checkbox
 															checked={field.value}
