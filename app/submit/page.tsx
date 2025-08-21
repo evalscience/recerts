@@ -13,8 +13,10 @@ function InfoSection({
 }: { title: string; children: React.ReactNode }) {
 	return (
 		<section className="flex flex-col gap-2">
-			<h2 className="font-baskerville font-bold text-2xl">{title}</h2>
-			<div className="prose prose-slate dark:prose-invert max-w-none text-base text-slate-700 leading-7">
+			<h2 className="font-baskerville font-bold text-2xl text-foreground">
+				{title}
+			</h2>
+			<div className="prose prose-slate dark:prose-invert max-w-none text-base text-foreground leading-7">
 				{children}
 			</div>
 		</section>
@@ -27,7 +29,7 @@ function SubmitPage() {
 	return (
 		<main className="container mt-2 flex max-w-6xl flex-col gap-6 pb-[64px] md:mt-8 md:pb-12">
 			<header className="flex w-full flex-col gap-2 py-4">
-				<h1 className="text-balance font-baskerville font-bold text-4xl md:text-5xl">
+				<h1 className="text-balance font-baskerville font-bold text-4xl text-foreground md:text-5xl">
 					Submission
 				</h1>
 				<div className="mt-1">
@@ -238,6 +240,10 @@ function SubmitPage() {
 										viewBox="0 0 678.3 160"
 										role="img"
 										aria-labelledby="timeline-title"
+										style={{
+											filter: "var(--timeline-filter, none)",
+										}}
+										className="dark:[--timeline-filter:invert(1)]"
 									>
 										<title id="timeline-title">
 											Recerts review process timeline: submission, acceptance

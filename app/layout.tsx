@@ -7,6 +7,7 @@ import { Analytics } from "@vercel/analytics/react";
 
 import HypercertExchangeClientProvider from "@/components/providers/HypercertExchangeClient";
 import PrivyConfigProvider from "@/components/providers/Privy";
+import { ThemeProvider } from "@/components/providers/theme-provider";
 import { ModalProvider } from "@/components/ui/modal/context";
 import { siteConfig } from "@/config/site";
 import { EB_Garamond, Inter } from "next/font/google";
@@ -128,7 +129,7 @@ export default function RootLayout({
 	children: React.ReactNode;
 }>) {
 	return (
-		<html lang="en">
+		<html lang="en" suppressHydrationWarning>
 			<head>
 				<link rel="stylesheet" href="https://latex.vercel.app/style.css" />
 				<meta property="fc:frame" content={JSON.stringify(frame)} />
@@ -141,20 +142,28 @@ export default function RootLayout({
 					archia.variable,
 				)}
 			>
-				<FarcasterProvider>
-					<Analytics />
-					<PrivyConfigProvider>
-						<HypercertExchangeClientProvider>
-							<PriceFeedProvider>
-								<ModalProvider modalVariants={[]}>
-									<Header />
-									<div className="flex-1">{children}</div>
-									<Footer />
-								</ModalProvider>
-							</PriceFeedProvider>
-						</HypercertExchangeClientProvider>
-					</PrivyConfigProvider>
-				</FarcasterProvider>
+				<ThemeProvider
+					attribute="class"
+					defaultTheme="system"
+					enableSystem
+					disableTransitionOnChange
+					storageKey="recerts-theme"
+				>
+					<FarcasterProvider>
+						<Analytics />
+						<PrivyConfigProvider>
+							<HypercertExchangeClientProvider>
+								<PriceFeedProvider>
+									<ModalProvider modalVariants={[]}>
+										<Header />
+										<div className="flex-1">{children}</div>
+										<Footer />
+									</ModalProvider>
+								</PriceFeedProvider>
+							</HypercertExchangeClientProvider>
+						</PrivyConfigProvider>
+					</FarcasterProvider>
+				</ThemeProvider>
 			</body>
 		</html>
 	);

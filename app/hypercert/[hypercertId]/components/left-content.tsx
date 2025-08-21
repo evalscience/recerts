@@ -18,7 +18,7 @@ const MetadataCard = ({
 }) => {
 	return (
 		<div className="flex shrink-0 flex-col justify-between gap-1 rounded-lg border border-border/60 bg-background/40 p-2 text-sm">
-			<span className="text-[11px] text-muted-foreground uppercase tracking-wide">
+			<span className="text-[11px] text-neutral-600 uppercase tracking-wide dark:text-neutral-300">
 				{title}
 			</span>
 			{children}
@@ -85,8 +85,10 @@ const LeftContent = ({ hypercert }: { hypercert: FullHypercert }) => {
 					<section className="my-3 flex w-full flex-col gap-3 p-1">
 						<Metadata hypercert={hypercert} />
 						<div className="flex flex-col gap-2">
-							<h1 className="font-baskerville text-xl">Abstract</h1>
-							<div className="text-sm leading-relaxed">
+							<h1 className="font-baskerville text-foreground text-xl">
+								Abstract
+							</h1>
+							<div className="text-foreground text-sm leading-relaxed [&_.prose]:dark:text-white [&_.prose_*]:dark:text-white [&_div]:dark:text-white [&_p]:dark:text-white dark:text-white">
 								<MarkdownEditor
 									markdown={hypercert.metadata.description ?? ""}
 									editorRef={null}

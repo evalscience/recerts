@@ -46,17 +46,19 @@ const ReviewForm = () => {
 	return (
 		<div className="space-y-4">
 			<h3 className="font-baskerville font-semibold text-xl">Write a Review</h3>
-			<MarkdownEditor
-				placeholder="Share your thoughts about this project"
-				markdown={pendingReview?.text || ""}
-				onChange={(s) =>
-					dispatch({ type: "UPDATE_PENDING_REVIEW", payload: s })
-				}
-				className="min-h-[200px] rounded-md border border-border"
-				showToolbar={true}
-				toolbarSize="sm"
-				editorRef={null}
-			/>
+			<div className="[&_.prose]:dark:text-white [&_.prose_*]:dark:text-white [&_div]:dark:text-white [&_p]:dark:text-white [&_span]:dark:text-white">
+				<MarkdownEditor
+					placeholder="Share your thoughts about this project"
+					markdown={pendingReview?.text || ""}
+					onChange={(s) =>
+						dispatch({ type: "UPDATE_PENDING_REVIEW", payload: s })
+					}
+					className="min-h-[200px] rounded-md border border-border"
+					showToolbar={true}
+					toolbarSize="sm"
+					editorRef={null}
+				/>
+			</div>
 			<div className="flex items-center justify-between">
 				{status.type !== "idle" && status.type !== "drafting" && (
 					<div className="flex w-full flex-col items-center gap-2">

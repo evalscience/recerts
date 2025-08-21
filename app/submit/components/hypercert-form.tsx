@@ -662,13 +662,15 @@ const HypercertForm = () => {
 												<FormItem>
 													<FormLabel>Abstract</FormLabel>
 													<FormControl>
-														<MarkdownEditor
-															markdown={field.value}
-															onChange={field.onChange}
-															className="rounded-lg border border-border bg-inherit"
-															placeholder="Write a concise abstract for the paper"
-															editorRef={null}
-														/>
+														<div className="[&_.prose]:dark:text-white [&_.prose_*]:dark:text-white [&_div]:dark:text-white [&_p]:dark:text-white [&_span]:dark:text-white">
+															<MarkdownEditor
+																markdown={field.value}
+																onChange={field.onChange}
+																className="rounded-lg border border-border bg-inherit"
+																placeholder="Write a concise abstract for the paper"
+																editorRef={null}
+															/>
+														</div>
 													</FormControl>
 													<FormMessage />
 												</FormItem>

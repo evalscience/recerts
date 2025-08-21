@@ -183,13 +183,13 @@ export function GridView({ hypercerts }: { hypercerts: Hypercert[] }) {
 					<section className="flex w-full items-center justify-center py-6">
 						<div className="flex flex-col items-center pb-24 text-center md:pb-10">
 							<TriangleAlert
-								className="mb-4 text-muted-foreground/75"
+								className="mb-4 text-neutral-500 dark:text-neutral-400"
 								size={60}
 							/>
-							<p className="font-bold text-lg text-muted-foreground">
+							<p className="font-bold text-lg text-neutral-700 dark:text-neutral-200">
 								We couldn't find any recerts matching your search or filter.
 							</p>
-							<p className="text-muted-foreground">
+							<p className="text-neutral-600 dark:text-neutral-300">
 								Please remove some of your filters and try again.
 							</p>
 							<Button

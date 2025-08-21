@@ -12,7 +12,7 @@ const NFT3D = ({ src }: { src: string }) => {
 						alt="Hypercert NFT"
 						width={300}
 						height={300}
-						className="h-auto w-full max-w-sm"
+						className="h-auto w-full max-w-sm bg-white"
 					/>
 				</CardItem>
 			</CardBody>

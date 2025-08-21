@@ -37,17 +37,17 @@
 
 	.dark {
 		--background: 20 14.3% 4.1%;
-		--foreground: 0 0% 95%;
+		--foreground: 0 0% 98%;
 		--card: 24 9.8% 10%;
-		--card-foreground: 0 0% 95%;
+		--card-foreground: 0 0% 98%;
 		--popover: 0 0% 9%;
-		--popover-foreground: 0 0% 95%;
+		--popover-foreground: 0 0% 98%;
 		--primary: 142.1 70.6% 45.3%;
 		--primary-foreground: 144.9 80.4% 10%;
 		--secondary: 240 3.7% 15.9%;
 		--secondary-foreground: 0 0% 98%;
 		--muted: 0 0% 15%;
-		--muted-foreground: 240 5% 64.9%;
+		--muted-foreground: 240 5% 75%;
 		--accent: 12 6.5% 15.1%;
 		--accent-foreground: 0 0% 98%;
 		--destructive: 0 62.8% 30.6%;
@@ -76,9 +76,12 @@
 	* {
 		@apply border-border;
 	}
+	html {
+		@apply bg-background;
+	}
 	body {
-    /* Let LaTeX.css drive background, max-width, spacing; keep text color from theme */
-    @apply text-foreground;
+    /* Let LaTeX.css drive max-width, spacing; use theme for colors */
+    @apply text-foreground bg-background;
 	}
 }
 
@@ -93,16 +96,15 @@ a:active {
 body {
   /* Body uses Inter */
   font-family: var(--font-inter), ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Noto Sans, Ubuntu, Cantarell, Helvetica Neue, Arial, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+  @apply text-foreground;
 }
 
 /* Headings use Garamond */
 h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-garamond), Georgia, Cambria, "Times New Roman", Times, serif;
-}
-
-/* Remove default top/bottom margins on headings to avoid extra whitespace
-   We control spacing via Tailwind utilities in components */
-h1, h2, h3, h4, h5, h6 {
+  @apply text-foreground;
+  /* Remove default top/bottom margins on headings to avoid extra whitespace
+     We control spacing via Tailwind utilities in components */
   margin-top: 0;  /* reset */
   margin-bottom: 0; /* reset */
 }
@@ -120,6 +122,10 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 /* Override LaTeX.css document width constraints to keep app full-width */
+html {
+  background-color: hsl(var(--background)) !important;
+}
+
 html body {
   max-width: 100% !important;
   margin-left: 0 !important;
@@ -131,6 +137,9 @@ html body {
   margin-bottom: 0 !important;
   padding-top: 0 !important;
   padding-bottom: 0 !important;
+  /* Override LaTeX.css background to use theme */
+  background-color: hsl(var(--background)) !important;
+  color: hsl(var(--foreground)) !important;
 }
 
 /* Neutralize LaTeX.css spacing on semantic containers, but preserve Tailwind paddings */

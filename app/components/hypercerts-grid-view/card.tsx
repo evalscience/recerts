@@ -58,7 +58,7 @@ const Card = ({
 	return (
 		<Link href={`/hypercert/${hypercertId}`} passHref>
 			<article className="group relative flex h-[300px] flex-col overflow-hidden rounded-lg border border-border/60 bg-background shadow-sm transition-shadow hover:shadow-md">
-				<div className="relative h-[240px] w-full overflow-hidden border-border/50 border-b bg-muted/30 p-2">
+				<div className="relative h-[240px] w-full overflow-hidden border-border/50 border-b bg-muted/30 p-2 dark:bg-white">
 					<Image
 						src={`/api/hypercert-image/${hypercertId}`}
 						alt={"Hypercert image"}
@@ -77,11 +77,11 @@ const Card = ({
 						</div>
 						<div className="flex items-center">
 							{reviewStatus === "Under review" ? (
-								<span className="mr-2 inline-block rounded-full bg-amber-100 px-2 py-0.5 text-amber-900 text-xs">
+								<span className="mr-2 inline-block rounded-full bg-amber-100 px-2 py-0.5 text-amber-900 text-xs dark:bg-amber-900/30 dark:text-amber-200">
 									Under review
 								</span>
 							) : (
-								<span className="mr-2 inline-block rounded-full bg-emerald-100 px-2 py-0.5 text-emerald-900 text-xs">
+								<span className="mr-2 inline-block rounded-full bg-emerald-100 px-2 py-0.5 text-emerald-900 text-xs dark:bg-emerald-900/30 dark:text-emerald-200">
 									Reviewed
 								</span>
 							)}
@@ -183,7 +183,7 @@ function TagsTwoRows({
 			{topics.map((t) => (
 				<span
 					key={`${idPrefix}-topic-full-${t}`}
-					className="mr-1 mb-1 inline-flex items-center rounded-full border px-2 py-[2px] text-[11px] text-muted-foreground leading-4"
+					className="mr-1 mb-1 inline-flex items-center rounded-full border px-2 py-[2px] text-[11px] text-neutral-600 leading-4 dark:text-neutral-300"
 					data-chip="tag"
 				>
 					{t}
@@ -203,7 +203,7 @@ function TagsTwoRows({
 						{visible.map((t) => (
 							<span
 								key={`${idPrefix}-topic-${t}`}
-								className="mr-1 mb-1 inline-flex items-center rounded-full border px-2 py-[2px] text-[11px] text-muted-foreground leading-4"
+								className="mr-1 mb-1 inline-flex items-center rounded-full border px-2 py-[2px] text-[11px] text-neutral-600 leading-4 dark:text-neutral-300"
 								data-chip="tag"
 							>
 								{t}
@@ -211,7 +211,7 @@ function TagsTwoRows({
 						))}
 						{overflow > 0 ? (
 							<span
-								className="mr-1 mb-1 inline-flex items-center rounded-full border px-2 py-[2px] text-[11px] text-muted-foreground leading-4"
+								className="mr-1 mb-1 inline-flex items-center rounded-full border px-2 py-[2px] text-[11px] text-neutral-600 leading-4 dark:text-neutral-300"
 								data-chip="tag"
 							>
 								+{overflow}

@@ -2,6 +2,7 @@
 
 import React from "react";
 import NavLinks from "./NavLinks";
+import { ThemeToggle } from "./ThemeToggle";
 import { WalletProfile } from "./WalletProfile";
 
 const Header = () => {
@@ -11,6 +12,7 @@ const Header = () => {
 				<NavLinks />
 
 				<div className="flex items-center gap-3">
+					<ThemeToggle />
 					<WalletProfile />
 				</div>
 			</div>

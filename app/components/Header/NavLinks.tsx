@@ -107,9 +107,9 @@ export const DesktopNavLink = ({
 		<Link
 			href={link.href}
 			className={cn(
-				"group rounded-full px-3 py-1.5 font-medium text-neutral-600 text-sm transition-all dark:hover:text-neutral-100 dark:text-neutral-400 hover:text-neutral-900 focus:outline-none focus-visible:ring-0 focus-visible:ring-offset-0",
+				"group rounded-full px-3 py-1.5 font-medium text-neutral-700 text-sm transition-all dark:hover:text-neutral-50 dark:text-neutral-200 hover:text-neutral-900 focus:outline-none focus-visible:ring-0 focus-visible:ring-offset-0",
 				isActive
-					? "bg-neutral-100 text-neutral-900 dark:bg-neutral-800 dark:text-neutral-100"
+					? "bg-neutral-100 text-neutral-900 dark:bg-neutral-700 dark:text-neutral-50"
 					: "",
 				link.href === "#" ? "opacity-50 hover:opacity-50" : "",
 			)}
@@ -119,13 +119,18 @@ export const DesktopNavLink = ({
 			})}
 		>
 			{link.id === "home" ? (
-				<span className="font-baskerville font-semibold text-base text-neutral-900 leading-none tracking-tight dark:text-neutral-100">
+				<span className="font-baskerville font-semibold text-base text-neutral-900 leading-none tracking-tight dark:text-neutral-50">
 					Recerts
 				</span>
 			) : link.showIconOnlyOnDesktop === false ? (
-				<link.Icon size={16} />
+				<link.Icon
+					size={16}
+					className="text-neutral-600 dark:text-neutral-300"
+				/>
 			) : (
-				link.text
+				<span className="text-neutral-700 dark:text-neutral-200">
+					{link.text}
+				</span>
 			)}
 			{link.openInNewTab && (
 				<ArrowUpRight
@@ -216,7 +221,7 @@ const NavLinks = () => {
 				href="/"
 				className="flex items-center gap-2 md:hidden focus:outline-none focus-visible:ring-0 focus-visible:ring-offset-0"
 			>
-				<span className="font-baskerville font-semibold text-base text-neutral-900 leading-none tracking-tight dark:text-neutral-100">
+				<span className="font-baskerville font-semibold text-base text-neutral-900 leading-none tracking-tight dark:text-neutral-50">
 					Recerts
 				</span>
 			</Link>

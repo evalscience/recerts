@@ -144,13 +144,13 @@ export default function GraphView({ hypercerts }: { hypercerts: Hypercert[] }) {
 			const tooltip = document.createElement("div");
 			tooltip.style.position = "absolute";
 			tooltip.style.pointerEvents = "none";
-			// Force solid white tooltip background for readability
-			tooltip.style.background = "#ffffff";
-			tooltip.style.border = "1px solid #E5E7EB"; // gray-200
+			// Use theme-appropriate tooltip background for readability
+			tooltip.style.background = "hsl(var(--popover))";
+			tooltip.style.border = "1px solid hsl(var(--border))";
 			tooltip.style.borderRadius = "8px";
 			tooltip.style.padding = "10px 12px";
 			tooltip.style.boxShadow = "0 4px 20px rgba(0,0,0,0.25)";
-			tooltip.style.color = "#111827"; // gray-900
+			tooltip.style.color = "hsl(var(--popover-foreground))";
 			tooltip.style.fontSize = "12px";
 			tooltip.style.zIndex = "50";
 			tooltip.style.display = "none";
@@ -315,7 +315,7 @@ export default function GraphView({ hypercerts }: { hypercerts: Hypercert[] }) {
 	return (
 		<div
 			ref={containerRef}
-			className="h-[600px] w-full rounded-lg border border-border bg-background"
+			className="h-[600px] w-full rounded-lg border border-border bg-background dark:bg-white"
 		>
 			<svg ref={svgRef} className="h-full w-full" aria-label="Recerts graph" />
 		</div>

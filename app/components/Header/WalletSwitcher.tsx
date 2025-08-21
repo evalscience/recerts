@@ -95,7 +95,7 @@ export function WalletSwitcher({ fullWidth = false }: { fullWidth?: boolean }) {
 								<span className="font-medium">
 									{getWalletName(wallet.walletClientType)}
 								</span>
-								<span className="text-muted-foreground text-xs">
+								<span className="text-neutral-500 text-xs dark:text-neutral-400">
 									{formatAddress(wallet.address)}
 								</span>
 							</div>
