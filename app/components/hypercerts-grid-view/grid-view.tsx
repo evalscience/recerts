@@ -154,7 +154,7 @@ export function GridView({ hypercerts }: { hypercerts: Hypercert[] }) {
 				{filteredHypercerts.length ? (
 					view === "grid" ? (
 						<div
-							className="grid auto-rows-[300px] grid-cols-[minmax(280px,_1fr)] gap-3 self-center lg:grid-cols-[280px_280px_280px] md:grid-cols-[280px_280px] xl:grid-cols-[280px_280px_280px_280px]"
+							className="grid auto-rows-[280px] grid-cols-[minmax(300px,_1fr)] justify-center justify-items-center gap-6 lg:grid-cols-[300px_300px_300px] md:grid-cols-[300px_300px] xl:grid-cols-[300px_300px_300px_300px]"
 							ref={gridRef}
 						>
 							{sortedHypercerts.map((hypercert: Hypercert) => (

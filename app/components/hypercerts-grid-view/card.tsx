@@ -57,18 +57,18 @@ const Card = ({
 
 	return (
 		<Link href={`/hypercert/${hypercertId}`} passHref>
-			<article className="group relative flex h-[300px] flex-col overflow-hidden rounded-lg border border-border/60 bg-background shadow-sm transition-shadow hover:shadow-md">
-				<div className="relative h-[240px] w-full overflow-hidden border-border/50 border-b bg-muted/30 p-2 dark:bg-white">
+			<article className="group relative flex h-[280px] flex-col overflow-hidden rounded-xl border border-border/20 bg-white shadow-sm transition-all duration-200 dark:border-border/20 hover:border-border/40 dark:bg-background hover:shadow-lg">
+				<div className="relative h-[200px] w-full overflow-hidden bg-white p-3 dark:bg-white">
 					<Image
 						src={`/api/hypercert-image/${hypercertId}`}
 						alt={"Hypercert image"}
 						height={600}
 						width={800}
-						className="mx-auto h-full w-full object-contain object-center transition duration-300 group-hover:scale-[1.02]"
+						className="mx-auto h-full w-full object-contain object-center transition duration-200 group-hover:scale-[1.01]"
 					/>
 				</div>
 
-				<section className="flex w-full flex-1 px-3 py-3">
+				<section className="flex w-full flex-1 px-4 py-4">
 					<div className="flex w-full items-center justify-between gap-3">
 						<div className="flex min-w-0 flex-1 items-center">
 							{Array.isArray(topics) && topics.length > 0 ? (
@@ -77,17 +77,17 @@ const Card = ({
 						</div>
 						<div className="flex items-center">
 							{reviewStatus === "Under review" ? (
-								<span className="mr-2 inline-block rounded-full bg-amber-100 px-2 py-0.5 text-amber-900 text-xs dark:bg-amber-900/30 dark:text-amber-200">
+								<span className="mr-3 inline-block rounded-full bg-amber-100 px-3 py-1 font-medium text-amber-900 text-xs dark:bg-amber-900/20 dark:text-amber-300">
 									Under review
 								</span>
 							) : (
-								<span className="mr-2 inline-block rounded-full bg-emerald-100 px-2 py-0.5 text-emerald-900 text-xs dark:bg-emerald-900/30 dark:text-emerald-200">
+								<span className="mr-3 inline-block rounded-full bg-emerald-100 px-3 py-1 font-medium text-emerald-900 text-xs dark:bg-emerald-900/20 dark:text-emerald-300">
 									Reviewed
 								</span>
 							)}
 							{pricePerPercentInUSD === undefined ? null : unitsForSale ===
 							  0n ? (
-								<span className="inline-block rounded-full bg-destructive/15 px-2 py-0.5 text-destructive text-sm">
+								<span className="inline-block rounded-full bg-destructive/10 px-3 py-1 font-medium text-destructive text-xs">
 									Sold
 								</span>
 							) : totalSalesInUSD !== null ? (
@@ -183,7 +183,7 @@ function TagsTwoRows({
 			{topics.map((t) => (
 				<span
 					key={`${idPrefix}-topic-full-${t}`}
-					className="mr-1 mb-1 inline-flex items-center rounded-full border px-2 py-[2px] text-[11px] text-neutral-600 leading-4 dark:text-neutral-300"
+					className="mr-2 mb-1 inline-flex items-center rounded-full border border-border/30 bg-background/50 px-2.5 py-1 text-[11px] text-neutral-700 leading-4 dark:border-border/20 dark:text-neutral-200"
 					data-chip="tag"
 				>
 					{t}
@@ -203,7 +203,7 @@ function TagsTwoRows({
 						{visible.map((t) => (
 							<span
 								key={`${idPrefix}-topic-${t}`}
-								className="mr-1 mb-1 inline-flex items-center rounded-full border px-2 py-[2px] text-[11px] text-neutral-600 leading-4 dark:text-neutral-300"
+								className="mr-2 mb-1 inline-flex items-center rounded-full border border-border/30 bg-background/50 px-2.5 py-1 text-[11px] text-neutral-700 leading-4 dark:border-border/20 dark:text-neutral-200"
 								data-chip="tag"
 							>
 								{t}
@@ -211,7 +211,7 @@ function TagsTwoRows({
 						))}
 						{overflow > 0 ? (
 							<span
-								className="mr-1 mb-1 inline-flex items-center rounded-full border px-2 py-[2px] text-[11px] text-neutral-600 leading-4 dark:text-neutral-300"
+								className="mr-2 mb-1 inline-flex items-center rounded-full border border-border/30 bg-background/50 px-2.5 py-1 text-[11px] text-neutral-700 leading-4 dark:border-border/20 dark:text-neutral-200"
 								data-chip="tag"
 							>
 								+{overflow}
