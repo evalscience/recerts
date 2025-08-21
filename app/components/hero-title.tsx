@@ -19,7 +19,7 @@ const HeroTitleVariants = {
 const HeroTitle = () => {
 	return (
 		<h2 className="absolute right-0 bottom-0 left-0">
-			<div className="relative flex flex-col items-center gap-3 px-4 py-8 text-center">
+			<div className="relative flex flex-col items-center gap-2 px-4 py-4 text-center sm:gap-3 sm:py-8">
 				<motion.span
 					variants={HeroTitleVariants}
 					initial={"initial"}
