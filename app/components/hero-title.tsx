@@ -37,7 +37,7 @@ const HeroTitle = () => {
 					transition={{ duration: 0.5, delay: 0.25 }}
 					className="text-base text-muted-foreground md:text-3xl sm:text-2xl"
 				>
-					Journal of Decentralized Funding Research
+					Journal of Mechanism Design for Public Goods
 				</motion.span>
 			</div>
 		</h2>

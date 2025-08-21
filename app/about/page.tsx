@@ -4,9 +4,9 @@ import Image from "next/image";
 import React from "react";
 
 export const metadata: Metadata = {
-	title: "About | Recerts — JDFR",
+	title: "About | Recerts — MD4PG",
 	description:
-		"Learn about the Journal of Decentralized Funding Research (JDFR), its mission, and the people behind it.",
+		"Learn about the Journal of Mechanism Design for Public Goods (MD4PG), its mission, and the people behind it.",
 };
 
 type Person = {
@@ -24,7 +24,10 @@ const steeringCommittee: Person[] = [
 	{ name: "Joel Miller", affiliation: "UIUC" },
 	{ name: "Wisdom Ogwu", affiliation: "Sublinear Labs" },
 	{ name: "Raymond Cheng", affiliation: "Open Source Observer" },
-	{ name: "Angela Kreitenweis", affiliation: "Token Engineering Academy / GovXS" },
+	{
+		name: "Angela Kreitenweis",
+		affiliation: "Token Engineering Academy / GovXS",
+	},
 	{ name: "Holke Brammer", affiliation: "Hypercerts Foundation" },
 ];
 
@@ -62,7 +65,7 @@ export default function AboutPage() {
 					About Recerts Journal
 				</h1>
 				<p className="mx-auto max-w-3xl text-center text-muted-foreground">
-					The Recerts Journal of Decentralized Funding Research (JDFR) is a
+					The Recerts Journal of Mechanism Design for Public Goods (MD4PG) is a
 					peer-reviewed venue for scholarship on collective funding mechanism
 					design, incentive systems, and impact verification. We publish
 					theoretical and empirical work that advances open, transparent, and
@@ -76,7 +79,7 @@ export default function AboutPage() {
 					<h2 className="font-baskerville font-bold text-black text-xl">
 						Editors in Chief
 					</h2>
-					<div className="mt-4 divide-y">
+					<div className="mt-4">
 						{editors.map((p) => (
 							<PersonRow key={p.name} {...p} />
 						))}

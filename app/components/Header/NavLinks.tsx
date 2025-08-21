@@ -238,7 +238,7 @@ const NavLinks = () => {
 						</div>
 						<div className="flex w-full items-center justify-center px-4">
 							<DrawerDescription className="w-[80%] text-balance text-center font-baskerville text-lg">
-								Journal of Decentralized Funding Research.
+								Journal of Mechanism Design for Public Goods.
 							</DrawerDescription>
 						</div>
 					</DrawerHeader>

@@ -25,7 +25,7 @@ export const siteConfig: SiteConfig = {
   name: "Recerts",
   title: "By Eval.Science & GainForest.Earth",
   description:
-    "Recerts Journal of Decentralized Funding Research",
+    "Recerts Journal of Mechanism Design for Public Goods",
   localeDefault: "en",
   url: "https://recerts.org",
   links: {

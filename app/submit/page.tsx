@@ -82,8 +82,8 @@ function SubmitPage() {
 
 							<InfoSection title="Journal Scope">
 								<p>
-									Recerts Journal of Decentralized Funding Research (JDFR) is a
-									peer‑reviewed venue for scholarship on collective funding
+									Recerts Journal of Mechanism Design for Public Goods (MD4PG)
+									is a peer‑reviewed venue for scholarship on collective funding
 									mechanism design, incentive systems, and impact verification.
 									We publish theoretical and empirical work that advances open,
 									transparent, and decentralized approaches to allocating
