@@ -233,7 +233,7 @@ const NavLinks = () => {
 					<DrawerHeader>
 						<div className="flex flex-col items-center justify-center gap-2 px-4">
 							<DrawerTitle className="text-center font-baskerville font-bold text-3xl text-black uppercase leading-none tracking-wide">
-								RECERTS
+								Recerts
 							</DrawerTitle>
 						</div>
 						<div className="flex w-full items-center justify-center px-4">

@@ -4,15 +4,13 @@ import localFont from "next/font/local";
 import "./globals.css";
 
 import { Analytics } from "@vercel/analytics/react";
-import { cookieToInitialState } from "wagmi";
 
-import HypercertExchangeClientProvider from "@/components/providers/HypercertExchangeClientProvider";
+import ChainSwitchProvider from "@/components/providers/ChainSwitch";
+import HypercertExchangeClientProvider from "@/components/providers/HypercertExchangeClient";
+import PrivyConfigProvider from "@/components/providers/Privy";
 import { ModalProvider } from "@/components/ui/modal/context";
 import { siteConfig } from "@/config/site";
-import { config } from "@/config/wagmi";
-import { WagmiContextProvider } from "@/contexts/wagmi";
 import { EB_Garamond, Inter } from "next/font/google";
-import { headers } from "next/headers";
 import { PriceFeedProvider } from "./PriceFeedProvider";
 import FarcasterProvider from "./components/FarcasterProvider";
 import Footer from "./components/Footer";
@@ -146,21 +144,19 @@ export default function RootLayout({
 			>
 				<FarcasterProvider>
 					<Analytics />
-					<WagmiContextProvider>
+					<PrivyConfigProvider>
 						<HypercertExchangeClientProvider>
 							<PriceFeedProvider>
 								<ModalProvider modalVariants={[]}>
-									<Header />
-									<main className="flex-1">
-										<article className="mx-auto w-full max-w-6xl px-6 py-10 md:py-14">
-											{children}
-										</article>
-									</main>
-									<Footer />
+									<ChainSwitchProvider>
+										<Header />
+										<div className="flex-1">{children}</div>
+										<Footer />
+									</ChainSwitchProvider>
 								</ModalProvider>
 							</PriceFeedProvider>
 						</HypercertExchangeClientProvider>
-					</WagmiContextProvider>
+					</PrivyConfigProvider>
 				</FarcasterProvider>
 			</body>
 		</html>

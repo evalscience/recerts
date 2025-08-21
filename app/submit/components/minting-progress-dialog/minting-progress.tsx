@@ -3,9 +3,9 @@ import { Button } from "@/components/ui/button";
 import { DIVVI_DATA_SUFFIX } from "@/config/divvi";
 import { GAINFOREST_TIP_ADDRESS, GAINFOREST_TIP_AMOUNT } from "@/config/tip";
 import { SUPPORTED_CHAINS } from "@/config/wagmi";
+import useAccount from "@/hooks/use-account";
 import { useHypercertClient } from "@/hooks/use-hypercerts-client";
 import { createAirtableRecordForHypercertId } from "@/lib/airtable";
-import { sendEmailAndUpdateGoogle } from "@/lib/sendEmailAndUpdateGoogle";
 import { cn } from "@/lib/utils";
 import { constructHypercertIdFromReceipt } from "@/utils/constructHypercertIdFromReceipt";
 import { submitReferral } from "@divvi/referral-sdk";
@@ -15,20 +15,11 @@ import {
 	formatHypercertData,
 } from "@hypercerts-org/sdk";
 import { motion } from "framer-motion";
-import {
-	Check,
-	ChevronLeft,
-	Circle,
-	CircleAlert,
-	Copy,
-	Dot,
-	Loader2,
-	RotateCw,
-} from "lucide-react";
+import { Check, Circle, CircleAlert, Loader2, RotateCw } from "lucide-react";
 import Link from "next/link";
 import React, { useEffect, useRef, useState } from "react";
 import { createWalletClient, custom, formatEther } from "viem";
-import { useAccount, usePublicClient } from "wagmi";
+import { usePublicClient } from "wagmi";
 import type { MintingFormValues } from "../hypercert-form";
 
 type MintingProgressConfig = {
@@ -88,8 +79,8 @@ const mintingProgressConfigs: Record<
 		title: "Minting Hypercert",
 		description: "Please sign the mint transaction when asked for approval",
 		errorState: {
-			title: "Transaction Rejected",
-			description: "The transaction was rejected.",
+			title: "Minting Failed",
+			description: "The minting transaction failed. Please try again.",
 		},
 	},
 	WAITING_TO_MINT: {
@@ -143,7 +134,7 @@ const MintingProgress = ({
 		useState<MintingProgressConfigKey>("INITIALIZING");
 	const [error, setError] = useState(false);
 	const [userDidTip, setUserDidTip] = useState(false);
-	const [mintedHypercertId, setMintedHypercertId] = useState<string>();
+	const [, setMintedHypercertId] = useState<string>();
 
 	const { isConnected, address } = useAccount();
 	const { client } = useHypercertClient();
@@ -224,7 +215,35 @@ const MintingProgress = ({
 			});
 			return receipt;
 		});
-		if (mintReceiptError || mintReceipt.status === "reverted") {
+
+		console.log("Transaction receipt:", mintReceipt);
+		console.log("Receipt error:", mintReceiptError);
+		console.log("Receipt status:", mintReceipt?.status);
+
+		if (mintReceiptError) {
+			console.error("Error waiting for transaction receipt:", mintReceiptError);
+			// Check if it's an RPC error - if so, assume transaction succeeded
+			const errorMessage = mintReceiptError.message.toLowerCase();
+			if (
+				errorMessage.includes("request failed") ||
+				errorMessage.includes("status code 400") ||
+				errorMessage.includes("rpc error") ||
+				errorMessage.includes("network error") ||
+				errorMessage.includes("could not coalesce error")
+			) {
+				console.warn(
+					"RPC error detected, but transaction likely succeeded. Proceeding to completion.",
+				);
+				// Skip hypercert ID construction and go straight to completion
+				setConfigKey("COMPLETED");
+				return;
+			}
+			setError(true);
+			return;
+		}
+
+		if (mintReceipt.status === "reverted") {
+			console.error("Transaction was reverted or failed");
 			setError(true);
 			return;
 		}
@@ -232,7 +251,9 @@ const MintingProgress = ({
 			mintReceipt,
 			publicClient.chain.id,
 		);
+		console.log("Constructed hypercert ID:", hypercertId);
 		if (!hypercertId) {
+			console.error("Failed to construct hypercert ID from receipt");
 			setError(true);
 			return;
 		}

@@ -8,6 +8,7 @@ import { cn } from "@/lib/utils";
 import { submitReferral } from "@divvi/referral-sdk";
 
 import { SUPPORTED_CHAINS } from "@/config/wagmi";
+import useAccount from "@/hooks/use-account";
 import type {
 	Currency,
 	HypercertExchangeClient,
@@ -26,7 +27,7 @@ import {
 import Link from "next/link";
 import React, { useEffect, useRef, useState } from "react";
 import { createWalletClient, custom, formatEther } from "viem";
-import { useAccount, usePublicClient } from "wagmi";
+import { usePublicClient } from "wagmi";
 
 type ListingProgressConfig = {
 	title: string;
@@ -174,7 +175,7 @@ const ListingProgress = ({
 	const [error, setError] = useState(false);
 	const [userDidTip, setUserDidTip] = useState(false);
 
-	const { isConnected, address, chainId } = useAccount();
+	const { isConnected } = useAccount();
 	const { client } = useHypercertClient();
 	const publicClient = usePublicClient();
 
