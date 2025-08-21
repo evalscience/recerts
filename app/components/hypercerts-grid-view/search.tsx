@@ -74,7 +74,7 @@ const Search = ({
 	}, [normalizeChainLabel]);
 
 	return (
-		<div className="mb-6 flex w-full scale-100 flex-col items-center justify-center px-4">
+		<div className="mb-6 flex w-full scale-100 flex-col items-center justify-center px-2 sm:px-4">
 			<motion.div
 				className="w-full max-w-3xl"
 				initial={{ opacity: 0, filter: "blur(10px)", y: "100" }}
@@ -115,25 +115,27 @@ const Search = ({
 					/>
 				</div>
 				<motion.div className="-mt-1 z-[5] w-full rounded-t-0 rounded-b-lg border border-border bg-background/80 p-2 pt-3">
-					<div className="flex w-full flex-wrap items-center justify-between gap-2 px-2 py-1 font-sans sm:gap-3">
-						<div className="flex flex-wrap items-center gap-2">
-							<Combobox
-								options={CHAIN_OPTIONS}
-								value={selectedChainId}
-								onChange={(val) => setSelectedChainId(val ?? "all")}
-								placeholder="All chains"
-								className="min-w-[140px] sm:min-w-[160px]"
-							/>
-							<Combobox
-								options={SORT_OPTIONS}
-								value={sortOptions.key}
-								onChange={(val) => {
-									setSortOptions({ ...sortOptions, key: val as SortKey });
-								}}
-								placeholder="Sort by"
-								className="min-w-[140px] sm:min-w-[160px]"
-							/>
-							<div className="mt-2 flex flex-row overflow-hidden rounded-lg border border-border sm:mt-0">
+					<div className="flex w-full flex-col items-stretch justify-between gap-3 px-2 py-1 font-sans sm:flex-row sm:items-center sm:gap-3">
+						<div className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row sm:flex-wrap sm:items-center sm:gap-2">
+							<div className="flex w-full flex-col gap-2 sm:w-auto sm:flex-row">
+								<Combobox
+									options={CHAIN_OPTIONS}
+									value={selectedChainId}
+									onChange={(val) => setSelectedChainId(val ?? "all")}
+									placeholder="All chains"
+									className="w-full sm:w-auto sm:min-w-[160px]"
+								/>
+								<Combobox
+									options={SORT_OPTIONS}
+									value={sortOptions.key}
+									onChange={(val) => {
+										setSortOptions({ ...sortOptions, key: val as SortKey });
+									}}
+									placeholder="Sort by"
+									className="w-full sm:w-auto sm:min-w-[160px]"
+								/>
+							</div>
+							<div className="flex flex-row overflow-hidden rounded-lg border border-border">
 								<Button
 									variant={sortOptions.order === "asc" ? "secondary" : "ghost"}
 									size="sm"
@@ -168,33 +170,36 @@ const Search = ({
 								</Button>
 							</div>
 						</div>
-						<div className="mt-2 flex w-full items-center justify-end gap-1 sm:mt-0 sm:w-auto sm:justify-normal">
+						<div className="flex w-full items-center justify-center gap-0 overflow-hidden rounded-lg border border-border sm:w-auto sm:justify-normal">
 							<Button
 								variant={view === "grid" ? "secondary" : "ghost"}
 								size="sm"
 								onClick={() => setView("grid")}
 								aria-pressed={view === "grid"}
-								className="rounded-none"
+								className="flex-1 rounded-none sm:flex-initial"
 							>
 								<LayoutGrid className="h-4 w-4" />
+								<span className="ml-2 text-xs sm:hidden">Grid</span>
 							</Button>
 							<Button
 								variant={view === "table" ? "secondary" : "ghost"}
 								size="sm"
 								onClick={() => setView("table")}
 								aria-pressed={view === "table"}
-								className="rounded-none"
+								className="flex-1 rounded-none sm:flex-initial"
 							>
 								<List className="h-4 w-4" />
+								<span className="ml-2 text-xs sm:hidden">List</span>
 							</Button>
 							<Button
 								variant={view === "graph" ? "secondary" : "ghost"}
 								size="sm"
 								onClick={() => setView("graph")}
 								aria-pressed={view === "graph"}
-								className="rounded-none"
+								className="flex-1 rounded-none sm:flex-initial"
 							>
 								<Network className="h-4 w-4" />
+								<span className="ml-2 text-xs sm:hidden">Graph</span>
 							</Button>
 						</div>
 					</div>
