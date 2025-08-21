@@ -105,7 +105,7 @@ const Card = ({
 																	totalSalesInUSD / pricePerPercentInUSD,
 															  ).toFixed(0)}%`
 													}
-													textClassName="text-black"
+													textClassName="text-foreground"
 												/>
 											</div>
 										</TooltipTrigger>

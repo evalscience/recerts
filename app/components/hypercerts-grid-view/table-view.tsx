@@ -110,7 +110,7 @@ export default function TableView({
 		<div className="w-full overflow-x-auto">
 			<table
 				aria-label="Hypercerts table"
-				className="w-full table-auto text-left font-serif"
+				className="w-full table-auto text-left"
 			>
 				<colgroup>
 					<col className="w-[8%]" />
@@ -121,13 +121,13 @@ export default function TableView({
 					<col className="w-[8%]" />
 				</colgroup>
 				<thead className="text-muted-foreground text-xs">
-					<tr className="border-b">
-						<th className="py-2 pr-2 font-medium">Year</th>
-						<th className="py-2 pr-2 font-medium">Title</th>
-						<th className="py-2 pr-2 font-medium">Authors</th>
-						<th className="py-2 pr-2 font-medium">Subject areas</th>
-						<th className="py-2 pr-2 font-medium">Status</th>
-						<th className="py-2 pr-0 text-right font-medium">Funding</th>
+					<tr className="border-border/50 border-b">
+						<th className="py-4 pr-4 text-left font-medium">Year</th>
+						<th className="py-4 pr-4 text-left font-medium">Title</th>
+						<th className="py-4 pr-4 text-left font-medium">Authors</th>
+						<th className="py-4 pr-4 text-left font-medium">Subject areas</th>
+						<th className="py-4 pr-4 text-left font-medium">Status</th>
+						<th className="py-4 pr-0 text-right font-medium">Funding</th>
 					</tr>
 				</thead>
 				<tbody className="text-sm">
@@ -139,11 +139,11 @@ export default function TableView({
 						const isSold = targetUSD !== undefined && h.unitsForSale === 0n;
 						return (
 							<Fragment key={h.hypercertId}>
-								<tr className="border-b transition-colors hover:bg-muted/20">
-									<td className="py-3 pr-2 align-top text-muted-foreground">
+								<tr className="border-border/30 border-b transition-colors hover:bg-muted/10">
+									<td className="py-4 pr-4 align-top text-muted-foreground text-sm">
 										{year}
 									</td>
-									<td className="py-3 pr-2 align-top">
+									<td className="py-4 pr-4 align-top">
 										<div className="inline-flex max-w-full items-center gap-2">
 											<button
 												type="button"
@@ -169,37 +169,37 @@ export default function TableView({
 											</Link>
 										</div>
 									</td>
-									<td className="py-3 pr-2 align-top text-[13px] text-muted-foreground italic">
+									<td className="py-4 pr-4 align-top text-muted-foreground text-sm">
 										{Array.isArray(h.contributors) && h.contributors.length
 											? h.contributors.join(", ").replace(/, ([^,]*)$/, " & $1")
 											: "—"}
 									</td>
-									<td className="py-3 pr-0 align-top">
+									<td className="py-4 pr-4 align-top">
 										{Array.isArray(h.topics) && h.topics.length ? (
 											<SubjectTagsCompact
 												topics={h.topics}
 												idPrefix={String(h.hypercertId)}
 											/>
 										) : (
-											<span className="text-muted-foreground">—</span>
+											<span className="text-muted-foreground text-sm">—</span>
 										)}
 									</td>
-									<td className="py-3 pr-2 align-top">
+									<td className="py-4 pr-4 align-top">
 										{(reviewStatusById[h.hypercertId] ??
 											(h.hasReviews ? "Reviewed" : "Under review")) ===
 										"Under review" ? (
-											<span className="inline-block rounded-full bg-amber-100 px-2 py-0.5 text-amber-900 text-xs">
+											<span className="inline-flex items-center rounded-full bg-amber-50 px-3 py-1 font-medium text-amber-700 text-xs dark:bg-amber-900/30 dark:text-amber-300">
 												Under review
 											</span>
 										) : (
-											<span className="inline-block rounded-full bg-emerald-100 px-2 py-0.5 text-emerald-900 text-xs">
+											<span className="inline-flex items-center rounded-full bg-emerald-50 px-3 py-1 font-medium text-emerald-700 text-xs dark:bg-emerald-900/30 dark:text-emerald-300">
 												Reviewed
 											</span>
 										)}
 									</td>
-									<td className="py-3 pr-0 text-right align-top">
+									<td className="py-4 pr-0 text-right align-top">
 										{isSold ? (
-											<span className="inline-block rounded-full bg-destructive/15 px-2 py-0.5 text-destructive text-xs">
+											<span className="inline-flex items-center rounded-full bg-red-50 px-3 py-1 font-medium text-red-700 text-xs dark:bg-red-900/30 dark:text-red-300">
 												Sold
 											</span>
 										) : targetUSD !== undefined && totalSalesInUSD !== null ? (
@@ -216,7 +216,7 @@ export default function TableView({
 																				totalSalesInUSD / targetUSD,
 																		  ).toFixed(0)}%`
 																}
-																textClassName="text-black"
+																textClassName="text-foreground"
 															/>
 														</div>
 													</TooltipTrigger>
@@ -239,13 +239,13 @@ export default function TableView({
 									</td>
 								</tr>
 								{isOpen ? (
-									<tr className="border-b last:border-b-0">
-										<td colSpan={6} className="bg-muted/20">
-											<div className="px-4 py-4">
-												<div className="mb-2 font-medium text-[15px]">
+									<tr className="border-border/30 border-b last:border-b-0">
+										<td colSpan={6} className="bg-muted/5">
+											<div className="px-6 py-6">
+												<div className="mb-3 font-medium text-foreground text-sm">
 													Abstract
 												</div>
-												<p className="text-[13px] text-muted-foreground leading-6">
+												<p className="max-w-4xl text-muted-foreground text-sm leading-relaxed">
 													{h.description ?? "No abstract provided."}
 												</p>
 											</div>
