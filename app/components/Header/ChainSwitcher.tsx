@@ -44,12 +44,12 @@ export function ChainSwitcher({ fullWidth = false }: { fullWidth?: boolean }) {
 		}
 	};
 
-	const handleChainSwitch = async (chain: (typeof SUPPORTED_CHAINS)[0]) => {
-		if (chain.id === chainId) return;
+	const handleChainSwitch = async (targetChainId: number) => {
+		if (targetChainId === chainId) return;
 
-		setSwitchingTo(chain.id);
+		setSwitchingTo(targetChainId);
 		try {
-			await switchChain({ chainId: chain.id });
+			await switchChain({ chainId: targetChainId });
 		} finally {
 			setSwitchingTo(null);
 		}
@@ -106,7 +106,7 @@ export function ChainSwitcher({ fullWidth = false }: { fullWidth?: boolean }) {
 				{SUPPORTED_CHAINS.map((chain) => (
 					<DropdownMenuItem
 						key={chain.id}
-						onClick={() => handleChainSwitch(chain)}
+						onClick={() => handleChainSwitch(chain.id)}
 						disabled={isPending && switchingTo === chain.id}
 						className="flex cursor-pointer items-center justify-between"
 					>

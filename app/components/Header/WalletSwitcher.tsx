@@ -14,7 +14,7 @@ import { Check, ChevronDown, Wallet } from "lucide-react";
 
 export function WalletSwitcher({ fullWidth = false }: { fullWidth?: boolean }) {
 	const { wallets } = useWallets();
-	const { activeWallet, setActiveWallet } = useActiveWallet();
+	const { wallet: activeWallet, setActiveWallet } = useActiveWallet();
 
 	if (!wallets.length || wallets.length === 1) return null;
 
