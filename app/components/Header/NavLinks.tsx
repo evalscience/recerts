@@ -155,8 +155,8 @@ export const PhoneNavLink = ({
 			href={link.href}
 			className={cn(
 				buttonVariants({ variant: "ghost" }),
-				"justify-start text-left text-black focus:outline-none focus-visible:ring-0 focus-visible:ring-offset-0",
-				isActive ? "bg-beige" : "",
+				"justify-start text-left text-neutral-900 dark:text-neutral-100 focus:outline-none focus-visible:ring-0 focus-visible:ring-offset-0",
+				isActive ? "bg-beige dark:bg-neutral-700" : "",
 				link.href === "#" ? "opacity-50 hover:opacity-50" : "",
 			)}
 			{...(link.openInNewTab && {
@@ -200,7 +200,7 @@ const NavLinks = () => {
 	return (
 		<div className="relative z-10 flex items-center gap-2">
 			{/* On Large Devices: */}
-			<ul className="hidden gap-0.5 text-black md:flex">
+			<ul className="hidden gap-0.5 text-neutral-900 md:flex dark:text-neutral-100">
 				{navLinks.map((link) => {
 					const isActive = getIsActive(link);
 					if (link.type === "dynamic") {
@@ -238,7 +238,7 @@ const NavLinks = () => {
 					<div className="hidden" />
 					<DrawerHeader>
 						<div className="flex flex-col items-center justify-center gap-2 px-4">
-							<DrawerTitle className="text-center font-baskerville font-bold text-3xl text-black uppercase leading-none tracking-wide">
+							<DrawerTitle className="text-center font-baskerville font-bold text-3xl text-neutral-900 uppercase leading-none tracking-wide dark:text-neutral-100">
 								Recerts
 							</DrawerTitle>
 						</div>
@@ -248,7 +248,7 @@ const NavLinks = () => {
 							</DrawerDescription>
 						</div>
 					</DrawerHeader>
-					<ul className="flex flex-col gap-1 p-4 text-black">
+					<ul className="flex flex-col gap-1 p-4 text-neutral-900 dark:text-neutral-100">
 						{navLinks.map((link) => {
 							const isActive = getIsActive(link);
 							if (link.type === "dynamic") {
