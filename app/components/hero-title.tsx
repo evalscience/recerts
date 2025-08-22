@@ -18,18 +18,8 @@ const HeroTitleVariants = {
 
 const HeroTitle = () => {
 	return (
-		<h2 className="absolute right-0 bottom-0 left-0">
-			<div className="relative flex flex-col items-center gap-2 px-4 py-4 text-center sm:gap-3 sm:py-8">
-				<motion.span
-					variants={HeroTitleVariants}
-					initial={"initial"}
-					animate={"animate"}
-					transition={{ duration: 0.6, delay: 0.2 }}
-					className="font-baskerville font-normal text-3xl text-foreground tracking-wide md:text-5xl"
-				>
-					Recerts
-				</motion.span>
-
+		<h2 className="relative">
+			<div className="relative flex flex-col items-center px-4 py-2 text-center">
 				<motion.span
 					variants={HeroTitleVariants}
 					initial={"initial"}
