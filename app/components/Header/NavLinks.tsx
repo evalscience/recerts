@@ -119,7 +119,7 @@ export const DesktopNavLink = ({
 			})}
 		>
 			{link.id === "home" ? (
-				<span className="font-baskerville font-semibold text-base text-neutral-900 leading-none tracking-tight dark:text-neutral-50">
+				<span className="font-semibold text-base text-neutral-900 leading-none tracking-tight dark:text-neutral-50">
 					Recerts
 				</span>
 			) : link.showIconOnlyOnDesktop === false ? (
@@ -221,7 +221,7 @@ const NavLinks = () => {
 				href="/"
 				className="flex items-center gap-2 md:hidden focus:outline-none focus-visible:ring-0 focus-visible:ring-offset-0"
 			>
-				<span className="font-baskerville font-semibold text-base text-neutral-900 leading-none tracking-tight dark:text-neutral-50">
+				<span className="font-semibold text-base text-neutral-900 leading-none tracking-tight dark:text-neutral-50">
 					Recerts
 				</span>
 			</Link>
@@ -238,12 +238,12 @@ const NavLinks = () => {
 					<div className="hidden" />
 					<DrawerHeader>
 						<div className="flex flex-col items-center justify-center gap-2 px-4">
-							<DrawerTitle className="text-center font-baskerville font-bold text-3xl text-neutral-900 uppercase leading-none tracking-wide dark:text-neutral-100">
+							<DrawerTitle className="text-center font-bold text-3xl text-neutral-900 uppercase leading-none tracking-wide dark:text-neutral-100">
 								Recerts
 							</DrawerTitle>
 						</div>
 						<div className="flex w-full items-center justify-center px-4">
-							<DrawerDescription className="w-[80%] text-balance text-center font-baskerville text-lg">
+							<DrawerDescription className="w-[80%] text-balance text-center text-lg">
 								Journal of Mechanism Design for Public Goods.
 							</DrawerDescription>
 						</div>

@@ -157,3 +157,21 @@ article {
   padding-left: 0 !important;
   padding-right: 0 !important;
 }
+
+/* Override LaTeX.css table borders that may be hardcoded as black */
+table, th, td {
+  border-color: hsl(240 5.9% 70%) !important;
+}
+
+.dark table, .dark th, .dark td {
+  border-color: hsl(240 3.7% 35%) !important;
+}
+
+/* Override Tailwind Typography (prose) font families to use our font system */
+.prose {
+  font-family: var(--font-inter), ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Noto Sans, Ubuntu, Cantarell, Helvetica Neue, Arial, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol" !important;
+}
+
+.prose h1, .prose h2, .prose h3, .prose h4, .prose h5, .prose h6 {
+  font-family: var(--font-garamond), Georgia, Cambria, "Times New Roman", Times, serif !important;
+}

@@ -59,7 +59,7 @@ export default function TableView({
 		setExpandedById((prev) => ({ ...prev, [id]: !prev[id] }));
 
 	const SubjectBadge = ({ text }: { text: string }) => (
-		<span className="mr-1 mb-1 inline-flex items-center rounded-full border px-2 py-[2px] text-[11px] text-muted-foreground leading-4">
+		<span className="mr-1 mb-1 inline-flex items-center rounded-full border border-border/30 px-2 py-[2px] text-[11px] text-neutral-700 leading-4 dark:border-neutral-600 dark:text-muted-foreground">
 			{text}
 		</span>
 	);
@@ -94,7 +94,7 @@ export default function TableView({
 						<div className="flex flex-wrap items-center">
 							<SubjectBadge text={first} />
 							{overflow > 0 ? (
-								<span className="mr-1 mb-1 inline-flex items-center rounded-full border px-2 py-[2px] text-[11px] text-muted-foreground leading-4">
+								<span className="mr-1 mb-1 inline-flex items-center rounded-full border border-border/30 px-2 py-[2px] text-[11px] text-neutral-700 leading-4 dark:border-neutral-600 dark:text-muted-foreground">
 									+{overflow}
 								</span>
 							) : null}
@@ -110,7 +110,7 @@ export default function TableView({
 		<div className="w-full overflow-x-auto">
 			<table
 				aria-label="Hypercerts table"
-				className="w-full table-auto text-left"
+				className="w-full table-auto text-left [&_td]:border-neutral-200 [&_th]:border-neutral-200 dark:[&_td]:border-neutral-600 dark:[&_th]:border-neutral-600"
 			>
 				<colgroup>
 					<col className="w-[8%]" />
@@ -120,8 +120,8 @@ export default function TableView({
 					<col className="w-[8%]" />
 					<col className="w-[8%]" />
 				</colgroup>
-				<thead className="text-muted-foreground text-xs">
-					<tr className="border-border/50 border-b">
+				<thead className="text-neutral-700 text-xs dark:text-neutral-300">
+					<tr className="border-neutral-200 border-b dark:border-b-neutral-600">
 						<th className="py-4 pr-4 text-left font-medium">Year</th>
 						<th className="py-4 pr-4 text-left font-medium">Title</th>
 						<th className="py-4 pr-4 text-left font-medium">Authors</th>
@@ -139,8 +139,8 @@ export default function TableView({
 						const isSold = targetUSD !== undefined && h.unitsForSale === 0n;
 						return (
 							<Fragment key={h.hypercertId}>
-								<tr className="border-border/30 border-b transition-colors hover:bg-muted/10">
-									<td className="py-4 pr-4 align-top text-muted-foreground text-sm">
+								<tr className="border-neutral-200 border-b transition-colors dark:border-b-neutral-600 hover:bg-muted/10">
+									<td className="py-4 pr-4 align-top text-neutral-600 text-sm dark:text-muted-foreground">
 										{year}
 									</td>
 									<td className="py-4 pr-4 align-top">
@@ -169,7 +169,7 @@ export default function TableView({
 											</Link>
 										</div>
 									</td>
-									<td className="py-4 pr-4 align-top text-muted-foreground text-sm">
+									<td className="py-4 pr-4 align-top text-neutral-600 text-sm dark:text-muted-foreground">
 										{Array.isArray(h.contributors) && h.contributors.length
 											? h.contributors.join(", ").replace(/, ([^,]*)$/, " & $1")
 											: "—"}
@@ -181,7 +181,9 @@ export default function TableView({
 												idPrefix={String(h.hypercertId)}
 											/>
 										) : (
-											<span className="text-muted-foreground text-sm">—</span>
+											<span className="text-neutral-600 text-sm dark:text-muted-foreground">
+												—
+											</span>
 										)}
 									</td>
 									<td className="py-4 pr-4 align-top">
@@ -234,12 +236,14 @@ export default function TableView({
 												</Tooltip>
 											</TooltipProvider>
 										) : (
-											<span className="text-muted-foreground">—</span>
+											<span className="text-neutral-600 dark:text-muted-foreground">
+												—
+											</span>
 										)}
 									</td>
 								</tr>
 								{isOpen ? (
-									<tr className="border-border/30 border-b last:border-b-0">
+									<tr className="border-neutral-200 border-b dark:border-b-neutral-600 last:border-b-0">
 										<td colSpan={6} className="bg-muted/5">
 											<div className="px-6 py-6">
 												<div className="mb-3 font-medium text-foreground text-sm">

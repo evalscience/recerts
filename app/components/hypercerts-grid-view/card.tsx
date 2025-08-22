@@ -57,7 +57,7 @@ const Card = ({
 
 	return (
 		<Link href={`/hypercert/${hypercertId}`} passHref>
-			<article className="group relative flex h-[280px] flex-col overflow-hidden rounded-xl border border-border/20 bg-white shadow-sm transition-all duration-200 dark:border-border/20 hover:border-border/40 dark:bg-background hover:shadow-lg">
+			<article className="group relative flex h-[280px] flex-col overflow-hidden rounded-xl border border-border/20 bg-white shadow-sm transition-all duration-200 dark:border-neutral-600 hover:border-border/40 dark:bg-background hover:shadow-lg">
 				<div className="relative h-[200px] w-full overflow-hidden bg-white p-3 dark:bg-white">
 					<Image
 						src={`/api/hypercert-image/${hypercertId}`}
@@ -203,7 +203,7 @@ function TagsTwoRows({
 						{visible.map((t) => (
 							<span
 								key={`${idPrefix}-topic-${t}`}
-								className="mr-2 mb-1 inline-flex items-center rounded-full border border-border/30 bg-background/50 px-2.5 py-1 text-[11px] text-neutral-700 leading-4 dark:border-border/20 dark:text-neutral-200"
+								className="mr-2 mb-1 inline-flex items-center rounded-full border border-border/30 bg-background/50 px-2.5 py-1 text-[11px] text-neutral-700 leading-4 dark:border-neutral-600 dark:text-neutral-200"
 								data-chip="tag"
 							>
 								{t}
@@ -211,7 +211,7 @@ function TagsTwoRows({
 						))}
 						{overflow > 0 ? (
 							<span
-								className="mr-2 mb-1 inline-flex items-center rounded-full border border-border/30 bg-background/50 px-2.5 py-1 text-[11px] text-neutral-700 leading-4 dark:border-border/20 dark:text-neutral-200"
+								className="mr-2 mb-1 inline-flex items-center rounded-full border border-border/30 bg-background/50 px-2.5 py-1 text-[11px] text-neutral-700 leading-4 dark:border-neutral-600 dark:text-neutral-200"
 								data-chip="tag"
 							>
 								+{overflow}

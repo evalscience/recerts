@@ -45,7 +45,7 @@ function PersonRow({ name, affiliation }: Person) {
 				alt={name}
 				width={48}
 				height={48}
-				className="h-12 w-12 rounded-full ring-1 ring-black/10"
+				className="h-12 w-12 rounded-full ring-1 ring-black/10 dark:ring-white/20"
 			/>
 			<div className="flex flex-col leading-tight">
 				<span className="font-medium text-foreground">{name}</span>
@@ -61,7 +61,7 @@ export default function AboutPage() {
 	return (
 		<main className="mx-auto w-full max-w-6xl px-6 py-10 md:py-14">
 			<header className="mb-10 flex flex-col gap-2">
-				<h1 className="text-balance text-center font-baskerville font-bold text-3xl text-foreground md:text-4xl">
+				<h1 className="text-balance text-center font-bold text-3xl text-foreground md:text-4xl">
 					About Recerts Journal
 				</h1>
 				<p className="mx-auto max-w-3xl text-center text-muted-foreground">
@@ -76,7 +76,7 @@ export default function AboutPage() {
 
 			<section className="grid grid-cols-1 gap-10 md:grid-cols-3 md:gap-16">
 				<div className="md:col-span-1">
-					<h2 className="font-baskerville font-bold text-foreground text-xl">
+					<h2 className="font-bold text-foreground text-xl">
 						Editors in Chief
 					</h2>
 					<div className="mt-4">
@@ -87,9 +87,7 @@ export default function AboutPage() {
 				</div>
 
 				<div className="md:col-span-2">
-					<h2 className="font-baskerville font-bold text-foreground text-xl">
-						Editorial Board
-					</h2>
+					<h2 className="font-bold text-foreground text-xl">Editorial Board</h2>
 					<div className="mt-4 grid grid-cols-1 gap-x-8 gap-y-1 sm:grid-cols-2">
 						{steeringCommittee.map((p) => (
 							<PersonRow key={p.name} {...p} />
@@ -99,7 +97,7 @@ export default function AboutPage() {
 			</section>
 
 			<section className="mt-16">
-				<h2 className="text-center font-baskerville font-bold text-foreground text-xl md:text-left">
+				<h2 className="text-center font-bold text-foreground text-xl md:text-left">
 					Frequently asked questions
 				</h2>
 				<div className="mt-4">
