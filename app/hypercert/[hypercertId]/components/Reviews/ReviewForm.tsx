@@ -28,7 +28,7 @@ const ReviewForm = () => {
 						login();
 					}}
 				>
-					Connect Wallet to Review
+					Login to Review
 				</Button>
 			</div>
 		);

@@ -1,0 +1,17 @@
+[
+	{
+		"title": "Gitcoin Grants Round Data",
+		"description": "Historical data from Gitcoin quadratic funding rounds including grant applications, voting patterns, and funding outcomes.",
+		"url": "https://example.com/gitcoin-grants-data.csv",
+		"format": "CSV",
+		"size": "15.2 MB",
+		"provider": "Gitcoin",
+		"tags": ["quadratic funding", "gitcoin", "voting", "grants"],
+		"challenges": [
+			"Identify optimal quadratic funding parameters for different community sizes",
+			"Detect and prevent collusion in voting patterns",
+			"Design fair allocation mechanisms with limited budgets",
+			"Measure long-term impact of funded projects"
+		]
+	}
+]

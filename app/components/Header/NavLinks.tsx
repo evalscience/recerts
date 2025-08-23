@@ -12,6 +12,8 @@ import { cn } from "@/lib/utils";
 import {
 	ArrowUpRight,
 	BadgePlus,
+	Database,
+	FileText,
 	Home,
 	type LucideProps,
 	Menu,
@@ -74,6 +76,26 @@ const navLinks: NavLinkConfig<"dynamic" | "static">[] = [
 	// 	id: "my-hypercerts",
 	// 	clientNode: MyHypercerts,
 	// },
+	{
+		type: "static",
+		id: "md4pg2025",
+		href: "/md4pg2025",
+		text: "MD4PG 2025",
+		Icon: FileText,
+		pathCheck: {
+			startsWith: "/md4pg2025",
+		},
+	},
+	{
+		type: "static",
+		id: "datasets",
+		href: "/datasets",
+		text: "Datasets",
+		Icon: Database,
+		pathCheck: {
+			equals: "/datasets",
+		},
+	},
 	{
 		type: "static",
 		id: "submit",

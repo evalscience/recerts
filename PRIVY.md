@@ -29559,7 +29559,7 @@ return (
     <H4>Wallet Deeplinking</H4>
     <Text>Connected: {isConnected ? 'true' : 'false'}</Text>
 
-    {!isConnected && <Button onPress={() => connect()}>Connect Wallet</Button>}
+    {!isConnected && <Button onPress={() => connect()}>Login</Button>}
 
     {isConnected && (
       <>
@@ -29773,7 +29773,7 @@ import {usePrivy} from '@privy-io/react-auth';
 export default function ConnectWalletButton() {
   const {connectWallet} = usePrivy();
   // Prompt user to connect a wallet with Privy modal
-  return <button onClick={connectWallet}>Connect wallet</button>;
+  return <button onClick={connectWallet}>Login</button>;
 }
 ```
 
@@ -29829,7 +29829,7 @@ import {usePrivy} from '@privy-io/react-auth';
 export default function ConnectWalletButton() {
   const {connectOrCreateWallet} = usePrivy();
   // Prompt user to connect a wallet with Privy modal
-  return <button onClick={connectOrCreateWallet}>Connect wallet</button>;
+  return <button onClick={connectOrCreateWallet}>Login</button>;
 }
 ```
 
@@ -29887,9 +29887,9 @@ You might use the methods above to "split up" the connect and sign steps of exte
       // Prompt user to connect a wallet with Privy modal
       return (
         <>
-          {/* Button to connect wallet */}
+          {/* Button to Login */}
           <button onClick={connectWallet}>
-              Connect wallet
+              Login
           </button>
           {/* Button to login with or link the most recently connected wallet */}
           <button
@@ -29915,9 +29915,9 @@ You might use the methods above to "split up" the connect and sign steps of exte
 
       // Prompt user to connect a wallet with Privy modal
       return (
-        {/* Button to connect wallet */}
+        {/* Button to Login */}
         <button onClick={connectWallet}>
-          Connect wallet
+          Login
         </button>
         {/* Button to login with or link the most recently connected wallet */}
         <button
@@ -32723,7 +32723,7 @@ To learn more about the wallet standard, you can read more about it [here!](http
     registerWallet(wallets.find((wallet) => wallet.name === 'Privy' && 'privy:' in wallet.features));
     ```
 
-    **That's it!** You now have a fully functional Solana standard wallet integration in your application. You can use these features to connect wallets, sign messages, and handle transactions in a standardized way.
+    **That's it!** You now have a fully functional Solana standard wallet integration in your application. You can use these features to Logins, sign messages, and handle transactions in a standardized way.
   </Tab>
 </Tabs>
 
@@ -42336,10 +42336,10 @@ Source: https://docs.privy.io/wallets/connectors/usage/authenticate
 
         // Prompt user to connect a wallet with Privy modal
         return (
-            {/* Button to connect wallet */}
+            {/* Button to Login */}
             <button
                 onClick={connectWallet}>
-                Connect wallet
+                Login
             </button>
             {/* Button to login with or link the most recently connected wallet */}
             <button
@@ -42363,10 +42363,10 @@ Source: https://docs.privy.io/wallets/connectors/usage/authenticate
 
           // Prompt user to connect a wallet with Privy modal
           return (
-            {/* Button to connect wallet */}
+            {/* Button to Login */}
             <button
                 onClick={connectWallet}>
-                Connect wallet
+                Login
             </button>
             {/* Button to login with or link the most recently connected wallet */}
             <button
@@ -42429,7 +42429,7 @@ Source: https://docs.privy.io/wallets/connectors/usage/connect-or-create
     export default function ConnectWalletButton() {
       const {connectOrCreateWallet} = useConnectOrCreateWallet();
       // Prompt user to connect a wallet with Privy modal
-      return <button onClick={connectOrCreateWallet}>Connect wallet</button>;
+      return <button onClick={connectOrCreateWallet}>Login</button>;
     }
     ```
 

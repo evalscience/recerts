@@ -70,7 +70,7 @@ const UserSheet = ({ children }: { children: React.ReactNode }) => {
 						</div>
 						<Button onClick={closeUserSheetAndLogin} className="w-full gap-2">
 							<Wallet size={16} />
-							Connect Wallet
+							Login
 						</Button>
 					</div>
 				) : !isConnected ? (

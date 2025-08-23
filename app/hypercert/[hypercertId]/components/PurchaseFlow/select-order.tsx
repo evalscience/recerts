@@ -98,7 +98,7 @@ const SelectOrder = ({ hypercert }: { hypercert: FullHypercert }) => {
 							className="mt-4 rounded-full"
 							onClick={() => login()}
 						>
-							Connect Wallet
+							Login
 						</Button>
 					</div>
 				)}

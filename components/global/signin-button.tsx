@@ -11,7 +11,7 @@ const SignInButton = () => {
 
 	return (
 		<Button disabled={authenticated} onClick={() => login()}>
-			Connect Wallet
+			Login
 		</Button>
 	);
 };

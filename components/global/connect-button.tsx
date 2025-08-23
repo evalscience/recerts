@@ -11,7 +11,7 @@ const ConnectButton = () => {
 
 	return (
 		<Button disabled={isConnected} onClick={() => login()}>
-			Connect Wallet
+			Login
 		</Button>
 	);
 };

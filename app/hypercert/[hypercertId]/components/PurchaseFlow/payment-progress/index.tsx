@@ -83,7 +83,7 @@ const Paymentprogress = () => {
 					errorMessage="Wallet not connected"
 					errorDescription="Please connect your wallet to continue"
 					ctaAction={() => login()}
-					ctaText="Connect Wallet"
+					ctaText="Login"
 				/>
 			</PaymentProgressModalWrapper>
 		);
