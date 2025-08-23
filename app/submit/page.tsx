@@ -12,9 +12,11 @@ function InfoSection({
 	children,
 }: { title: string; children: React.ReactNode }) {
 	return (
-		<section className="flex flex-col gap-2">
-			<h2 className="font-bold text-2xl text-foreground">{title}</h2>
-			<div className="prose prose-slate dark:prose-invert max-w-none text-base text-foreground leading-7">
+		<section className="mx-4 flex flex-col gap-4 md:mx-8">
+			<h2 className="font-semibold text-2xl text-foreground leading-tight">
+				{title}
+			</h2>
+			<div className="prose prose-slate dark:prose-invert max-w-none text-base text-foreground/90 leading-relaxed">
 				{children}
 			</div>
 		</section>
@@ -25,13 +27,13 @@ function SubmitPage() {
 	const [step, setStep] = useState<1 | 2>(1);
 
 	return (
-		<main className="container mt-2 flex max-w-6xl flex-col gap-6 pb-[64px] md:mt-8 md:pb-12">
-			<header className="flex w-full flex-col gap-2 py-4">
-				<h1 className="text-balance font-bold text-4xl text-foreground md:text-5xl">
-					Submission
+		<main className="container mx-auto mt-2 flex max-w-4xl flex-col gap-8 px-6 pb-[64px] md:mt-8 md:px-8 md:pb-12">
+			<header className="flex w-full flex-col gap-3 py-6">
+				<h1 className="text-balance font-bold text-4xl text-foreground leading-tight md:text-5xl">
+					Create & Submit a Recert
 				</h1>
-				<div className="mt-1">
-					<span className="inline-flex items-center gap-2 rounded-full bg-muted px-3 py-1 text-muted-foreground text-xs md:text-sm">
+				<div className="mt-2">
+					<span className="inline-flex items-center gap-2 rounded-full bg-muted px-4 py-1.5 text-muted-foreground text-sm">
 						{step === 1 ? "Step 1 of 2" : "Step 2 of 2"}
 					</span>
 				</div>
@@ -40,11 +42,11 @@ function SubmitPage() {
 			{step === 1 ? (
 				<>
 					<Card className="rounded-xl border-none bg-transparent shadow-none">
-						<CardContent className="flex flex-col gap-5 p-0 md:p-0">
-							<div className="flex items-center justify-end">
+						<CardContent className="flex flex-col gap-8 p-0 md:p-0">
+							<div className="mx-4 flex items-center justify-end md:mx-8">
 								<Button
 									variant="ghost"
-									className="gap-2 px-0"
+									className="gap-2 px-0 text-sm"
 									onClick={() => setStep(2)}
 								>
 									Next <ArrowRight className="h-4 w-4" />
@@ -78,7 +80,7 @@ function SubmitPage() {
 								</p>
 							</InfoSection>
 
-							<Separator />
+							<Separator className="mx-4 md:mx-8" />
 
 							<InfoSection title="Journal Scope">
 								<p>
@@ -94,7 +96,7 @@ function SubmitPage() {
 								</p>
 							</InfoSection>
 
-							<Separator />
+							<Separator className="mx-4 md:mx-8" />
 
 							<InfoSection title="Article Types">
 								<p>
@@ -146,7 +148,7 @@ function SubmitPage() {
 								</p>
 							</InfoSection>
 
-							<Separator />
+							<Separator className="mx-4 md:mx-8" />
 
 							<InfoSection title="What Recerts Reviews For">
 								<ul>
@@ -183,7 +185,7 @@ function SubmitPage() {
 								</p>
 							</InfoSection>
 
-							<Separator />
+							<Separator className="mx-4 md:mx-8" />
 
 							<InfoSection title="Writing a Recerts Article">
 								<p className="mt-2">
@@ -202,7 +204,7 @@ function SubmitPage() {
 								</p>
 							</InfoSection>
 
-							<Separator />
+							<Separator className="mx-4 md:mx-8" />
 
 							<InfoSection title="The Recerts Review Process">
 								<p>
@@ -561,7 +563,7 @@ function SubmitPage() {
 								</p>
 							</InfoSection>
 
-							<Separator />
+							<Separator className="mx-4 md:mx-8" />
 
 							<InfoSection title="Conflicts of Interest">
 								<p>
@@ -582,7 +584,7 @@ function SubmitPage() {
 								</p>
 							</InfoSection>
 
-							<Separator />
+							<Separator className="mx-4 md:mx-8" />
 
 							<InfoSection title="Dual Submission Policy">
 								<p>
@@ -630,7 +632,7 @@ function SubmitPage() {
 								</ul>
 							</InfoSection>
 
-							<Separator />
+							<Separator className="mx-4 md:mx-8" />
 
 							<InfoSection title="Ethics Concerns (e.g., Plagiarism, Misconduct, etc.)">
 								<p>
@@ -651,9 +653,9 @@ function SubmitPage() {
 								</p>
 							</InfoSection>
 
-							<Separator />
+							<Separator className="mx-4 md:mx-8" />
 
-							<InfoSection title="Growing Recerts’s Team">
+							<InfoSection title="Growing Recerts's Team">
 								<p>
 									Recerts uses the following evaluation process for potential
 									editors:
@@ -679,9 +681,9 @@ function SubmitPage() {
 								</p>
 							</InfoSection>
 
-							<Separator />
+							<Separator className="mx-4 md:mx-8" />
 
-							<InfoSection title="Growing Recerts’s Scope">
+							<InfoSection title="Growing Recerts's Scope">
 								<p>
 									In the long‑run, the editorial team believes Recerts should be
 									open to expanding to other disciplines, with new editors
@@ -714,10 +716,10 @@ function SubmitPage() {
 								</ul>
 							</InfoSection>
 
-							<div className="flex items-center justify-end">
+							<div className="mx-4 mt-4 flex items-center justify-end md:mx-8">
 								<Button
 									variant="outline"
-									className="gap-2"
+									className="gap-2 px-6 py-2.5"
 									onClick={() => setStep(2)}
 								>
 									Start submission <ArrowRight className="h-4 w-4" />
@@ -727,17 +729,19 @@ function SubmitPage() {
 					</Card>
 				</>
 			) : (
-				<section className="flex flex-col gap-4">
-					<div className="flex items-center justify-between">
+				<section className="flex flex-col gap-6">
+					<div className="mx-4 flex items-center justify-between md:mx-8">
 						<Button
 							variant="ghost"
-							className="gap-2 px-0"
+							className="gap-2 px-0 text-sm"
 							onClick={() => setStep(1)}
 						>
 							<ArrowLeft className="h-4 w-4" /> Back
 						</Button>
 					</div>
-					<HypercertForm />
+					<div className="mx-4 md:mx-8">
+						<HypercertForm />
+					</div>
 				</section>
 			)}
 		</main>

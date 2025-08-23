@@ -2,28 +2,28 @@ import type { ChangelogBlock } from "./config";
 
 const changelogBlocks: ChangelogBlock[] = [
 	{
-		date: "May 26th 2025",
-		title: "v1.0.2 - Platform Fee",
-		contentSource: "!platform-fee.md",
+		date: "December 2024",
+		title: "MD4PG 2025 Launch",
+		contentSource: "!md4pg2025.md",
 		versionMetadata: {
-			version: "1.0.2",
+			version: "2.0.0",
+			isMajorRelease: true,
+		},
+	},
+	{
+		date: "May 26th 2024",
+		title: "Platform Transformation",
+		contentSource: "!platform-transformation.md",
+		versionMetadata: {
+			version: "1.1.0",
 			isMajorRelease: false,
 		},
 	},
 	{
-		date: "May 15th 2025",
-		title: "v1.0.1 - Supplementary Materials and Reviews",
-		contentSource: "!attestations.md",
-		versionMetadata: {
-			version: "1.0.1",
-			isMajorRelease: false,
-		},
-	},
-	{
-		date: "February 10th 2025",
-		title: "v1.0.0 - Initial Release",
-		contentSource: "!file1.md",
-		githubURL: "https://github.com/GainForest/ecocertain/pull/62",
+		date: "February 10th 2024",
+		title: "Recerts Foundation",
+		contentSource: "!recerts-foundation.md",
+		githubURL: "https://github.com/evalscience/recerts",
 		versionMetadata: {
 			version: "1.0.0",
 			isMajorRelease: true,
