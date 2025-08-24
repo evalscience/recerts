@@ -9,6 +9,96 @@ export const metadata: Metadata = {
 		"Submit your research to the Journal of Mechanism Design for Public Goods. We invite papers, proposals, and tutorials on mechanism design, incentive systems, and public goods funding.",
 };
 
+type Person = {
+	name: string;
+	affiliation?: string;
+};
+
+const sponsors = [
+	{
+		name: "GainForest",
+		logo: "/md4pg/gainforest.png",
+		website: "https://gainforest.earth",
+	},
+	{
+		name: "Octant",
+		logo: "/md4pg/octant.png",
+		website: "https://octant.build",
+	},
+	{ name: "Seer One", logo: "/md4pg/seer.png", website: "https://seer.pm" },
+	{
+		name: "Funding the Commons",
+		logo: "/md4pg/fundingthecommons.png",
+		website: "https://fundingthecommons.io",
+	},
+	{
+		name: "Hypercerts Foundation",
+		logo: "/md4pg/hypercerts.png",
+		website: "https://hypercerts.org",
+	},
+	{
+		name: "Recerts Journal",
+		logo: "/md4pg/recerts.png",
+		website: "https://recerts.org",
+	},
+];
+
+const organizers: Person[] = [
+	{ name: "David Dao", affiliation: "GainForest.Earth" },
+	{ name: "Sejal Rekhan", affiliation: "Protocol Labs" },
+];
+
+function avatarFor(name: string): string {
+	const encoded = encodeURIComponent(name);
+	return `https://api.dicebear.com/7.x/notionists/png?seed=${encoded}`;
+}
+
+function PersonRow({ name, affiliation }: Person) {
+	return (
+		<div className="flex items-center gap-4 py-3">
+			<Image
+				src={avatarFor(name)}
+				alt={name}
+				width={48}
+				height={48}
+				className="h-12 w-12 rounded-full ring-1 ring-black/10 dark:ring-white/20"
+			/>
+			<div className="flex flex-col leading-tight">
+				<span className="font-medium text-foreground">{name}</span>
+				{affiliation ? (
+					<span className="text-muted-foreground text-sm">{affiliation}</span>
+				) : null}
+			</div>
+		</div>
+	);
+}
+
+function SponsorCard({
+	name,
+	logo,
+	website,
+}: { name: string; logo: string; website: string }) {
+	return (
+		<Link
+			href={website}
+			target="_blank"
+			rel="noopener noreferrer"
+			className="flex flex-col items-center justify-center rounded-lg border border-border bg-card p-6 transition-colors hover:bg-muted/50"
+		>
+			<Image
+				src={logo}
+				alt={name}
+				width={120}
+				height={60}
+				className="h-auto max-h-12 w-auto max-w-full object-contain"
+			/>
+			<span className="mt-3 text-center font-medium text-foreground text-sm">
+				{name}
+			</span>
+		</Link>
+	);
+}
+
 export default function CallForSubmissionsPage() {
 	return (
 		<>
@@ -256,6 +346,29 @@ export default function CallForSubmissionsPage() {
 						include discussing relevant related work, iterating on core ideas,
 						and providing feedback on writing and presentation.
 					</p>
+
+					<section className="mt-16">
+						<h2>Sponsors & Partners</h2>
+						<div className="not-prose grid grid-cols-2 gap-4 md:grid-cols-6 sm:grid-cols-3">
+							{sponsors.map((sponsor) => (
+								<SponsorCard
+									key={sponsor.name}
+									name={sponsor.name}
+									logo={sponsor.logo}
+									website={sponsor.website}
+								/>
+							))}
+						</div>
+					</section>
+
+					<section className="mt-16">
+						<h2>Organizers</h2>
+						<div className="not-prose grid grid-cols-1 gap-x-8 gap-y-1 md:grid-cols-2 sm:grid-cols-2">
+							{organizers.map((organizer) => (
+								<PersonRow key={organizer.name} {...organizer} />
+							))}
+						</div>
+					</section>
 				</div>
 			</main>
 		</>
