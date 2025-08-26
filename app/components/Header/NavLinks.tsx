@@ -12,6 +12,7 @@ import { cn } from "@/lib/utils";
 import {
 	ArrowUpRight,
 	BadgePlus,
+	Clock,
 	Database,
 	FileText,
 	Home,
@@ -104,6 +105,16 @@ const navLinks: NavLinkConfig<"dynamic" | "static">[] = [
 		Icon: BadgePlus,
 		pathCheck: {
 			equals: "/submit",
+		},
+	},
+	{
+		type: "static",
+		id: "history",
+		href: "/history",
+		text: "History",
+		Icon: Clock,
+		pathCheck: {
+			equals: "/history",
 		},
 	},
 	{
