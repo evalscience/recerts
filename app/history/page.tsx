@@ -12,7 +12,7 @@ export default function HistoryPage() {
 			<div className="flex-1 p-6 md:p-12">
 				<div className="mx-auto max-w-7xl">
 					<h1 className="mb-12 text-center font-light text-2xl text-neutral-800 dark:text-neutral-200">
-						A short history of MD4PG
+						A short history of Mechanism Design for Public Goods
 					</h1>
 
 					<div className="relative">
@@ -37,7 +37,7 @@ export default function HistoryPage() {
 							/>
 						</div>
 
-						<div className="mt-6 text-center">
+						<div className="mt-6 flex justify-center gap-6">
 							<a
 								href="https://www.canva.com/design/DAGxB3vptAI/3KRj8e0IkoY24glcd3xWlg/view?utm_content=DAGxB3vptAI&utm_campaign=designshare&utm_medium=embeds&utm_source=link"
 								target="_blank"
@@ -45,6 +45,13 @@ export default function HistoryPage() {
 								className="text-neutral-500 text-sm transition-colors dark:hover:text-neutral-300 dark:text-neutral-400 hover:text-neutral-700"
 							>
 								View full timeline ↗
+							</a>
+							<a
+								href="/history.pdf"
+								download
+								className="text-neutral-500 text-sm transition-colors dark:hover:text-neutral-300 dark:text-neutral-400 hover:text-neutral-700"
+							>
+								Download high-res PDF ↓
 							</a>
 						</div>
 					</div>
