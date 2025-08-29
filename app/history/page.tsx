@@ -8,55 +8,27 @@ export const metadata: Metadata = {
 
 export default function HistoryPage() {
 	return (
-		<div className="flex min-h-screen flex-col">
-			<div className="flex-1 p-6 md:p-12">
-				<div className="mx-auto max-w-7xl">
-					<h1 className="mb-12 text-center font-light text-2xl text-neutral-800 dark:text-neutral-200">
-						A short history of Mechanism Design for Public Goods
-					</h1>
-
-					<div className="relative">
-						<div
-							className="overflow-auto border border-neutral-200 dark:border-neutral-700"
-							style={{
-								height: "calc(100vh - 200px)",
-								borderRadius: "2px",
-							}}
-						>
-							<iframe
-								loading="lazy"
-								style={{
-									width: "100%",
-									height: "100%",
-									border: "none",
-								}}
-								src="https://www.canva.com/design/DAGxB3vptAI/3KRj8e0IkoY24glcd3xWlg/view?embed"
-								allowFullScreen
-								allow="fullscreen"
-								title="Short History of Mechanism Design for Public Goods"
-							/>
-						</div>
-
-						<div className="mt-6 flex justify-center gap-6">
-							<a
-								href="https://www.canva.com/design/DAGxB3vptAI/3KRj8e0IkoY24glcd3xWlg/view?utm_content=DAGxB3vptAI&utm_campaign=designshare&utm_medium=embeds&utm_source=link"
-								target="_blank"
-								rel="noopener noreferrer"
-								className="text-neutral-500 text-sm transition-colors dark:hover:text-neutral-300 dark:text-neutral-400 hover:text-neutral-700"
-							>
-								View full timeline ↗
-							</a>
-							<a
-								href="/history.pdf"
-								download
-								className="text-neutral-500 text-sm transition-colors dark:hover:text-neutral-300 dark:text-neutral-400 hover:text-neutral-700"
-							>
-								Download high-res PDF ↓
-							</a>
-						</div>
-					</div>
-				</div>
-			</div>
+		<div className="relative h-screen w-full">
+			<iframe
+				loading="lazy"
+				style={{
+					width: "100%",
+					height: "100%",
+					border: "none",
+					backgroundColor: "black",
+				}}
+				src="https://www.canva.com/design/DAGxB3vptAI/3KRj8e0IkoY24glcd3xWlg/view?embed"
+				allowFullScreen
+				allow="fullscreen"
+				title="Short History of Mechanism Design for Public Goods"
+			/>
+			<a
+				href="/history.pdf"
+				download
+				className="absolute top-4 right-4 rounded-md bg-black/70 px-3 py-2 text-sm text-white backdrop-blur-sm transition-all hover:bg-black/90"
+			>
+				Download PDF ↓
+			</a>
 		</div>
 	);
 }
