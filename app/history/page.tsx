@@ -22,13 +22,19 @@ export default function HistoryPage() {
 				allow="fullscreen"
 				title="Short History of Mechanism Design for Public Goods"
 			/>
-			<a
-				href="/history.pdf"
-				download
-				className="absolute top-4 right-4 rounded-md bg-black/70 px-3 py-2 text-sm text-white backdrop-blur-sm transition-all hover:bg-black/90"
-			>
-				Download PDF ↓
-			</a>
+			<div className="absolute top-4 right-4 flex flex-col items-end gap-2">
+				<a
+					href="/history.pdf"
+					download
+					className="rounded-md bg-black/70 px-3 py-2 text-sm backdrop-blur-sm transition-all hover:bg-black/90"
+					style={{ color: "white !important" }}
+				>
+					Download PDF ↓
+				</a>
+				<p className="text-white/60 text-xs italic">
+					explore the timeline by scrolling and zooming
+				</p>
+			</div>
 		</div>
 	);
 }
