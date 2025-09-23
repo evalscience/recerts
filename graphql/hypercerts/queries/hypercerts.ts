@@ -22,6 +22,29 @@ const hypercertIdsByHyperboardIdQuery = graphql(`
   }
 `);
 
+const fetchHypercertIDsFromHyperboard = async (): Promise<string[]> => {
+  const [response, error] = await tryCatch(() =>
+    fetchGraphQL(hypercertIdsByHyperboardIdQuery, {
+      hyperboard_id: hyperboardId,
+    })
+  );
+  if (error) {
+    console.error("Failed to fetch from hyperboard:", error);
+    return [];
+  }
+
+  const hyperboard = response.hyperboards.data?.[0];
+  if (!hyperboard || !hyperboard.sections.data) return [];
+
+  const ids: string[] = [];
+  for (const section of hyperboard.sections.data) {
+    for (const entry of section.entries) {
+      ids.push(entry.id);
+    }
+  }
+  return ids;
+};
+
 export const fetchHypercertIDs = async (): Promise<string[]> => {
   // Prefer Airtable source
   try {
@@ -38,9 +61,14 @@ export const fetchHypercertIDs = async (): Promise<string[]> => {
       }
     }
   } catch (error) {
-    // On error, return empty list; no fallback to hyperboard
+    console.warn("Airtable failed, falling back to hyperboard:", error);
+    // On Airtable error, fall back to hyperboard
+    return fetchHypercertIDsFromHyperboard();
   }
-  return [];
+  
+  // If we reach here, Airtable didn't throw but also didn't return OK
+  console.warn("Airtable request failed without throwing, falling back to hyperboard");
+  return fetchHypercertIDsFromHyperboard();
 };
 
 const hypercertByHypercertIdQuery = graphql(`

@@ -170,8 +170,108 @@ table, th, td {
 /* Override Tailwind Typography (prose) font families to use our font system */
 .prose {
   font-family: var(--font-inter), ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Noto Sans, Ubuntu, Cantarell, Helvetica Neue, Arial, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol" !important;
+  color: hsl(var(--foreground)) !important;
 }
 
 .prose h1, .prose h2, .prose h3, .prose h4, .prose h5, .prose h6 {
   font-family: var(--font-garamond), Georgia, Cambria, "Times New Roman", Times, serif !important;
+  color: hsl(var(--foreground)) !important;
+}
+
+.prose p {
+  color: hsl(var(--foreground)) !important;
+}
+
+.prose strong, .prose b {
+  color: hsl(var(--foreground)) !important;
+}
+
+.prose em, .prose i {
+  color: hsl(var(--foreground)) !important;
+}
+
+.prose ul, .prose ol {
+  color: hsl(var(--foreground)) !important;
+}
+
+.prose li {
+  color: hsl(var(--foreground)) !important;
+}
+
+.prose blockquote {
+  color: hsl(var(--foreground)) !important;
+}
+
+.prose code {
+  color: hsl(var(--foreground)) !important;
+}
+
+.prose pre {
+  color: hsl(var(--foreground)) !important;
+}
+
+/* Dark mode overrides for prose */
+.dark .prose {
+  color: hsl(var(--foreground)) !important;
+}
+
+.dark .prose h1, .dark .prose h2, .dark .prose h3, .dark .prose h4, .dark .prose h5, .dark .prose h6 {
+  color: hsl(var(--foreground)) !important;
+}
+
+.dark .prose p {
+  color: hsl(var(--foreground)) !important;
+}
+
+.dark .prose strong, .dark .prose b {
+  color: hsl(var(--foreground)) !important;
+}
+
+.dark .prose em, .dark .prose i {
+  color: hsl(var(--foreground)) !important;
+}
+
+.dark .prose ul, .dark .prose ol {
+  color: hsl(var(--foreground)) !important;
+}
+
+.dark .prose li {
+  color: hsl(var(--foreground)) !important;
+}
+
+.dark .prose blockquote {
+  color: hsl(var(--foreground)) !important;
+}
+
+.dark .prose code {
+  color: hsl(var(--foreground)) !important;
+}
+
+.dark .prose pre {
+  color: hsl(var(--foreground)) !important;
+}
+
+/* High-priority overrides for review text */
+.prose-override {
+  color: hsl(var(--foreground)) !important;
+}
+
+.prose-override.prose {
+  color: hsl(var(--foreground)) !important;
+}
+
+.prose-override.prose * {
+  color: hsl(var(--foreground)) !important;
+}
+
+.dark .prose-override {
+  color: hsl(var(--foreground)) !important;
+}
+
+.dark .prose-override.prose {
+  color: hsl(var(--foreground)) !important;
+}
+
+.dark .prose-override.prose * {
+  color: hsl(var(--foreground)) !important;
 }

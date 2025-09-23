@@ -47,7 +47,7 @@ const ReviewCard = ({ review }: { review: Review }) => {
 				{/* Body */}
 				<MarkdownEditor
 					markdown={review.text}
-					className="text-muted-foreground text-sm"
+					className="text-foreground text-sm prose-override"
 					editorRef={null}
 					showToolbar={false}
 					readOnly={true}
@@ -55,7 +55,7 @@ const ReviewCard = ({ review }: { review: Review }) => {
 			</div>
 
 			{/* Footer */}
-			{/* <div className="flex items-center justify-end border-t border-t-border/30 bg-muted/40 p-2">
+			<div className="flex items-center justify-end border-t border-t-border/30 bg-muted/40 p-2">
 				<Button
 					variant="ghost"
 					size="sm"
@@ -68,7 +68,7 @@ const ReviewCard = ({ review }: { review: Review }) => {
 					<Heart size={16} className={hasLiked ? "fill-current" : ""} />
 					<span>{likes}</span>
 				</Button>
-			</div> */}
+			</div>
 		</Card>
 	);
 };
