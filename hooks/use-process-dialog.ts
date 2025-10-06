@@ -29,31 +29,28 @@ const useProcessDialog = (steps: StepData[]) => {
 
 	useEffect(() => {
 		setDialogSteps(createDialogSteps());
-	}, [steps]);
+	}, [createDialogSteps]);
 
-	const setStep = useCallback(
-		(step: DialogStep["id"]) => {
-			setDialogSteps((dialogStepsVal) => {
-				const lastStep = dialogStepsVal[dialogStepsVal.length - 1];
-				return dialogStepsVal.map((dialogStep) => {
-					if (dialogStep.id === step) {
-						return {
-							...dialogStep,
-							state: dialogStep.id === lastStep.id ? "completed" : "active",
-						};
-					}
-					if (
-						dialogStepsVal.indexOf(dialogStep) <
-						dialogStepsVal.findIndex((ds) => ds.id === step)
-					) {
-						return { ...dialogStep, state: "completed" };
-					}
-					return dialogStep;
-				});
+	const setStep = useCallback((step: DialogStep["id"]) => {
+		setDialogSteps((dialogStepsVal) => {
+			const lastStep = dialogStepsVal[dialogStepsVal.length - 1];
+			return dialogStepsVal.map((dialogStep) => {
+				if (dialogStep.id === step) {
+					return {
+						...dialogStep,
+						state: dialogStep.id === lastStep.id ? "completed" : "active",
+					};
+				}
+				if (
+					dialogStepsVal.indexOf(dialogStep) <
+					dialogStepsVal.findIndex((ds) => ds.id === step)
+				) {
+					return { ...dialogStep, state: "completed" };
+				}
+				return dialogStep;
 			});
-		},
-		[dialogSteps],
-	);
+		});
+	}, []);
 
 	return {
 		dialogSteps,

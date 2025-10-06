@@ -47,7 +47,7 @@ const ReviewCard = ({ review }: { review: Review }) => {
 				{/* Body */}
 				<MarkdownEditor
 					markdown={review.text}
-					className="text-foreground text-sm prose-override"
+					className="prose-override text-foreground text-sm"
 					editorRef={null}
 					showToolbar={false}
 					readOnly={true}

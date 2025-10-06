@@ -116,8 +116,8 @@ export const convertCurrencyPriceToUSD = async (
 };
 
 export const formatDecimals = (value: number, maxDecimals?: number) => {
-	maxDecimals = maxDecimals ?? 2;
-	return Math.floor(value * 10 ** maxDecimals) / 10 ** maxDecimals;
+	const decimals = maxDecimals ?? 2;
+	return Math.floor(value * 10 ** decimals) / 10 ** decimals;
 };
 
 export const getValueFromSearchParams = <T extends string>(

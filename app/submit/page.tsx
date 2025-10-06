@@ -84,7 +84,7 @@ function SubmitPage() {
 
 							<InfoSection title="Journal Scope">
 								<p>
-									Recerts Journal of Mechanism Design for Public Goods (MD4PG)
+									Recerts Journal of Mechanism Design for Public Goods (AI4PG)
 									is a peer‑reviewed venue for scholarship on collective funding
 									mechanism design, incentive systems, and impact verification.
 									We publish theoretical and empirical work that advances open,

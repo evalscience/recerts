@@ -1,11 +1,15 @@
+import { hyperboardId } from "@/config/hypercerts";
 import {
+	fetchHypercertsGraphQL as fetchGraphQL,
+	graphql,
+} from "@/graphql/hypercerts";
+import {
+	type AirtableRecord,
 	createAirtableRecordForHypercertId,
 	fetchAllAirtableRecordsForDebug,
 	fetchApprovedHypercertIdsFromAirtable,
 	fetchApprovedHypercertStatusesFromAirtable,
 } from "@/lib/airtable";
-import { hyperboardId } from "@/config/hypercerts";
-import { fetchHypercertsGraphQL as fetchGraphQL, graphql } from "@/graphql/hypercerts";
 import { tryCatch } from "@/lib/tryCatch";
 import { NextResponse } from "next/server";
 
@@ -26,50 +30,53 @@ const hypercertIdsByHyperboardIdQuery = graphql(`
 `);
 
 const fetchHypercertIDsFromHyperboard = async (): Promise<string[]> => {
-  const [response, error] = await tryCatch(() =>
-    fetchGraphQL(hypercertIdsByHyperboardIdQuery, {
-      hyperboard_id: hyperboardId,
-    })
-  );
-  if (error) {
-    console.error("Failed to fetch from hyperboard:", error);
-    return [];
-  }
+	const [response, error] = await tryCatch(() =>
+		fetchGraphQL(hypercertIdsByHyperboardIdQuery, {
+			hyperboard_id: hyperboardId,
+		}),
+	);
+	if (error) {
+		console.error("Failed to fetch from hyperboard:", error);
+		return [];
+	}
 
-  const hyperboard = response.hyperboards.data?.[0];
-  if (!hyperboard || !hyperboard.sections.data) return [];
+	const hyperboard = response.hyperboards.data?.[0];
+	if (!hyperboard || !hyperboard.sections.data) return [];
 
-  const ids: string[] = [];
-  for (const section of hyperboard.sections.data) {
-    for (const entry of section.entries) {
-      ids.push(entry.id);
-    }
-  }
-  return ids;
+	const ids: string[] = [];
+	for (const section of hyperboard.sections.data) {
+		for (const entry of section.entries) {
+			ids.push(entry.id);
+		}
+	}
+	return ids;
 };
 
 export async function GET(request: Request) {
 	try {
 		const { searchParams } = new URL(request.url);
 		const debug = searchParams.get("debug") === "1";
-		
+
 		let ids: string[] = [];
 		let usedFallback = false;
-		
+
 		try {
 			ids = await fetchApprovedHypercertIdsFromAirtable();
 		} catch (airtableError) {
-			console.warn("Airtable failed, using hyperboard fallback:", airtableError);
+			console.warn(
+				"Airtable failed, using hyperboard fallback:",
+				airtableError,
+			);
 			ids = await fetchHypercertIDsFromHyperboard();
 			usedFallback = true;
 		}
-		
+
 		if (!debug) return NextResponse.json({ ids, usedFallback });
 
 		// Minimal debug info to validate field names without exposing secrets
-		let sample: any[] = [];
+		let sample: AirtableRecord[] = [];
 		let statuses: Record<string, "Under review" | "Reviewed"> = {};
-		
+
 		if (!usedFallback) {
 			try {
 				sample = await fetchAllAirtableRecordsForDebug();
@@ -78,7 +85,7 @@ export async function GET(request: Request) {
 				console.warn("Debug fetch failed:", debugError);
 			}
 		}
-		
+
 		return NextResponse.json({
 			ids,
 			statuses,

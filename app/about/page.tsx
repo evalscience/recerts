@@ -4,9 +4,9 @@ import Image from "next/image";
 import React from "react";
 
 export const metadata: Metadata = {
-	title: "About | Recerts — MD4PG",
+	title: "About | Recerts",
 	description:
-		"Learn about the Journal of Mechanism Design for Public Goods (MD4PG), its mission, and the people behind it.",
+		"Learn about the Journal of Mechanism Design for Public Goods, its mission, and the people behind it.",
 };
 
 type Person = {
@@ -65,7 +65,7 @@ export default function AboutPage() {
 					About Recerts Journal
 				</h1>
 				<p className="mx-auto max-w-3xl text-center text-muted-foreground">
-					The Recerts Journal of Mechanism Design for Public Goods (MD4PG) is a
+					The Recerts Journal of Mechanism Design for Public Goods is a
 					peer-reviewed venue for scholarship on collective funding mechanism
 					design, incentive systems, and impact verification. We publish
 					theoretical and empirical work that advances open, transparent, and

@@ -79,12 +79,12 @@ const navLinks: NavLinkConfig<"dynamic" | "static">[] = [
 	// },
 	{
 		type: "static",
-		id: "md4pg2025",
-		href: "/md4pg2025",
-		text: "MD4PG 2025",
+		id: "ai4pg2025",
+		href: "/ai4pg2025",
+		text: "AI4PG 2025",
 		Icon: FileText,
 		pathCheck: {
-			startsWith: "/md4pg2025",
+			startsWith: "/ai4pg2025",
 		},
 	},
 	{

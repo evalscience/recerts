@@ -3,8 +3,8 @@ import type { ChangelogBlock } from "./config";
 const changelogBlocks: ChangelogBlock[] = [
 	{
 		date: "December 2024",
-		title: "MD4PG 2025 Launch",
-		contentSource: "!md4pg2025.md",
+		title: "AI4PG 2025 Launch",
+		contentSource: "!ai4pg2025.md",
 		versionMetadata: {
 			version: "2.0.0",
 			isMajorRelease: true,

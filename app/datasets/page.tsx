@@ -4,7 +4,7 @@ import React from "react";
 import datasetsData from "./datasets.json";
 
 export const metadata: Metadata = {
-	title: "Datasets | MD4PG — Recerts",
+	title: "Datasets | Recerts",
 	description:
 		"Available datasets for mechanism design and public goods research.",
 };
