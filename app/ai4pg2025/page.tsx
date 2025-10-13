@@ -41,11 +41,35 @@ const sponsors = [
 		logo: "/ai4pg/recerts.png",
 		website: "https://recerts.org",
 	},
+	{
+		name: "Ethereum Foundation",
+		logo: "/ai4pg/ef.png",
+		website: "https://ethereum.foundation",
+	},
+	{
+		name: "Gitcoin",
+		logo: "/ai4pg/gitcoin.webp",
+		website: "https://gitcoin.co",
+	},
+	{
+		name: "Celo Public Goods",
+		logo: "/ai4pg/celopg.webp",
+		website: "https://celo.org/community/public-goods",
+	},
+	{
+		name: "Simocracy",
+		logo: "/ai4pg/simocracy.png",
+		website: "https://simocracy.com",
+	},
 ];
 
 const organizers: Person[] = [
 	{ name: "David Dao", affiliation: "GainForest.Earth" },
 	{ name: "Sejal Rekhan", affiliation: "Protocol Labs" },
+	{ name: "Prof. Lily Xu", affiliation: "Columbia" },
+	{ name: "Prof. Millie Chapman", affiliation: "ETH Zurich" },
+	{ name: "Dr. Maria João Sousa", affiliation: "Cornell, CCAI" },
+	{ name: "Dr. Livia Kalossaka", affiliation: "HEC" },
 ];
 
 export default function CallForSubmissionsPage() {
@@ -72,6 +96,16 @@ export default function CallForSubmissionsPage() {
 					<p className="mt-2 text-muted-foreground text-sm">
 						Call for proposals opening soon
 					</p>
+					<div className="mt-8">
+						<Link
+							href="https://gainforest.notion.site/ai4pg"
+							target="_blank"
+							rel="noopener noreferrer"
+							className="inline-flex items-center justify-center rounded-lg border border-border/50 bg-card/30 px-6 py-3 font-medium text-foreground transition-colors hover:border-border hover:bg-card/50"
+						>
+							More Details
+						</Link>
+					</div>
 				</header>
 
 				<div className="space-y-20">
@@ -137,7 +171,9 @@ export default function CallForSubmissionsPage() {
 							</div>
 							<div className="rounded-lg border border-border/50 bg-card/30 p-6">
 								<h3 className="mb-2 font-medium text-foreground">Review</h3>
-								<p className="text-muted-foreground">Within 2 weeks</p>
+								<p className="text-muted-foreground">
+									3-4 weeks after submission (rolling basis)
+								</p>
 							</div>
 						</div>
 					</section>
@@ -147,28 +183,61 @@ export default function CallForSubmissionsPage() {
 							Timeline
 						</h2>
 						<div className="rounded-lg border border-border/50 bg-card/30 p-8">
-							<Image
-								src="/timeline.png"
-								alt="Grant Timeline"
-								width={800}
-								height={400}
-								className="h-auto w-full object-contain"
-							/>
+							<div className="grid gap-6 md:grid-cols-2">
+								<div className="space-y-4">
+									<div className="flex flex-col">
+										<h3 className="mb-1 font-medium text-foreground">
+											Call for Reviewers Opens
+										</h3>
+										<p className="text-muted-foreground">Oct 14, 2025</p>
+									</div>
+									<div className="flex flex-col">
+										<h3 className="mb-1 font-medium text-foreground">
+											Reviewer Application Deadline
+										</h3>
+										<p className="text-muted-foreground">Oct 31, 2025</p>
+									</div>
+								</div>
+								<div className="space-y-4">
+									<div className="flex flex-col">
+										<h3 className="mb-1 font-medium text-foreground">
+											Call for Proposals Opens
+										</h3>
+										<p className="text-muted-foreground">
+											Nov 1, 2025 (rolling basis)
+										</p>
+									</div>
+									<div className="flex flex-col">
+										<h3 className="mb-1 font-medium text-foreground">
+											Proposal Submission Deadline
+										</h3>
+										<p className="text-muted-foreground">Jan 11, 2026</p>
+									</div>
+								</div>
+							</div>
 						</div>
 					</section>
 
 					<section>
 						<h2 className="mb-6 text-center font-light text-2xl text-foreground">
-							Call for Reviewers
+							Call for Reviewers - Now Open
 						</h2>
 						<div className="rounded-lg border border-border/50 bg-card/30 p-8 text-center">
 							<p className="mb-4 text-lg text-muted-foreground">
 								Seeking academic and scientific reviewers with expertise in AI,
 								machine learning, or public goods funding.
 							</p>
-							<p className="font-medium text-foreground text-xl">
+							<p className="mb-6 font-medium text-foreground text-xl">
 								$800 compensation per reviewer
 							</p>
+							<Link
+								href="https://forms.gle/uNnC4y8EJCwcQw9J8"
+								target="_blank"
+								rel="noopener noreferrer"
+								className="inline-flex items-center justify-center rounded-lg border border-border/50 bg-card/30 px-6 py-3 font-medium text-foreground transition-colors hover:border-border hover:bg-card/50"
+							>
+								Apply as Reviewer
+							</Link>
 						</div>
 					</section>
 
@@ -211,7 +280,7 @@ export default function CallForSubmissionsPage() {
 						<h2 className="mb-8 text-center font-light text-lg text-muted-foreground">
 							Supported by
 						</h2>
-						<div className="flex flex-wrap items-center justify-center gap-8">
+						<div className="grid grid-cols-3 items-center justify-items-center gap-8 md:grid-cols-5">
 							{sponsors.map((sponsor) => (
 								<Link
 									key={sponsor.name}
@@ -223,9 +292,9 @@ export default function CallForSubmissionsPage() {
 									<Image
 										src={sponsor.logo}
 										alt={sponsor.name}
-										width={80}
-										height={40}
-										className="h-8 w-auto object-contain"
+										width={120}
+										height={60}
+										className="h-12 w-auto object-contain"
 									/>
 								</Link>
 							))}
