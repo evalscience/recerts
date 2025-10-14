@@ -23,7 +23,7 @@ const sponsors = [
 	{
 		name: "Octant",
 		logo: "/ai4pg/octant.png",
-		website: "https://octant.build",
+		website: "https://octant.app",
 	},
 	{ name: "Seer One", logo: "/ai4pg/seer.png", website: "https://seer.pm" },
 	{
@@ -52,24 +52,19 @@ const sponsors = [
 		website: "https://gitcoin.co",
 	},
 	{
-		name: "Celo Public Goods",
-		logo: "/ai4pg/celopg.webp",
-		website: "https://celo.org/community/public-goods",
-	},
-	{
 		name: "Simocracy",
 		logo: "/ai4pg/simocracy.png",
-		website: "https://simocracy.com",
+		website: "https://simocracy.org",
 	},
 ];
 
 const organizers: Person[] = [
 	{ name: "David Dao", affiliation: "GainForest.Earth" },
 	{ name: "Sejal Rekhan", affiliation: "Protocol Labs" },
+	{ name: "Dr. Livia Kalossaka", affiliation: "HEC" },
+	{ name: "Dr. Maria João Sousa", affiliation: "Cornell Tech, CCAI" },
 	{ name: "Prof. Lily Xu", affiliation: "Columbia" },
 	{ name: "Prof. Millie Chapman", affiliation: "ETH Zurich" },
-	{ name: "Dr. Maria João Sousa", affiliation: "Cornell, CCAI" },
-	{ name: "Dr. Livia Kalossaka", affiliation: "HEC" },
 ];
 
 export default function CallForSubmissionsPage() {
