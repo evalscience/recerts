@@ -56,6 +56,11 @@ const sponsors = [
 		logo: "/ai4pg/simocracy.png",
 		website: "https://simocracy.org",
 	},
+	{
+		name: "Protocol Labs",
+		logo: "/ai4pg/protocollabs.png",
+		website: "https://protocol.ai",
+	},
 ];
 
 const organizers: Person[] = [
