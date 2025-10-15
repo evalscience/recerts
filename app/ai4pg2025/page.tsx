@@ -59,7 +59,7 @@ const sponsors = [
 ];
 
 const organizers: Person[] = [
-	{ name: "David Dao", affiliation: "GainForest.Earth" },
+	{ name: "Dr. David Dao", affiliation: "GainForest.Earth" },
 	{ name: "Sejal Rekhan", affiliation: "Protocol Labs" },
 	{ name: "Sarah Tariq", affiliation: "University of Zurich" },
 	{ name: "Dr. Livia Kalossaka", affiliation: "HEC" },
