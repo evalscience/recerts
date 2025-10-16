@@ -67,7 +67,7 @@ const organizers: Person[] = [
 	{ name: "Dr. David Dao", affiliation: "GainForest.Earth" },
 	{ name: "Sejal Rekhan", affiliation: "Protocol Labs" },
 	{ name: "Sarah Tariq", affiliation: "University of Zurich" },
-	{ name: "Dr. Livia Kalossaka", affiliation: "HEC" },
+	{ name: "Dr. Livia Kalossaka", affiliation: "HEC Paris, CDL" },
 	{ name: "Dr. Maria João Sousa", affiliation: "Cornell Tech, CCAI" },
 	{ name: "Prof. Lily Xu", affiliation: "Columbia" },
 	{ name: "Prof. Millie Chapman", affiliation: "ETH Zurich" },
