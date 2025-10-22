@@ -131,10 +131,11 @@ export default function CallForSubmissionsPage() {
 							<p className="text-muted-foreground leading-relaxed">
 								This fast grants program offers up to $10,000 USD for each
 								accepted proposal to support AI research and development in
-								public goods decision making. Our call for proposals will be
-								opening soon. We're particularly interested in projects that
-								address real-world challenges in funding allocation, impact
-								assessment, governance, and community coordination.
+								public goods decision making. Proposals are limited to 4 pages
+								and maximum 1,000 words. Our call for proposals will be opening
+								soon. We're particularly interested in projects that address
+								real-world challenges in funding allocation, impact assessment,
+								governance, and community coordination.
 							</p>
 
 							<p className="text-muted-foreground leading-relaxed">
@@ -162,7 +163,7 @@ export default function CallForSubmissionsPage() {
 							</div>
 							<div className="rounded-lg border border-border/50 bg-card/30 p-6">
 								<h3 className="mb-2 font-medium text-foreground">Duration</h3>
-								<p className="text-muted-foreground">3-6 months</p>
+								<p className="text-muted-foreground">1-6 months</p>
 							</div>
 							<div className="rounded-lg border border-border/50 bg-card/30 p-6">
 								<h3 className="mb-2 font-medium text-foreground">
@@ -173,7 +174,7 @@ export default function CallForSubmissionsPage() {
 							<div className="rounded-lg border border-border/50 bg-card/30 p-6">
 								<h3 className="mb-2 font-medium text-foreground">Review</h3>
 								<p className="text-muted-foreground">
-									3-4 weeks after submission (rolling basis)
+									Rolling basis - 4 weeks after submission
 								</p>
 							</div>
 						</div>
