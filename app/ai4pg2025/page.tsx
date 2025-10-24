@@ -197,7 +197,7 @@ export default function CallForSubmissionsPage() {
 										<h3 className="mb-1 font-medium text-foreground">
 											Reviewer Application Deadline
 										</h3>
-										<p className="text-muted-foreground">Oct 31, 2025</p>
+										<p className="text-muted-foreground">Nov 14, 2025</p>
 									</div>
 								</div>
 								<div className="space-y-4">
@@ -205,9 +205,7 @@ export default function CallForSubmissionsPage() {
 										<h3 className="mb-1 font-medium text-foreground">
 											Call for Proposals Opens
 										</h3>
-										<p className="text-muted-foreground">
-											Nov 1, 2025 (rolling basis)
-										</p>
+										<p className="text-muted-foreground">Nov 15, 2025</p>
 									</div>
 									<div className="flex flex-col">
 										<h3 className="mb-1 font-medium text-foreground">
