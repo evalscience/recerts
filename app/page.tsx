@@ -3,7 +3,7 @@ import { MotionWrapper } from "@/components/ui/motion-wrapper";
 import { Loader2 } from "lucide-react";
 import { Suspense } from "react";
 import HeroSection from "./components/hero-section";
-import { HypercertsGridWrapper } from "./components/hypercerts-grid-view";
+// import { HypercertsGridWrapper } from "./components/hypercerts-grid-view";
 import PageError from "./components/shared/PageError";
 
 export default async function Home() {
@@ -46,7 +46,8 @@ export default async function Home() {
 						</section>
 					}
 				>
-					<HypercertsGridWrapper />
+					<div />
+					{/* <HypercertsGridWrapper /> */}
 				</Suspense>
 			</MotionWrapper>
 		</main>
