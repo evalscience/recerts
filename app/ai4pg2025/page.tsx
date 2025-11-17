@@ -95,9 +95,17 @@ export default function CallForSubmissionsPage() {
 						Up to $10,000 per proposal
 					</p>
 					<p className="mt-2 text-muted-foreground text-sm">
-						Call for proposals opening soon
+						Call for proposals now open
 					</p>
-					<div className="mt-8">
+					<div className="mt-8 space-x-4">
+						<Link
+							href="https://openreview.net/group?id=AI4PG/2026/Proposals"
+							target="_blank"
+							rel="noopener noreferrer"
+							className="inline-flex items-center justify-center rounded-lg border border-border/50 bg-card/30 px-6 py-3 font-medium text-foreground transition-colors hover:border-border hover:bg-card/50"
+						>
+							Submit Proposal
+						</Link>
 						<Link
 							href="https://gainforest.notion.site/ai4pg"
 							target="_blank"
@@ -169,7 +177,7 @@ export default function CallForSubmissionsPage() {
 								<h3 className="mb-2 font-medium text-foreground">
 									Application
 								</h3>
-								<p className="text-muted-foreground">Opening soon</p>
+								<p className="text-muted-foreground">Now open</p>
 							</div>
 							<div className="rounded-lg border border-border/50 bg-card/30 p-6">
 								<h3 className="mb-2 font-medium text-foreground">Review</h3>
@@ -220,24 +228,16 @@ export default function CallForSubmissionsPage() {
 
 					<section>
 						<h2 className="mb-6 text-center font-light text-2xl text-foreground">
-							Call for Reviewers - Now Open
+							Call for Reviewers - Closed
 						</h2>
 						<div className="rounded-lg border border-border/50 bg-card/30 p-8 text-center">
 							<p className="mb-4 text-lg text-muted-foreground">
-								Seeking academic and scientific reviewers with expertise in AI,
-								machine learning, or public goods funding.
+								Thank you to all academic and scientific reviewers who applied.
+								Reviewer applications are now closed.
 							</p>
 							<p className="mb-6 font-medium text-foreground text-xl">
 								$800 compensation per reviewer
 							</p>
-							<Link
-								href="https://forms.gle/uNnC4y8EJCwcQw9J8"
-								target="_blank"
-								rel="noopener noreferrer"
-								className="inline-flex items-center justify-center rounded-lg border border-border/50 bg-card/30 px-6 py-3 font-medium text-foreground transition-colors hover:border-border hover:bg-card/50"
-							>
-								Apply as Reviewer
-							</Link>
 						</div>
 					</section>
 
