@@ -97,16 +97,16 @@ const navLinks: NavLinkConfig<"dynamic" | "static">[] = [
 			equals: "/datasets",
 		},
 	},
-	{
-		type: "static",
-		id: "submit",
-		href: "/submit",
-		text: "Submit",
-		Icon: BadgePlus,
-		pathCheck: {
-			equals: "/submit",
-		},
-	},
+	// {
+	// 	type: "static",
+	// 	id: "submit",
+	// 	href: "/submit",
+	// 	text: "Submit",
+	// 	Icon: BadgePlus,
+	// 	pathCheck: {
+	// 		equals: "/submit",
+	// 	},
+	// },
 	{
 		type: "static",
 		id: "history",
