@@ -13,5 +13,25 @@
 			"Design fair allocation mechanisms with limited budgets",
 			"Measure long-term impact of funded projects"
 		]
+	},
+	{
+		"title": "Broadlistening Dataset",
+		"description": "Comprehensive dataset of Ethereum public goods projects and their impact metrics, providing insights into decentralized funding mechanisms and community governance patterns.",
+		"url": "https://www.broadlistening.org/",
+		"format": "Web Platform",
+		"provider": "Broadlistening",
+		"tags": [
+			"ethereum",
+			"public goods",
+			"impact metrics",
+			"decentralized funding",
+			"governance"
+		],
+		"challenges": [
+			"Analyze effectiveness of different public goods funding mechanisms",
+			"Measure community engagement and governance participation patterns",
+			"Identify factors that contribute to successful public goods projects",
+			"Design optimal incentive structures for sustainable public goods funding"
+		]
 	}
 ]
