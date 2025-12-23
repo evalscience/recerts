@@ -219,7 +219,9 @@ export default function CallForSubmissionsPage() {
 										<h3 className="mb-1 font-medium text-foreground">
 											Proposal Submission Deadline
 										</h3>
-										<p className="text-muted-foreground">Jan 11, 2026</p>
+										<p className="text-muted-foreground">
+											Feb 28, 2026 (Deadline extended)
+										</p>
 									</div>
 								</div>
 							</div>
